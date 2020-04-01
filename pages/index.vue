@@ -1,25 +1,30 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <v-card>
-        <v-card-title class="headline">Welcome to the Vuetify + Nuxt.js template +++</v-card-title>
-        <v-card-text :passage='getPassage'>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire">Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <div>
+    <v-card class="mx-auto" max-width="75%" outlined>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="headline mb-1 text-wrap">Your Personal QT and Journaling App</v-list-item-title>
+          <v-list-item-subtitle class="text--primary text-wrap">Practice PRESS in building your Quiet Time habits! This app aims to help you build a habit of journaling your QT thoughts. Bible passages change every day.<br><br>P - Pray<br>R - Read the Passage<br>E - Examine your own life<br>S - Say it back to God<br>S - Share it with another</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card>
+    <br>
+    <Passage :passageDate = "date">
+    </Passage>
+  </div>
 </template>
 
 <script>
+import Passage from "@/components/Passage";
+
 export default {
-  computed: {
-    getPassage() {
-      return this.$store.getters.getTodaysPassage
-    }
+ data() {
+    return {
+      date: new Date()
+    };
+  },
+  components: {
+    Passage
   }
 };
 </script>

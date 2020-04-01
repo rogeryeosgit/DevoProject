@@ -4,11 +4,6 @@ var BRService = require('../services/bible-retrieval');
 
 var p = '';
 
-// GET /
-router.get('/', function (req, res, next) {
-  return res.send('Set default template path!');
-});
-
 // GET route after registering
 router.get('/getTodaysPassage', async function (req, res, next) {
   try {

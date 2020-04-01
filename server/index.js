@@ -23,10 +23,6 @@ async function start() {
   // Give nuxt middleware to express
   app.use(nuxt.render)
 
-  // include routes
-  var routes = require('../server/routes/router');
-  app.use('/', routes);
-
   // Listen the server
   app.listen(port, host)
   consola.ready({

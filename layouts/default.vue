@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app :dark="setTheme">
     <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" fixed temporary app>
       <v-list>
         <v-list-item v-for="(item, i) in items" :key="i" :to="item.to" router exact>
@@ -12,7 +12,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar fixed app>
+    <v-app-bar fixed app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
@@ -22,7 +22,7 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer :fixed="fixed" app>
+    <v-footer :fixed="fixed" app color="indigo" dark>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
@@ -36,8 +36,8 @@ export default {
       fixed: true,
       items: [
         {
-          icon: "mdi-apps",
-          title: "Welcome",
+          icon: "mdi-home",
+          title: "QT App",
           to: "/"
         },
         {
@@ -49,6 +49,11 @@ export default {
       miniVariant: false,
       title: "QT App"
     };
+  },
+  computed: {
+    setTheme() {
+      return this.$vuetify.theme.dark = false
+    }
   }
 };
 </script>
