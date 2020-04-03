@@ -18,10 +18,10 @@ export default {
   },
   computed: {
     passage: function() {
-      return this.$store.getters.getTodaysPassage;
+      return this.$store.getters['passageStore/getTodaysPassage'];
     },
     reference: function() {
-      return this.$store.getters.getTodaysReference;
+      return this.$store.getters['passageStore/getTodaysReference'];
     }
   }
 };
