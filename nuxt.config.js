@@ -46,7 +46,7 @@ module.exports = {
     '@nuxtjs/axios',
   ],
   /*
-  ** Serverside modules
+  ** Serverside middleware
   */
   serverMiddleware: [
     '~/server/routes/router'
