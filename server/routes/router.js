@@ -4,7 +4,7 @@ var BRService = require('../services/bible-retrieval');
 var AuthService = require('../services/auth');
 
 var p = '';
-var token = '';
+var token = 'original123';
 
 // GET route after registering
 router.get('/getTodaysPassage', async function (req, res, next) {
@@ -21,7 +21,7 @@ router.post('/getAuthenticated', async function (req, res, next) {
     console.log("id: " + req.body.id);
     console.log("pwd: " + req.body.pwd);
     console.log("isLogin: " + req.body.isLogin);
-    token = await AuthService.authenticateUser(req.body.id, req.body.pwd, req.body.isLogin);
+    console.log("This is Token " + await AuthService.authenticateUser(req.body.id, req.body.pwd, req.body.isLogin));
   } catch (err) {
     console.log("This is the error" + err);
     return next(err);

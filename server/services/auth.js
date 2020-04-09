@@ -1,8 +1,9 @@
 var axios = require('axios');
+var logger = require('./logger');
 
-const endPt = '';
-const token = '';
-const fbAPIKey = 'AIzaSyC0uyISu-yNt96T8VBT9_attsIDuuw77O4'; /* TODO: To be removed on deploy */
+var endPt;
+var token;
+var fbAPIKey = "AIzaSyC0uyISu-yNt96T8VBT9_attsIDuuw77O4"; /* TODO: To be removed on deploy */
 
 var authService = {
     authenticateUser: async function (id, pwd, isLogin) {
@@ -13,20 +14,27 @@ var authService = {
             endPt = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
         }
         try {
-            await axios.post(endPT + fbAPIKey,
+            logger.debug("AUTH: About to Axios to Google");
+            const result = await axios.post(endPt + fbAPIKey,
                 {
                     email: id,
                     password: pwd,
                     returnSecureToken: true
                 }
-            ).then(result => {
+            )
+            logger.debug("AUTH: Result of idToken -> " + result.idToken);
+            return next(result.idToken);
+
+            /* .then(result => {
+                console.log("Was I here?");
                 token = result.idToken;
                 //Cookie.set('jwt', result.idToken);
                 //Cookie.set('expirationDate', new Date().getTime() + Number.parseInt(result.expiresIn) * 1000);
                 console.log("Token = " + token);
                 return token;
-            })
+            }) */
         } catch (err) {
+            logger.error("AUTH: Error Returned during Axios -> " + err);
             return next(err);
         }
     }

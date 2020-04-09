@@ -33,4 +33,6 @@
 
 # TODO
 
-- Having problems with Client to Server Post calls for authentication
+- Having problems with Client to Server Post calls for authentication (no token returned, bug)
+
+- Logging for server side needs to be sorted out

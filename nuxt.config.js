@@ -1,4 +1,5 @@
 const colors = require('vuetify/es5/util/colors').default
+const bodyParser = require('body-parser');
 
 module.exports = {
   mode: 'universal',
@@ -49,6 +50,8 @@ module.exports = {
   ** Serverside middleware
   */
   serverMiddleware: [
+    bodyParser.json(),
+    '~/server/services/logger',
     '~/server/routes/router'
   ],
   /*
