@@ -1,6 +1,6 @@
 const express = require('express')
-const logger = require('./services/logger')
 const { Nuxt, Builder } = require('nuxt')
+const log4js = require('log4js');
 const app = express()
 
 // Import and Set Nuxt.js options
@@ -25,8 +25,7 @@ async function start() {
 
   // Listen the server
   app.listen(port, host)
-
-
+  const logger = log4js.getLogger();
   logger.info(`Server listening on http://${host}:${port}`);
 }
 start()

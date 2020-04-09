@@ -1,4 +1,5 @@
 var axios = require('axios');
+var log4js = require('log4js');
 
 // ESV API
 const BRUrl = 'https://api.esv.org/v3/passage/text/';
@@ -8,6 +9,7 @@ const header = {
 
 var BRService = {
     getPassage: async function (passage) {
+        var logger = log4js.getLogger();
         try {
             const returnedData = await axios.get(BRUrl, {
                 headers: header,
@@ -19,7 +21,7 @@ var BRService = {
             })
             return returnedData.data;
         } catch (err) {
-            return next(err);
+            logger.error("BRService Error : " + err);
         }
     }
 };

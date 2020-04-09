@@ -33,6 +33,7 @@
 
 # TODO
 
-- Having problems with Client to Server Post calls for authentication (no token returned, bug)
+- Having problems with Client to Server Post calls for authentication (no token returned, bug, invalid signature after returned)
 
-- Logging for server side needs to be sorted out
+- Logging for server side needs to be sorted out (solved server middleware issue) - can't figure out why logging is not coming out from express starting page
+

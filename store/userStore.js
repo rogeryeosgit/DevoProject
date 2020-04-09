@@ -10,7 +10,7 @@ export const mutations = {
 
 export const actions = {
     async authenticateUser(vuexContext, authData) {
-        vuexContext.commit('userStore/setToken', await this.$axios.$post("/getAuthenticated", {
+        vuexContext.commit('setToken', await this.$axios.$post("/getAuthenticated", {
             id: authData.id,
             pwd: authData.pwd,
             isLogin: authData.isLogin
