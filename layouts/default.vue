@@ -44,6 +44,11 @@ export default {
           icon: "mdi-chart-bubble",
           title: "Login",
           to: "/auth"
+        },
+                {
+          icon: "mdi-chart-bubble",
+          title: "Journal",
+          to: "/journal"
         }
       ],
       miniVariant: false,

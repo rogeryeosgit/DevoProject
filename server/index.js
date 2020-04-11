@@ -25,6 +25,13 @@ async function start() {
 
   // Listen the server
   app.listen(port, host)
+
+  // Setting up logging for Express Server
+  log4js.configure({
+    appenders: { QTApp: { type: 'file', filename: 'QTApp.log' } },
+    categories: { default: { appenders: ['QTApp'], level: 'ALL' } }
+  });
+
   const logger = log4js.getLogger();
   logger.info(`Server listening on http://${host}:${port}`);
 }

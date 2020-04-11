@@ -51,7 +51,6 @@ module.exports = {
   */
   serverMiddleware: [
     bodyParser.json(),
-    '~/server/services/logger',
     '~/server/routes/router'
   ],
   /*

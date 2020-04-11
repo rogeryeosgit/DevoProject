@@ -6,7 +6,6 @@ var BRService = require('../services/bible-retrieval');
 var AuthService = require('../services/auth');
 
 var p = '';
-var token = '';
 
 // GET route after registering
 router.get('/getTodaysPassage', async function (req, res, next) {
@@ -20,14 +19,14 @@ router.get('/getTodaysPassage', async function (req, res, next) {
 
 router.post('/getAuthenticated', async function (req, res, next) {
   try {
-    result = await AuthService.authenticateUser(req.body.id, req.body.pwd, req.body.isLogin);
-    logger.debug("SERVER ROUTER: Token that needs to be returned -> " + result);
-    token = result;
+    await AuthService.authenticateUser(req.body.id, req.body.pwd, req.body.isLogin, result = (data) => {
+      logger.debug("SERVER ROUTER: data returned -> " + data.idToken + " " + data.exTime);
+      return res.send(data);
+    })
   } catch (err) {
-    logger.error("SERVER ROUTER: Error after calling AuthService" + err);
+    logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
     return next(err);
   }
-  return res.send(token);
 });
 
 module.exports = router;

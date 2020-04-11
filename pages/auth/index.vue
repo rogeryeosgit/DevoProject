@@ -49,9 +49,6 @@ export default {
         id: this.email,
         pwd: this.password
       });
-      console.log(
-        "Token is returned: " + this.$store.getters["userStore/isAuthenticated"]
-      );
       this.$router.push("/");
     }
   }

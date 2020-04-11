@@ -33,7 +33,29 @@
 
 # TODO
 
-- Having problems with Client to Server Post calls for authentication (no token returned, bug, invalid signature after returned)
+- Having problems with Client to Server Post calls for authentication (no token returned, bug, invalid signature after returned) - solved async issue
 
-- Logging for server side needs to be sorted out (solved server middleware issue) - can't figure out why logging is not coming out from express starting page
+- Logging for server side needs to be sorted out (solved server middleware issue) - can't figure out why logging is not coming out from express starting page. - solved sequence of loading. Server middle ware only loaded after express is started.
+
+## 11 Apr 2020
+
+- Figuring out Express structure - In asynchronous programming callbacks are alot more predictable then in "return" statements
+
+# TODO
+
+- Implementing Cookies for storage of token and expiration time on client side (done, but may not want to use cookies)
+
+- Implementing encryption between client and server communication and server encryption to other servers
+
+- Implementing logout from app / expired or manual
+
+## 12 Apr 2020
+
+- Implemented logout checks on client side, so that journal and plans are not accessible when not logged in
+
+# TODO
+
+- Figure out refresh token procedures
+
+- Figure out how to include token in headers for API calls to server
 
