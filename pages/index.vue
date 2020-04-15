@@ -25,6 +25,7 @@ export default {
   },
   components: {
     Passage
-  }
+  },
+  middleware: ['checkAuth']
 };
 </script>

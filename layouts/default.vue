@@ -10,6 +10,22 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="!isAuthenticated" to="/auth" router exact>
+          <v-list-item-action>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="isAuthenticated" to="/logout" router exact>
+          <v-list-item-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar fixed app color="indigo" dark>
@@ -42,11 +58,6 @@ export default {
         },
         {
           icon: "mdi-chart-bubble",
-          title: "Login",
-          to: "/auth"
-        },
-                {
-          icon: "mdi-chart-bubble",
           title: "Journal",
           to: "/journal"
         }
@@ -58,6 +69,9 @@ export default {
   computed: {
     setTheme() {
       return (this.$vuetify.theme.dark = false);
+    },
+    isAuthenticated() {
+      return this.$store.getters["userStore/isAuthenticated"];
     }
   }
 };

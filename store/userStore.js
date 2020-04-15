@@ -28,17 +28,55 @@ export const actions = {
             isLogin: authData.isLogin
         }).then(result => {
             vuexContext.commit('setToken', result.idToken);
-            vuexContext.commit('setExpiryTime', new Date().getTime() + Number.parseInt(result.exTime) * 1000);
-            Cookie.set('jwt', result.idToken); // Cookie has some issues
-            Cookie.set('expirationDate', new Date().getTime() + Number.parseInt(result.exTime) * 1000);
+            var expiringTimeInMS = new Date().getTime() + Number.parseInt(result.exTime) * 1000;
+            vuexContext.commit('setExpiryTime', expiringTimeInMS);
+            Cookie.set('jwt', result.idToken, {
+                sameSite: 'lax',
+                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+            }); // sameSite only allows cookies to be attached to get requests for cross origin requests
+            Cookie.set('expirationTime', expiringTimeInMS, {
+                sameSite: 'lax',
+                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+            }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             console.log("This data is returned : " + result.idToken + " " + result.exTime);
         }).catch(e => console.log(e));
     },
+    initAuth(vuexContext, req) {
+        let token;
+        let expirationTime;
+
+        if (req) {
+            if (!req.headers.cookie) {
+                return;
+            }
+            const jwtCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith("jwt="));
+            if (!jwtCookie) {
+                return;
+            }
+            token = jwtCookie.split("=")[1];
+            console.log("What is in this request header cookie --> " + req.headers.cookie);
+            expirationTime = req.headers.cookie.split(';').find(c => c.trim().startsWith("expirationTime="))
+                .split("=")[1];
+        } else {
+            token = Cookie.get("jwt");
+            expirationTime = Cookie.get("expirationTime");
+        }
+        console.log("Current time : " + new Date().getTime());
+        if (new Date().getTime() > +expirationTime || !token) {
+            console.log('No Token or invalid token');
+            vuexContext.dispatch('logout');
+            return;
+        }
+        vuexContext.commit("setToken", token);
+        vuexContext.commit("setExpiryTime", expirationTime);
+    },
     logout(vuexContext) {
+        // Clearing everthing just in case
         console.log("UserStore: Logout is called");
         vuexContext.commit('clearToken');
+        vuexContext.commit('clearExpiryTime');
         Cookie.remove('jwt');
-        Cookie.remove('expirationDate');
+        Cookie.remove('expirationTime');
     }
 }
 
