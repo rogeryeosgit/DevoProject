@@ -52,6 +52,12 @@
 
 - When logged in, login should be disabled completed.
 
+- Re-did naming convention of REST service for service to indicate resources properly in url (proper naming conventions)
+
+- Get services don't carry payload on send. Post requests can carry payload.
+
+- Logging in is done. Starting to work on plans and layout of how plans page should be
+
 
 ## Running TODO LIST
 
@@ -64,3 +70,9 @@
 - Implementing encryption between client and server communication and server encryption to other servers
 
 - Figure out refresh token procedures
+
+- Personalize front page after people have signed in
+
+- Validate login data, provide a forget password feature and validate email address to be authentic
+
+- Add additional login methods (Google Sign-In, etc.)

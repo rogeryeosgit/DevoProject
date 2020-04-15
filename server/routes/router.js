@@ -8,7 +8,7 @@ var AuthService = require('../services/auth');
 var p = '';
 
 // GET route after registering
-router.get('/getTodaysPassage', async function (req, res, next) {
+router.get('/passages/today', async function (req, res, next) {
   try {
     p = await BRService.getPassage('john+1');
   } catch (err) {
@@ -17,16 +17,26 @@ router.get('/getTodaysPassage', async function (req, res, next) {
   return res.send(p);
 });
 
-router.post('/getAuthenticated', async function (req, res, next) {
-  try {
-    await AuthService.authenticateUser(req.body.id, req.body.pwd, req.body.isLogin, result = (data) => {
-      logger.debug("SERVER ROUTER: data returned -> " + data.idToken + " " + data.exTime);
-      return res.send(data);
-    })
-  } catch (err) {
-    logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
-    return next(err);
-  }
+router.post('/users', async function (req, res, next) {
+  if (req.body.isLogin) {
+    try {
+      await AuthService.getUser(req.body.id, req.body.pwd, result = (data) => {
+        return res.send(data);
+      })
+    } catch (err) {
+      logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
+      return next(err);
+    }
+  } else {
+    try {
+      await AuthService.createUser(req.body.id, req.body.pwd, result = (data) => {
+        return res.send(data);
+      })
+    } catch (err) {
+      logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
+      return next(err);
+    }
+  };
 });
 
 module.exports = router;

@@ -29,7 +29,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar fixed app color="indigo" dark>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title v-text="title" to="/" />
       <v-spacer />
       <v-app-bar-nav-icon right @click.stop="drawer = !drawer" />
     </v-app-bar>
@@ -57,9 +57,14 @@ export default {
           to: "/"
         },
         {
-          icon: "mdi-chart-bubble",
+          icon: "mdi-pencil",
           title: "Journal",
           to: "/journal"
+        },
+        {
+          icon: "mdi-clipboard-text",
+          title: "Plans",
+          to: "/plans"
         }
       ],
       miniVariant: false,

@@ -40,10 +40,14 @@ export default {
   methods: {
     login() {
       // TODO: validate log in data https://www.youtube.com/watch?v=_-_bz5lH_fI
+      this.$store.dispatch("userStore/authenticateUser", {
+        isLogin: true,
+        id: this.email,
+        pwd: this.password
+      });
       this.$router.push("/");
     },
     register() {
-      console.log("Logging in", this.email, this.password);
       this.$store.dispatch("userStore/authenticateUser", {
         isLogin: false,
         id: this.email,
