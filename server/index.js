@@ -1,7 +1,8 @@
-const express = require('express')
-const { Nuxt, Builder } = require('nuxt')
+const express = require('express');
+const { Nuxt, Builder } = require('nuxt');
 const log4js = require('log4js');
-const app = express()
+const app = express();
+var db = require('./services/db-connector');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
@@ -34,5 +35,7 @@ async function start() {
 
   const logger = log4js.getLogger();
   logger.info(`Server listening on http://${host}:${port}`);
+
+  db.init();
 }
 start()

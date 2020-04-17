@@ -4,6 +4,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger();
 var BRService = require('../services/bible-retrieval');
 var AuthService = require('../services/auth');
+var Plan = require('../services/models/Plan');
 
 var p = '';
 
@@ -37,6 +38,24 @@ router.post('/users', async function (req, res, next) {
       return next(err);
     }
   };
+});
+
+router.post('/plans', async function (req, res, next) {
+  try {
+    const newPlan = new Plan({
+      creatorEmail: "test@test.com",
+      planName: "default",
+      description: "This is a default test plan",
+      passages: {
+        'Jan2019': ['gen', 'ex', 'deu', 'john', 'mark'],
+        'Mar2020': ['gen2', 'ex2', 'deu2', 'john2', 'mark2']
+      }
+    });
+    newPlan.save();
+  }
+  catch (err) {
+    logger.error("SERVER ROUTER: plans --> " + err);
+  }
 });
 
 module.exports = router;

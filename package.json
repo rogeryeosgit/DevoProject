@@ -17,6 +17,7 @@
     "express": "^4.16.4",
     "js-cookie": "^2.2.1",
     "log4js": "^6.1.2",
+    "mongoose": "^5.9.9",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {

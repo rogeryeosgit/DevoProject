@@ -2,7 +2,8 @@ import Cookie from 'js-cookie';
 
 export const state = () => ({
     token: null,
-    exTime: null
+    exTime: null,
+    planID: null
 })
 
 export const mutations = {
@@ -17,7 +18,14 @@ export const mutations = {
     },
     clearExpiryTime(state) {
         state.exTime = null;
-    }
+    },
+    setPlanID(state, id) {
+        state.planID = id;
+    },
+    clearPlanID(state) {
+        state.planID = null;
+    },
+
 }
 
 export const actions = {
@@ -86,5 +94,8 @@ export const getters = {
     },
     getExpiryTime(state) {
         return state.exTime;
+    },
+    getPlan(state) {
+        return state.planID;
     }
 }

@@ -59,6 +59,15 @@
 - Logging in is done. Starting to work on plans and layout of how plans page should be
 
 
+## 17 Apr 2020
+
+- Did comparison between MongoDB and Cloud Firestore. Mongo is cheaper in the long run. Also more widely used.
+
+- Able to enter plan data into MongoDB (decided against firebase)
+
+- created structure for plan creation and listing. Form is not completed yet.
+
+
 ## Running TODO LIST
 
 - Do a generic date check and choose passages accordingly
@@ -76,3 +85,11 @@
 - Validate login data, provide a forget password feature and validate email address to be authentic
 
 - Add additional login methods (Google Sign-In, etc.)
+
+- Create Plans / Pick Plan / Update and DeletePlan (if owner)
+
+- Click into Plans to see verses for the month
+
+- Plans need to have month, date, passage, owner, short description, id
+
+- Design - Explansion panels to display plans

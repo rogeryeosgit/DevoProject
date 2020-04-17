@@ -21,6 +21,7 @@ var AuthService = {
                     idToken: result.data.idToken,
                     exTime: result.data.expiresIn
                 }
+                logger.info("AUTH: In createUser: " + id + " has been created");
                 callback(tokenData);
             })
         } catch (err) {
@@ -44,6 +45,7 @@ var AuthService = {
                 }
                 callback(tokenData);
             })
+            logger.info("AUTH: In getUser: " + id + " has logged in");
         } catch (err) {
             logger.error("AUTH: IN getUser: Error Returned during Axios -> " + err);
         }
