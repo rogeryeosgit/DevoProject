@@ -47,8 +47,20 @@ router.post('/plans', async function (req, res, next) {
       planName: "default",
       description: "This is a default test plan",
       passages: {
-        'Jan2019': ['gen', 'ex', 'deu', 'john', 'mark'],
-        'Mar2020': ['gen2', 'ex2', 'deu2', 'john2', 'mark2']
+        'Jan2019': {
+          '1':'gen',
+          '2': 'ex',
+          '3': 'deu',
+          '4': 'john',
+          '5': 'mark'
+        },
+        'Mar2020': {
+          '1':'gen2',
+          '2': 'ex2',
+          '3': 'deu2',
+          '4': 'john2',
+          '5': 'mark2'
+        }
       }
     });
     newPlan.save();
