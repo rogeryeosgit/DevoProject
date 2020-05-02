@@ -48,14 +48,14 @@ router.post('/plans', async function (req, res, next) {
       description: "This is a default test plan",
       passages: {
         'Jan2019': {
-          '1':'gen',
+          '1': 'gen',
           '2': 'ex',
           '3': 'deu',
           '4': 'john',
           '5': 'mark'
         },
         'Mar2020': {
-          '1':'gen2',
+          '1': 'gen2',
           '2': 'ex2',
           '3': 'deu2',
           '4': 'john2',

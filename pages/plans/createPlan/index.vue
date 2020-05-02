@@ -14,9 +14,10 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="8">
+          <v-col cols="12" md="4">
             <v-textarea
               v-model="description"
+              :rules="descriptionRules"
               :auto-grow="true"
               label="Description"
               :placeholder="initialTADescription"
@@ -25,9 +26,44 @@
             ></v-textarea>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="12" sm="2">
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="date"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="displayMonthInUTCFormat"
+                  label="Month"
+                  append-icon="mdi-calendar-month"
+                  readonly
+                  v-on="on"
+                  @click="tempStoreMonthPassages()"
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="date" :show-current="false" type="month" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.menu.save(date)"
+                >OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
         <v-data-table
           :headers="headers"
-          :items="dayPassage"
+          :items="monthPassages"
+          :height="height"
           dense
           fixed-header
           disable-pagination
@@ -40,13 +76,9 @@
               persistent
               @save="save"
               @cancel="cancel"
-              @open="open"
               @close="close"
             >
-              <div>{{ props.item.passage }}</div>
-              <template v-slot:input>
-                <div class="mt-4 title">Enter Passage</div>
-              </template>
+              <div>{{ props.item.passage }}</div>   <!-- original content -->
               <template v-slot:input>
                 <v-text-field
                   v-model="props.item.passage"
@@ -65,7 +97,10 @@
           {{ snackText }}
           <v-btn text @click="snack = false">Close</v-btn>
         </v-snackbar>
+        <br />
       </v-container>
+      <v-btn @click="submitPlan" color="success">Create Plan</v-btn>
+      <v-btn @click="cancelPlan" color="error">Cancel</v-btn>
     </v-form>
   </div>
 </template>
@@ -75,9 +110,19 @@ export default {
   middleware: ["loginCheck"],
   data() {
     return {
-      snack: false,
-      snackColor: "",
-      snackText: "",
+      valid: false,
+      planName: "",
+      nameRules: [
+        v => !!v || "Name is required",
+        v => v.length <= 10 || "Name must be less than 10 characters"
+      ],
+      description: "",
+      descriptionRules: [v => !!v || "Description is required"],
+      initialTADescription: "A simple description of your plan",
+      initialTARows: "1",
+      date: new Date().toISOString().substr(0, 7),
+      menu: false,
+      height: 300,
       max25chars: v => v.length <= 25 || "Input too long!",
       headers: [
         {
@@ -92,141 +137,10 @@ export default {
           value: "passage"
         }
       ],
-      dayPassage: [
-        {
-          day: "1",
-          passage: "Enter Passage"
-        },
-        {
-          day: "2",
-          passage: "Enter Passage"
-        },
-        {
-          day: "3",
-          passage: "Enter Passage"
-        },
-        {
-          day: "4",
-          passage: "Enter Passage"
-        },
-        {
-          day: "5",
-          passage: "Enter Passage"
-        },
-        {
-          day: "6",
-          passage: "Enter Passage"
-        },
-        {
-          day: "7",
-          passage: "Enter Passage"
-        },
-        {
-          day: "8",
-          passage: "Enter Passage"
-        },
-        {
-          day: "9",
-          passage: "Enter Passage"
-        },
-        {
-          day: "10",
-          passage: "Enter Passage"
-        },
-        {
-          day: "11",
-          passage: "Enter Passage"
-        },
-        {
-          day: "12",
-          passage: "Enter Passage"
-        },
-        {
-          day: "13",
-          passage: "Enter Passage"
-        },
-        {
-          day: "14",
-          passage: "Enter Passage"
-        },
-        {
-          day: "15",
-          passage: "Enter Passage"
-        },
-        {
-          day: "16",
-          passage: "Enter Passage"
-        },
-        {
-          day: "17",
-          passage: "Enter Passage"
-        },
-        {
-          day: "18",
-          passage: "Enter Passage"
-        },
-        {
-          day: "19",
-          passage: "Enter Passage"
-        },
-        {
-          day: "20",
-          passage: "Enter Passage"
-        },
-        {
-          day: "21",
-          passage: "Enter Passage"
-        },
-        {
-          day: "22",
-          passage: "Enter Passage"
-        },
-        {
-          day: "23",
-          passage: "Enter Passage"
-        },
-        {
-          day: "24",
-          passage: "Enter Passage"
-        },
-        {
-          day: "25",
-          passage: "Enter Passage"
-        },
-        {
-          day: "26",
-          passage: "Enter Passage"
-        },
-        {
-          day: "27",
-          passage: "Enter Passage"
-        },
-        {
-          day: "28",
-          passage: "Enter Passage"
-        },
-        {
-          day: "29",
-          passage: "Enter Passage"
-        },
-        {
-          day: "30",
-          passage: "Enter Passage"
-        },
-        {
-          day: "31",
-          passage: "Enter Passage"
-        }
-      ],
-      valid: false,
-      planName: "",
-      description: "",
-      initialTADescription: "A simple description of your plan",
-      initialTARows: "1",
-      nameRules: [
-        v => !!v || "Name is required",
-        v => v.length <= 10 || "Name must be less than 10 characters"
-      ]
+      snack: false,
+      snackColor: "",
+      snackText: "",
+      tempStore: {}
     };
   },
   methods: {
@@ -240,17 +154,67 @@ export default {
       this.snackColor = "error";
       this.snackText = "Canceled";
     },
-    open() {
-      this.snack = true;
-      this.snackColor = "info";
-      this.snackText = "Dialog opened";
-    },
     close() {
       console.log("Dialog closed");
     },
     createPlan() {
       this.$store.dispatch("planStore/createPlan");
       this.$router.push("/");
+    },
+    submitPlan() {
+      console.log("Plan submitted");
+    },
+    cancelPlan() {
+      console.log("Plan cancelled");
+    },
+    isTempStored() {
+      try {
+        if (this.tempStore[this.date]) {
+          return true;
+        }
+      } catch {
+        return false;
+      }
+    },
+    tempStoreMonthPassages() {
+      let currentDate = this.date;
+      let currentMonthPassages = this.monthPassages;
+      console.log("What is currentDate : " + currentDate);
+      console.log("What is current Month Passages : " + currentMonthPassages);
+      this.tempStore[currentDate] = currentMonthPassages;
+      console.log(
+        "Stored Month Passages with this key : " + this.tempStore[currentDate]
+      );
+    }
+  },
+  computed: {
+    displayMonthInUTCFormat() {
+      // Needed because Date Picker requires ISO format from model
+      let newDate = new Date(this.date).toUTCString().substr(8, 8);
+      return newDate;
+    },
+    numDaysInMonth: function() {
+      return new Date(
+        this.date.slice(0, 4), // year
+        this.date.slice(5, 7), // month
+        0
+      ).getDate();
+    },
+    monthPassages: function() {
+      if (!this.isTempStored()) {
+        console.log("Makes new Month");
+        let currentMonthPassages = [];
+        for (let i = 1; i <= this.numDaysInMonth; i++) {
+          currentMonthPassages.push({
+            day: i,
+            passage: "-- Enter Passage --"
+          });
+        }
+        return currentMonthPassages;
+      } else {
+        console.log("Does it try to load old data? ");
+        return this.tempStore[this.date];
+      }
     }
   }
 };

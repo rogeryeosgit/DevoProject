@@ -68,6 +68,17 @@
 - created structure for plan creation and listing. Form is not completed yet.
 
 
+## 27 Apr 2020
+
+- Still working on plan creation, still considering how data should be stored if month changes happen.
+
+
+## 2 May 2020
+
+- Done temp store for plan creation
+
+- Figuring out how to make passage picker component
+
 ## Running TODO LIST
 
 - Do a generic date check and choose passages accordingly
@@ -93,3 +104,7 @@
 - Plans need to have month, date, passage, owner, short description, id
 
 - Design - Explansion panels to display plans
+
+- Upon submission of created plan, need to take out all days and months that have "Enter Passage" default data
+
+- Cancelling creation of plans should pop a prompt to confirm, in case all data create gets lost
