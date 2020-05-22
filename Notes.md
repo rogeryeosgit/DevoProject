@@ -79,6 +79,13 @@
 
 - Figuring out how to make passage picker component
 
+
+## 21 May 2020
+
+- Working on Bible Passages. Not sure why V-Model doesn't work as it should, seems to toggle. Did a workaround.
+
+- Currently working on multiple chapter selects and verse selects for choosing bible passages.
+
 ## Running TODO LIST
 
 - Do a generic date check and choose passages accordingly
@@ -103,8 +110,12 @@
 
 - Plans need to have month, date, passage, owner, short description, id
 
-- Design - Explansion panels to display plans
+- Design - Expansion panels to display plans
 
 - Upon submission of created plan, need to take out all days and months that have "Enter Passage" default data
 
 - Cancelling creation of plans should pop a prompt to confirm, in case all data create gets lost
+
+- To structure returned passage properly, need to check maximum 2 consecutive chapters (Allow more? unlikely)
+
+- Validation that verses chosen are selected after the previous verse

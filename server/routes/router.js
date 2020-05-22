@@ -11,7 +11,7 @@ var p = '';
 // GET route after registering
 router.get('/passages/today', async function (req, res, next) {
   try {
-    p = await BRService.getPassage('john+1');
+    p = await BRService.getPassage('john 15:1-15:12');
   } catch (err) {
     return next(err);
   }
