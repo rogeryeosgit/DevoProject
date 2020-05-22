@@ -25,7 +25,9 @@
             </v-list-item>
           </v-list-item-group>
         </v-list>
-        <v-btn @click="chapterChosen(3)" color="indigo" fixed bottom right fab></v-btn>
+        <v-btn v-show="show" @click="chapterChosen(3)" color="indigo" fixed bottom right fab dark>
+          <v-icon>mdi-arrow-right</v-icon>
+        </v-btn>
       </v-stepper-content>
       <v-stepper-content v-if="currentStep === 3" step="3">
         <v-label>Starting Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
@@ -1408,6 +1410,19 @@ export default {
     }
   },
   computed: {
+    show: function() {
+      let checker = 0;
+      for (let i in this.ccSelected) {
+        if (this.ccSelected[i] === true) {
+          checker++;
+        }
+      }
+      if (checker > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     chosenPassage: function() {
       // To structure returned passage properly, need to check if verses are not contiguous / validation of some sort
       var startC;
