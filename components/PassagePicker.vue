@@ -1,10 +1,14 @@
-<template>
+<template :value="value">
   <v-stepper>
     <v-stepper-items>
       <v-stepper-content v-if="currentStep === 1" step="1">
-        <v-list>
+        <v-list class="sList">
           <v-list-item-group>
-            <v-list-item @click="bookChosen(2, i)" v-for="i in bible" :key="i.bookName">
+            <v-list-item
+              @click="bookChosen(2, i);$emit('input', chosenPassage)"
+              v-for="i in bible"
+              :key="i.bookName"
+            >
               <v-list-item-content>
                 <v-list-item-title v-text="i.bookName"></v-list-item-title>
               </v-list-item-content>
@@ -13,7 +17,7 @@
         </v-list>
       </v-stepper-content>
       <v-stepper-content v-if="currentStep === 2" step="2">
-        <v-list>
+        <v-list class="sList">
           <v-list-item-group>
             <v-list-item v-for="i in chosenBook.bookChapters" :key="i">
               <v-list-item-action>
@@ -25,25 +29,48 @@
             </v-list-item>
           </v-list-item-group>
         </v-list>
-        <v-btn v-show="show" @click="chapterChosen(3)" color="indigo" fixed bottom right fab dark>
+        <v-btn
+          v-show="show"
+          @click="chapterChosen(3);$emit('input', chosenPassage)"
+          color="indigo"
+          fixed
+          bottom
+          right
+          fab
+          dark
+        >
           <v-icon>mdi-arrow-right</v-icon>
         </v-btn>
       </v-stepper-content>
       <v-stepper-content v-if="currentStep === 3" step="3">
         <v-label>Starting Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
-        <v-select v-model="sV" :items="verseList(chosenChapter[0])" outlined dense></v-select>
+        <v-select
+          v-model="sV"
+          :items="verseList(chosenChapter[0])"
+          outlined
+          dense
+          @input="passageCompleted;$emit('input', chosenPassage)"
+        ></v-select>
         <v-label
-          v-if="chosenChapter[1]"
-        >Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[1] }}</v-label>
+          v-if="chosenChapter.length > 1"
+        >Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[chosenChapter.length-1] }}</v-label>
         <v-label v-else>Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
         <v-select
           v-model="eV"
-          v-if="chosenChapter[1]"
-          :items="verseList(chosenChapter[1])"
+          v-if="chosenChapter.length > 1"
+          :items="verseList(chosenChapter[chosenChapter.length-1])"
           outlined
           dense
+          @input="passageCompleted;$emit('input', chosenPassage)"
         ></v-select>
-        <v-select v-model="eV" v-else :items="verseList(chosenChapter[0])" outlined dense></v-select>
+        <v-select
+          v-model="eV"
+          v-else
+          :items="verseList(chosenChapter[0])"
+          outlined
+          dense
+          @input="passageCompleted;$emit('input', chosenPassage)"
+        ></v-select>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -51,7 +78,8 @@
 
 <script>
 export default {
-  data() {
+  props: ["value"],
+  data: function() {
     return {
       currentStep: 1,
       chosenBook: "",
@@ -59,6 +87,7 @@ export default {
       ccSelected: [],
       sV: "Verse 1",
       eV: "Verse 1",
+      completed: false,
       bible: [
         {
           bookName: "Genesis",
@@ -1402,11 +1431,18 @@ export default {
         returnList.push("Verse " + x);
       }
       return returnList;
+    },
+    passageCompleted() {
+      console.log("Does it come here?");
+      this.completed = true;
+      this.currentStep = 1;
     }
   },
   watch: {
     chosenPassage: function() {
       console.log(this.chosenPassage);
+      console.log("Current Step: " + this.currentStep);
+      console.log("Value : " + this.value); // Not used, but needed for Slots. :( Need to understand slots better
     }
   },
   computed: {
@@ -1431,9 +1467,12 @@ export default {
       if (this.chosenChapter.length > 1) {
         startC = this.chosenChapter[0];
         endC = this.chosenChapter[this.chosenChapter.length - 1];
-      } else {
+      } else if (this.chosenChapter.length === 1) {
         startC = this.chosenChapter[0];
         endC = startC;
+      } else {
+        startC = 1;
+        endC = 1;
       }
 
       var returnPassage =
@@ -1451,3 +1490,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.sList {
+  height: 60vh;
+  overflow-y: auto;
+}
+</style>

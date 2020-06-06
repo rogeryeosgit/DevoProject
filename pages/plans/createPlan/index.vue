@@ -51,11 +51,7 @@
               <v-date-picker v-model="date" :show-current="false" type="month" no-title scrollable>
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                <v-btn
-                  text
-                  color="primary"
-                  @click="$refs.menu.save(date)"
-                >OK</v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
               </v-date-picker>
             </v-menu>
           </v-col>
@@ -78,7 +74,12 @@
               @cancel="cancel"
               @close="close"
             >
-              <div>{{ props.item.passage }}</div>   <!-- original content -->
+              <div>{{ props.item.passage }}</div>
+              <template v-slot:input>
+                <br />
+                <PassagePicker v-model="props.item.passage"></PassagePicker>
+              </template>
+              <!-- 
               <template v-slot:input>
                 <v-text-field
                   v-model="props.item.passage"
@@ -88,7 +89,7 @@
                   counter
                   autofocus
                 ></v-text-field>
-              </template>
+              </template>-->
             </v-edit-dialog>
           </template>
         </v-data-table>
@@ -106,6 +107,8 @@
 </template>
 
 <script>
+import PassagePicker from "@/components/PassagePicker";
+
 export default {
   middleware: ["loginCheck"],
   data() {
@@ -142,6 +145,9 @@ export default {
       snackText: "",
       tempStore: {}
     };
+  },
+  components: {
+    PassagePicker
   },
   methods: {
     save() {

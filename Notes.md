@@ -86,6 +86,14 @@
 
 - Currently working on multiple chapter selects and verse selects for choosing bible passages.
 
+## 23 May 2020
+
+- Working on getting passage picker dialog box to the correct size
+
+## 5 June 2020
+
+- What is v-slot:activator?
+
 ## Running TODO LIST
 
 - Do a generic date check and choose passages accordingly
