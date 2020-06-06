@@ -94,6 +94,10 @@
 
 - What is v-slot:activator?
 
+## 7 June 2020
+
+- Done most of the PassagePicker, only that edit-dialog component doesn't get re-rendered. Need to make stepper start at 1 again.
+
 ## Running TODO LIST
 
 - Do a generic date check and choose passages accordingly
