@@ -3,7 +3,8 @@ import Cookie from 'js-cookie';
 export const state = () => ({
     token: null,
     exTime: null,
-    planID: null
+    planID: null,
+    userID: null
 })
 
 export const mutations = {
@@ -25,6 +26,12 @@ export const mutations = {
     clearPlanID(state) {
         state.planID = null;
     },
+    setUserID(state,userID) {
+        state.userID = userID;
+    },
+    clearUserID(state) {
+        state.userID = null;
+    }
 
 }
 
@@ -46,6 +53,7 @@ export const actions = {
                 sameSite: 'lax',
                 expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
+            vuexContext.commit('setUserID', authData.id);
         }).catch(e => console.log(e));
     },
     initAuth(vuexContext, req) {
@@ -82,6 +90,7 @@ export const actions = {
         vuexContext.commit('clearExpiryTime');
         Cookie.remove('jwt');
         Cookie.remove('expirationTime');
+        vuexContext.commit('clearUserID');
     }
 }
 
@@ -97,5 +106,8 @@ export const getters = {
     },
     getPlan(state) {
         return state.planID;
+    },
+    getUserID(state) {
+        return state.userID;
     }
 }

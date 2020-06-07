@@ -70,6 +70,7 @@
               :return-value.sync="props.item.passage"
               large
               persistent
+              @open="setPPID(props.item.day)"
               @save="save"
               @cancel="cancel"
               @close="close"
@@ -77,19 +78,13 @@
               <div>{{ props.item.passage }}</div>
               <template v-slot:input>
                 <br />
-                <PassagePicker v-model="props.item.passage"></PassagePicker>
-              </template>
-              <!-- 
-              <template v-slot:input>
-                <v-text-field
+                <PassagePicker
+                  :ppID="props.item.day"
+                  :isCompleted="reset"
+                  @stepResetDone="resetComplete"
                   v-model="props.item.passage"
-                  :rules="[max25chars]"
-                  label="Edit"
-                  single-line
-                  counter
-                  autofocus
-                ></v-text-field>
-              </template>-->
+                ></PassagePicker>
+              </template>
             </v-edit-dialog>
           </template>
         </v-data-table>
@@ -126,7 +121,6 @@ export default {
       date: new Date().toISOString().substr(0, 7),
       menu: false,
       height: 300,
-      max25chars: v => v.length <= 25 || "Input too long!",
       headers: [
         {
           text: "Day of Month",
@@ -143,13 +137,22 @@ export default {
       snack: false,
       snackColor: "",
       snackText: "",
-      tempStore: {}
+      tempStore: {},
+      submitStore: {},
+      currentPPID: 99,
+      reset: {
+        resetNow: false,
+        ppID: 199
+      }
     };
   },
   components: {
     PassagePicker
   },
   methods: {
+    setPPID(id) {
+      this.currentPPID = id;
+    },
     save() {
       this.snack = true;
       this.snackColor = "success";
@@ -161,18 +164,57 @@ export default {
       this.snackText = "Canceled";
     },
     close() {
-      console.log("Dialog closed");
+      // this.reset.ppID = this.currentPPID;
+      // this.reset.resetNow = true;
+      this.reset = Object.assign({}, this.reset, {
+        ppID: this.currentPPID,
+        resetNow: true
+      }); // Needed for reactivity
     },
-    createPlan() {
-      this.$store.dispatch("planStore/createPlan");
-      this.$router.push("/");
+    resetComplete(id) {
+      this.reset.ppID = id;
+      this.reset.resetNow = false;
     },
     submitPlan() {
       console.log("Plan submitted");
+      var userID = this.$store.getters["userStore/getUserID"];
+      this.consolidatePassages();
+      for (let [key, value] of Object.entries(this.submitStore)) {
+        console.log(`${key}:`);
+        for (let [key2, value2] of Object.entries(this.submitStore[key])) {
+          console.log(`${key2}: ${value2}`);
+        }
+      }
+      // for (let x in this.monthPassages) {
+      //   console.log("passages in month : " + this.monthPassages[x].passage);
+      // }
+      // this.$store.dispatch("planStore/createPlan", {
+      //   creatorEmail: userID,
+      //   planName: this.planName,
+      //   description: this.description,
+      //   passages: {
+      //     Jan2019: {
+      //       "1": "gen",
+      //       "2": "ex",
+      //       "3": "deu",
+      //       "4": "john",
+      //       "5": "mark"
+      //     },
+      //     Mar2020: {
+      //       "1": "gen2",
+      //       "2": "ex2",
+      //       "3": "deu2",
+      //       "4": "john2",
+      //       "5": "mark2"
+      //     }
+      //   }
+      // });
     },
     cancelPlan() {
       console.log("Plan cancelled");
+      this.$router.push("/plans");
     },
+    // Checking if the chosen month has any passages stored
     isTempStored() {
       try {
         if (this.tempStore[this.date]) {
@@ -191,6 +233,21 @@ export default {
       console.log(
         "Stored Month Passages with this key : " + this.tempStore[currentDate]
       );
+    },
+    // preparing for submission, get tempstore and current month
+    consolidatePassages() {
+      this.nullExtraction();
+    },
+    nullExtraction() {
+      var monthKey = this.displayMonthInUTCFormat;
+      var object = {};
+      for (var x in this.monthPassages) {
+        if (this.monthPassages[x].passage !== "-- Enter Passage --") {
+          var dayKey = this.monthPassages[x].day;
+          object[dayKey] = this.monthPassages[x].passage;
+        }
+        this.submitStore[monthKey] = object;
+      }
     }
   },
   computed: {

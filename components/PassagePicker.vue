@@ -49,7 +49,7 @@
           :items="verseList(chosenChapter[0])"
           outlined
           dense
-          @input="passageCompleted;$emit('input', chosenPassage)"
+          @input="$emit('input', chosenPassage)"
         ></v-select>
         <v-label
           v-if="chosenChapter.length > 1"
@@ -61,7 +61,7 @@
           :items="verseList(chosenChapter[chosenChapter.length-1])"
           outlined
           dense
-          @input="passageCompleted;$emit('input', chosenPassage)"
+          @input="$emit('input', chosenPassage)"
         ></v-select>
         <v-select
           v-model="eV"
@@ -69,7 +69,7 @@
           :items="verseList(chosenChapter[0])"
           outlined
           dense
-          @input="passageCompleted;$emit('input', chosenPassage)"
+          @input="$emit('input', chosenPassage)"
         ></v-select>
       </v-stepper-content>
     </v-stepper-items>
@@ -78,7 +78,13 @@
 
 <script>
 export default {
-  props: ["value"],
+  props: {
+    isCompleted: {
+      resetNow: Boolean,
+      ppID: Number
+    },
+    ppID: Number
+  },
   data: function() {
     return {
       currentStep: 1,
@@ -87,7 +93,6 @@ export default {
       ccSelected: [],
       sV: "Verse 1",
       eV: "Verse 1",
-      completed: false,
       bible: [
         {
           bookName: "Genesis",
@@ -1419,6 +1424,7 @@ export default {
     },
     chapterChosen(nextStep) {
       this.currentStep = nextStep;
+      this.chosenChapter.splice(0, this.chosenChapter.length);
       for (let i in this.ccSelected) {
         if (this.ccSelected[i] === true) {
           this.chosenChapter.push(i);
@@ -1433,16 +1439,27 @@ export default {
       return returnList;
     },
     passageCompleted() {
-      console.log("Does it come here?");
-      this.completed = true;
-      this.currentStep = 1;
+      if (this.isCompleted.ppID === this.ppID) {
+        for (let i in this.ccSelected) {
+          if (this.ccSelected[i] === true) {
+            this.ccSelected[i] = false;
+          }
+        }
+        this.sV = "Verse 1";
+        this.eV = "Verse 1";
+        this.chosenChapter.splice(0, this.chosenChapter.length);
+        this.currentStep = 1;
+        console.log("-- PassagePicker Reset Done --");
+        this.$emit("stepResetDone", this.ppID);
+      }
     }
   },
   watch: {
     chosenPassage: function() {
       console.log(this.chosenPassage);
-      console.log("Current Step: " + this.currentStep);
-      console.log("Value : " + this.value); // Not used, but needed for Slots. :( Need to understand slots better
+    },
+    isCompleted: function() {
+      this.passageCompleted();
     }
   },
   computed: {

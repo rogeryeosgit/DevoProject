@@ -97,6 +97,8 @@
 ## 7 June 2020
 
 - Done most of the PassagePicker, only that edit-dialog component doesn't get re-rendered. Need to make stepper start at 1 again.
+- PassagePicker done
+- Working on Storing Passage into mongoDB.
 
 ## Running TODO LIST
 
