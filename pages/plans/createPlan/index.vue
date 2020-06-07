@@ -248,6 +248,20 @@ export default {
         }
         this.submitStore[monthKey] = object;
       }
+
+      var object2 = {};
+      for (let [key, value] of Object.entries(this.tempStore)) {
+        let convertedKey = new Date(key).toUTCString().substr(8, 8);
+        for (let [key2, value2] of Object.entries(this.tempStore[key])) {
+          if (this.tempStore[key][key2].passage !== "-- Enter Passage --") {
+            var dayKey = this.tempStore[key][key2].day;
+            object2[dayKey] = this.tempStore[key][key2].passage;
+          }
+        }
+        if (!this.submitStore.hasOwnProperty("convertedKey")) {
+          this.submitStore[convertedKey] = object2;
+        }
+      }
     }
   },
   computed: {
