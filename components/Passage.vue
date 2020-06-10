@@ -2,8 +2,9 @@
   <v-layout column justify-center align-center>
     <v-flex xs12 sm8 md6>
       <v-card>
-        <v-card-title class="headline">{{ reference }} - {{ passageDate | dateFormatter }}</v-card-title>
-        <v-card-text class="text--primary">{{ passage }}</v-card-text>
+        <v-card-title>{{ reference }}</v-card-title>
+        <v-card-subtitle>{{ passageDate | dateFormatter }}</v-card-subtitle>
+        <v-card-text v-html="passage" class="text--primary" id="verse-number-sup"></v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
@@ -11,14 +12,13 @@
 
 <script>
 export default {
-  props: {
-    passageDate: {
-      required: true
-    }
-  },
+  props: ['passageDate'],
   computed: {
     passage: function() {
-      return this.$store.getters['passageStore/getTodaysPassage'];
+      var returnedPassage = this.$store.getters['passageStore/getTodaysPassage'];
+      var temp = returnedPassage.replace(/\[/g, '<sup>');
+      return temp.replace(/\]/g, '</sup>');
+      // return returnedPassage;
     },
     reference: function() {
       return this.$store.getters['passageStore/getTodaysReference'];

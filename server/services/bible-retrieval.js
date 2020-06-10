@@ -16,7 +16,8 @@ var BRService = {
                 params: {
                     'q': passage,
                     'include-passage-references': false,
-                    'include-footnotes': false
+                    'include-footnotes': false,
+                    'include-headings': false,
                 }
             })
             return returnedData.data;

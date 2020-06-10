@@ -24,6 +24,11 @@
         <v-btn @click="login" color="info">Login</v-btn>
       </v-card-actions>
     </v-card>
+
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+      {{ snackText }}
+      <v-btn text @click="snack = false">Close</v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -34,7 +39,10 @@ export default {
     return {
       showPassword: false,
       email: "",
-      password: ""
+      password: "",
+      snack: false,
+      snackColor: "",
+      snackText: ""
     };
   },
   methods: {
@@ -45,7 +53,6 @@ export default {
         id: this.email,
         pwd: this.password
       });
-      this.$router.push("/");
     },
     register() {
       this.$store.dispatch("userStore/authenticateUser", {
@@ -53,7 +60,29 @@ export default {
         id: this.email,
         pwd: this.password
       });
-      this.$router.push("/");
+    }
+  },
+  watch: {
+    isAuthenticated: function() {
+      if (this.isAuthenticated) {
+        this.$router.push("/");
+      }
+    },
+    errorOccured: function() {
+      if (this.errorOccured) {
+        this.snack = true;
+        this.snackColor = "error";
+        this.snackText = "Authentication failed";
+        this.$store.dispatch("userStore/clearError");
+      }
+    }
+  },
+  computed: {
+    isAuthenticated: function() {
+      return this.$store.getters["userStore/isAuthenticated"];
+    },
+    errorOccured: function() {
+      return this.$store.getters["userStore/errorOccured"];
     }
   }
 };

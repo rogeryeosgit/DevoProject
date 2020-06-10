@@ -1,79 +1,82 @@
 <template :value="value">
-  <v-stepper>
-    <v-stepper-items>
-      <v-stepper-content v-if="currentStep === 1" step="1">
-        <v-list class="sList">
-          <v-list-item-group>
-            <v-list-item
-              @click="bookChosen(2, i);$emit('input', chosenPassage)"
-              v-for="i in bible"
-              :key="i.bookName"
-            >
-              <v-list-item-content>
-                <v-list-item-title v-text="i.bookName"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-stepper-content>
-      <v-stepper-content v-if="currentStep === 2" step="2">
-        <v-list class="sList">
-          <v-list-item-group>
-            <v-list-item v-for="i in chosenBook.bookChapters" :key="i">
-              <v-list-item-action>
-                <v-checkbox v-model="ccSelected[i]" color="primary"></v-checkbox>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>Chapter {{ i }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-        <v-btn
-          v-show="show"
-          @click="chapterChosen(3);$emit('input', chosenPassage)"
-          color="indigo"
-          fixed
-          bottom
-          right
-          fab
-          dark
-        >
-          <v-icon>mdi-arrow-right</v-icon>
-        </v-btn>
-      </v-stepper-content>
-      <v-stepper-content v-if="currentStep === 3" step="3">
-        <v-label>Starting Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
-        <v-select
-          v-model="sV"
-          :items="verseList(chosenChapter[0])"
-          outlined
-          dense
-          @input="$emit('input', chosenPassage)"
-        ></v-select>
-        <v-label
-          v-if="chosenChapter.length > 1"
-        >Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[chosenChapter.length-1] }}</v-label>
-        <v-label v-else>Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
-        <v-select
-          v-model="eV"
-          v-if="chosenChapter.length > 1"
-          :items="verseList(chosenChapter[chosenChapter.length-1])"
-          outlined
-          dense
-          @input="$emit('input', chosenPassage)"
-        ></v-select>
-        <v-select
-          v-model="eV"
-          v-else
-          :items="verseList(chosenChapter[0])"
-          outlined
-          dense
-          @input="$emit('input', chosenPassage)"
-        ></v-select>
-      </v-stepper-content>
-    </v-stepper-items>
-  </v-stepper>
+  <v-card>
+    <v-card-title>Day {{ ppID }}</v-card-title>
+    <v-stepper>
+      <v-stepper-items>
+        <v-stepper-content v-if="currentStep === 1" step="1">
+          <v-list class="sList">
+            <v-list-item-group>
+              <v-list-item
+                @click="bookChosen(2, i);$emit('input', chosenPassage)"
+                v-for="i in bible"
+                :key="i.bookName"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="i.bookName"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-stepper-content>
+        <v-stepper-content v-if="currentStep === 2" step="2">
+          <v-list class="sList">
+            <v-list-item-group>
+              <v-list-item v-for="i in chosenBook.bookChapters" :key="i">
+                <v-list-item-action>
+                  <v-checkbox v-model="ccSelected[i]" color="primary"></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title>Chapter {{ i }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+          <v-btn
+            v-show="show"
+            @click="chapterChosen(3);$emit('input', chosenPassage)"
+            color="indigo"
+            fixed
+            bottom
+            right
+            fab
+            dark
+          >
+            <v-icon>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-stepper-content>
+        <v-stepper-content v-if="currentStep === 3" step="3">
+          <v-label>Starting Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
+          <v-select
+            v-model="sV"
+            :items="verseList(chosenChapter[0])"
+            outlined
+            dense
+            @input="$emit('input', chosenPassage)"
+          ></v-select>
+          <v-label
+            v-if="chosenChapter.length > 1"
+          >Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[chosenChapter.length-1] }}</v-label>
+          <v-label v-else>Ending Verse from {{ chosenBook.bookName }} Chapter {{ chosenChapter[0] }}</v-label>
+          <v-select
+            v-model="eV"
+            v-if="chosenChapter.length > 1"
+            :items="verseList(chosenChapter[chosenChapter.length-1])"
+            outlined
+            dense
+            @input="$emit('input', chosenPassage)"
+          ></v-select>
+          <v-select
+            v-model="eV"
+            v-else
+            :items="verseList(chosenChapter[0])"
+            outlined
+            dense
+            @input="$emit('input', chosenPassage)"
+          ></v-select>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-card>
 </template>
 
 <script>

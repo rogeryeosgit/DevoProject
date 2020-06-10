@@ -13,8 +13,12 @@ export const mutations = {
 }
 
 export const actions = {
-    async createPlan(vuexContext) {
+    async createPlan(vuexContext, planSubmitted) {
         return await this.$axios.$post("/plans", {
+            creatorEmail: planSubmitted.creatorEmail,
+            planName: planSubmitted.planName,
+            description: planSubmitted.description,
+            passages: planSubmitted.passages
         }).then(result => {
             console.log("Creation request made ! ");
         }).catch(e => console.log(e));

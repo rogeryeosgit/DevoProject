@@ -10,12 +10,23 @@ var p = '';
 
 // GET route after registering
 router.get('/passages/today', async function (req, res, next) {
-  try {
-    p = await BRService.getPassage('john 15:1-15:12');
-  } catch (err) {
-    return next(err);
-  }
-  return res.send(p);
+
+  Plan.findOne({ planName: "--- Default Nav Plan ---" }, async (err, returnedPlan) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
+      return next(err);
+    } else {
+      try {
+        var month = new Date().toUTCString().substr(8, 8);
+        var day = new Date().getDate();
+        p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
+      } catch (err) {
+        logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
+        return next(err);
+      }
+      return res.send(p);
+    }
+  });
 });
 
 router.post('/users', async function (req, res, next) {
@@ -26,6 +37,7 @@ router.post('/users', async function (req, res, next) {
       })
     } catch (err) {
       logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
+      res.status(500).send("Authentication Failed");
       return next(err);
     }
   } else {
@@ -35,6 +47,7 @@ router.post('/users', async function (req, res, next) {
       })
     } catch (err) {
       logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
+      res.status(500).send("Unable to register new user");
       return next(err);
     }
   };
@@ -43,25 +56,10 @@ router.post('/users', async function (req, res, next) {
 router.post('/plans', async function (req, res, next) {
   try {
     const newPlan = new Plan({
-      creatorEmail: "test@test.com",
-      planName: "default",
-      description: "This is a default test plan",
-      passages: {
-        'Jan2019': {
-          '1': 'gen',
-          '2': 'ex',
-          '3': 'deu',
-          '4': 'john',
-          '5': 'mark'
-        },
-        'Mar2020': {
-          '1': 'gen2',
-          '2': 'ex2',
-          '3': 'deu2',
-          '4': 'john2',
-          '5': 'mark2'
-        }
-      }
+      creatorEmail: req.body.creatorEmail,
+      planName: req.body.planName,
+      description: req.body.description,
+      passages: req.body.passages
     });
     newPlan.save();
   }

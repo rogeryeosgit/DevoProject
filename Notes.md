@@ -100,13 +100,16 @@
 - PassagePicker done
 - Working on Storing Passage into mongoDB.
 
+## 10 June 2020
+
+- Storing passage completed
+- Tweaked superscript for verses in Passage Component
+- Fine tuned log in process with feedback for failed login
+- Need to do RUD of CRUD for Plans (Need to figure out if reading needs to retrieve all plans if too many? what to do?)
+
 ## Running TODO LIST
 
-- Do a generic date check and choose passages accordingly
-
 - Set authentication in place so that users can journal in private and see past journal entries
-
-- Format verse numbers to display nicer, superscript instead of brackets
 
 - Implementing encryption between client and server communication and server encryption to other servers
 
@@ -118,18 +121,10 @@
 
 - Add additional login methods (Google Sign-In, etc.)
 
-- Create Plans / Pick Plan / Update and DeletePlan (if owner)
+- Create Plans / Pick Plan / Update and DeletePlan (if owner) <---
 
 - Click into Plans to see verses for the month
 
-- Plans need to have month, date, passage, owner, short description, id
-
-- Design - Expansion panels to display plans
-
-- Upon submission of created plan, need to take out all days and months that have "Enter Passage" default data
-
-- Cancelling creation of plans should pop a prompt to confirm, in case all data create gets lost
-
-- To structure returned passage properly, need to check maximum 2 consecutive chapters (Allow more? unlikely)
-
 - Validation that verses chosen are selected after the previous verse
+
+- Allow journaling without passage? (ETWG, Prayer List, or Any other entries?)

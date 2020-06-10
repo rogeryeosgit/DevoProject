@@ -26,6 +26,7 @@ var AuthService = {
             })
         } catch (err) {
             logger.error("AUTH: IN createUser: Error Returned during Axios -> " + err);
+            throw(err);
         }
     },
     getUser: async function (id, pwd, callback) {
@@ -48,6 +49,7 @@ var AuthService = {
             logger.info("AUTH: In getUser: " + id + " has logged in");
         } catch (err) {
             logger.error("AUTH: IN getUser: Error Returned during Axios -> " + err);
+            throw(err);
         }
     }
 };

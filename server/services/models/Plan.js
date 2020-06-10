@@ -18,7 +18,7 @@ var PlanSchema = new mongoose.Schema({
     trim: true
   },
   passages: {
-    type: Map,    // Mar2019 : [] where each item in array refers to passage for the day. Shift +1 so that it is more intuitive?
+    type: Map,
     of: Map,
     required: true,
   },

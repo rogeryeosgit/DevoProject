@@ -7,7 +7,7 @@
             <v-text-field
               v-model="planName"
               :rules="nameRules"
-              :counter="10"
+              :counter="20"
               label="Plan Name"
               required
             ></v-text-field>
@@ -112,7 +112,9 @@ export default {
       planName: "",
       nameRules: [
         v => !!v || "Name is required",
-        v => v.length <= 10 || "Name must be less than 10 characters"
+        v =>
+          v.length <= 20 ||
+          "Name shouod be restricted to less than 20 characters"
       ],
       description: "",
       descriptionRules: [v => !!v || "Description is required"],
@@ -178,37 +180,21 @@ export default {
     submitPlan() {
       console.log("Plan submitted");
       var userID = this.$store.getters["userStore/getUserID"];
-      this.consolidatePassages();
+      this.emptyPassageExtraction();
       for (let [key, value] of Object.entries(this.submitStore)) {
         console.log(`${key}:`);
         for (let [key2, value2] of Object.entries(this.submitStore[key])) {
           console.log(`${key2}: ${value2}`);
         }
       }
-      // for (let x in this.monthPassages) {
-      //   console.log("passages in month : " + this.monthPassages[x].passage);
-      // }
-      // this.$store.dispatch("planStore/createPlan", {
-      //   creatorEmail: userID,
-      //   planName: this.planName,
-      //   description: this.description,
-      //   passages: {
-      //     Jan2019: {
-      //       "1": "gen",
-      //       "2": "ex",
-      //       "3": "deu",
-      //       "4": "john",
-      //       "5": "mark"
-      //     },
-      //     Mar2020: {
-      //       "1": "gen2",
-      //       "2": "ex2",
-      //       "3": "deu2",
-      //       "4": "john2",
-      //       "5": "mark2"
-      //     }
-      //   }
-      // });
+
+      this.$store.dispatch("planStore/createPlan", {
+        creatorEmail: userID,
+        planName: this.planName,
+        description: this.description,
+        passages: this.submitStore
+      });
+      this.$router.push("/plans");
     },
     cancelPlan() {
       console.log("Plan cancelled");
@@ -235,10 +221,7 @@ export default {
       );
     },
     // preparing for submission, get tempstore and current month
-    consolidatePassages() {
-      this.nullExtraction();
-    },
-    nullExtraction() {
+    emptyPassageExtraction() {
       var monthKey = this.displayMonthInUTCFormat;
       var object = {};
       for (var x in this.monthPassages) {
@@ -246,7 +229,9 @@ export default {
           var dayKey = this.monthPassages[x].day;
           object[dayKey] = this.monthPassages[x].passage;
         }
-        this.submitStore[monthKey] = object;
+        if (Object.keys(object).length !== 0) {
+          this.submitStore[monthKey] = object;
+        }
       }
 
       var object2 = {};
@@ -258,7 +243,10 @@ export default {
             object2[dayKey] = this.tempStore[key][key2].passage;
           }
         }
-        if (!this.submitStore.hasOwnProperty("convertedKey")) {
+        if (
+          !this.submitStore.hasOwnProperty(convertedKey) &&
+          Object.keys(object2).length !== 0
+        ) {
           this.submitStore[convertedKey] = object2;
         }
       }

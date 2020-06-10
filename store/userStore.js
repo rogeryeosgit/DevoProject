@@ -4,7 +4,8 @@ export const state = () => ({
     token: null,
     exTime: null,
     planID: null,
-    userID: null
+    userID: null,
+    error: null
 })
 
 export const mutations = {
@@ -26,13 +27,18 @@ export const mutations = {
     clearPlanID(state) {
         state.planID = null;
     },
-    setUserID(state,userID) {
+    setUserID(state, userID) {
         state.userID = userID;
     },
     clearUserID(state) {
         state.userID = null;
+    },
+    setError(state, error) {
+        state.error = error;
+    },
+    clearError(state) {
+        state.error = null;
     }
-
 }
 
 export const actions = {
@@ -54,7 +60,13 @@ export const actions = {
                 expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             vuexContext.commit('setUserID', authData.id);
-        }).catch(e => console.log(e));
+        }).catch(e => {
+            vuexContext.commit('setError', e);
+            console.log(e);
+        });
+    },
+    clearError(vuexContext, req) {
+        vuexContext.commit('clearError');
     },
     initAuth(vuexContext, req) {
         let token;
@@ -109,5 +121,8 @@ export const getters = {
     },
     getUserID(state) {
         return state.userID;
+    },
+    errorOccured(state) {
+        return state.error;
     }
 }
