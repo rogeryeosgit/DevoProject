@@ -20,7 +20,6 @@ export const actions = {
             description: planSubmitted.description,
             passages: planSubmitted.passages
         }).then(result => {
-            console.log("Creation request made ! ");
         }).catch(e => console.log(e));
     }
 }

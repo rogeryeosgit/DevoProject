@@ -178,15 +178,14 @@ export default {
       this.reset.resetNow = false;
     },
     submitPlan() {
-      console.log("Plan submitted");
       var userID = this.$store.getters["userStore/getUserID"];
       this.emptyPassageExtraction();
-      for (let [key, value] of Object.entries(this.submitStore)) {
-        console.log(`${key}:`);
-        for (let [key2, value2] of Object.entries(this.submitStore[key])) {
-          console.log(`${key2}: ${value2}`);
-        }
-      }
+      // for (let [key, value] of Object.entries(this.submitStore)) {
+      //   console.log(`${key}:`);
+      //   for (let [key2, value2] of Object.entries(this.submitStore[key])) {
+      //     console.log(`${key2}: ${value2}`);
+      //   }
+      // }
 
       this.$store.dispatch("planStore/createPlan", {
         creatorEmail: userID,
@@ -197,7 +196,6 @@ export default {
       this.$router.push("/plans");
     },
     cancelPlan() {
-      console.log("Plan cancelled");
       this.$router.push("/plans");
     },
     // Checking if the chosen month has any passages stored
@@ -213,12 +211,7 @@ export default {
     tempStoreMonthPassages() {
       let currentDate = this.date;
       let currentMonthPassages = this.monthPassages;
-      console.log("What is currentDate : " + currentDate);
-      console.log("What is current Month Passages : " + currentMonthPassages);
       this.tempStore[currentDate] = currentMonthPassages;
-      console.log(
-        "Stored Month Passages with this key : " + this.tempStore[currentDate]
-      );
     },
     // preparing for submission, get tempstore and current month
     emptyPassageExtraction() {
@@ -267,7 +260,6 @@ export default {
     },
     monthPassages: function() {
       if (!this.isTempStored()) {
-        console.log("Makes new Month");
         let currentMonthPassages = [];
         for (let i = 1; i <= this.numDaysInMonth; i++) {
           currentMonthPassages.push({
@@ -277,7 +269,6 @@ export default {
         }
         return currentMonthPassages;
       } else {
-        console.log("Does it try to load old data? ");
         return this.tempStore[this.date];
       }
     }

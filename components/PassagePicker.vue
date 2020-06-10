@@ -1452,15 +1452,11 @@ export default {
         this.eV = "Verse 1";
         this.chosenChapter.splice(0, this.chosenChapter.length);
         this.currentStep = 1;
-        console.log("-- PassagePicker Reset Done --");
         this.$emit("stepResetDone", this.ppID);
       }
     }
   },
   watch: {
-    chosenPassage: function() {
-      console.log(this.chosenPassage);
-    },
     isCompleted: function() {
       this.passageCompleted();
     }
