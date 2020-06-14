@@ -33,8 +33,17 @@ export const actions = {
     },
     clearChosenPlan(vuexContext) {
         vuexContext.commit('clearChosenPlan');
+    },
+    async getPlanChosen(vuexContext) {
+        var id = vuexContext.rootState.userStore.userID;
+        return await this.$axios.$get('/users/planChosen', {
+            params: {
+                userID: id
+            }
+        }).then(data => {
+            vuexContext.commit('setChosenPlan', data);
+        }).catch(e => console.log(e))
     }
-
 }
 
 export const getters = {

@@ -37,15 +37,6 @@ router.post('/users', async function (req, res, next) {
   if (req.body.isLogin) {
     try {
       await AuthService.getUser(req.body.id, req.body.pwd, result = async (data) => {
-        logger.info("EMAIL : " + req.body.id);
-        await UserModel.findOne({ email: req.body.id }), async (err, returnedUser) => {
-          if (err) {
-            logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
-          } else {
-            data.planChosen = returnedUser.planChosen;
-            return res.send(data);
-          }
-        }
         return res.send(data);
       })
     } catch (err) {
@@ -65,7 +56,6 @@ router.post('/users', async function (req, res, next) {
             });
           }
         });
-        data.planChosen = returnedPlan._id;
         return res.send(data);
       })
     } catch (err) {
@@ -73,6 +63,23 @@ router.post('/users', async function (req, res, next) {
       return res.status(500).send("Unable to register new user");
     }
   };
+});
+
+// Send with user id for plan chosen by user
+router.get('/users/planChosen', async function (req, res) {
+  logger.info("EMAIL : " + req.query.userID);
+  try {
+    await UserModel.findOne({ email: req.body.id }), async (err, returnedUser) => {
+      if (err) {
+        logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+      } else {
+        p = returnedUser.planChosen;
+        return res.send(p);
+      }
+    }
+  } catch (err) {
+    logger.error("EEEEEEEEEE -> ");
+  }
 });
 
 router.post('/plans', async function (req, res, next) {

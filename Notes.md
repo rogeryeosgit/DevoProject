@@ -119,6 +119,10 @@
 
 - Created Model for QTEntry and Users
 
+- If Vuex Store module wants to access another stores action, can use {root : true}
+
+- Figuring out how to get getters from another module. - solved
+
 - Asynchronous issue, need to figure out how to send back chosenPlanID.
 
 ## Running TODO LIST
@@ -144,3 +148,5 @@
 - Allow journaling without passage? (ETWG, Prayer List, or Any other entries?)
 
 - Need to have feedback on Create Plan page if plan created is successful
+
+- Server side needs to check cookie for user validity

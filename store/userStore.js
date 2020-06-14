@@ -53,7 +53,6 @@ export const actions = {
                 expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             vuexContext.commit('setUserID', authData.id);
-            vuexContext.dispatch('planStore/setChosenPlan', result.planChosen, { root: true });
         }).catch(e => {
             vuexContext.commit('setError', e);
             console.log(e);
@@ -97,7 +96,6 @@ export const actions = {
         Cookie.remove('jwt');
         Cookie.remove('expirationTime');
         vuexContext.commit('clearUserID');
-        vuexContext.dispatch('planStore/clearChosenPlan','', { root: true });
     }
 }
 

@@ -65,6 +65,7 @@ export default {
   watch: {
     isAuthenticated: function() {
       if (this.isAuthenticated) {
+        this.$store.dispatch("planStore/getPlanChosen");
         this.$router.push("/");
       }
     },
