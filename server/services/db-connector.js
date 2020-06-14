@@ -6,7 +6,7 @@ var db = {
   init() {
     // connect to MongoDB
     // TODO: Remove access keys when deploying
-    mongoose.connect('mongodb+srv://qtappaccess:NZmvVg5xPBi33i7C@firstcluster-xno0w.mongodb.net/qtProj', {
+    mongoose.connect('mongodb+srv://qtappaccess:NZmvVg5xPBi33i7C@firstcluster-xno0w.mongodb.net/devoProjDB', {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

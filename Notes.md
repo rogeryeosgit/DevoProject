@@ -107,6 +107,20 @@
 - Fine tuned log in process with feedback for failed login
 - Need to do RUD of CRUD for Plans (Need to figure out if reading needs to retrieve all plans if too many? what to do?)
 
+## 13 June 2020
+
+- Made a default passage (Provers [day of the month]) display if plan is not carefully defined.
+
+## 14 June 2020
+
+- A "thrown" error is causing some problems. Comes after response is sent back to client. - Solved. Not to return anything else after await
+
+- Created Users database for data that relates to the User
+
+- Created Model for QTEntry and Users
+
+- Asynchronous issue, need to figure out how to send back chosenPlanID.
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -128,3 +142,5 @@
 - Validation that verses chosen are selected after the previous verse
 
 - Allow journaling without passage? (ETWG, Prayer List, or Any other entries?)
+
+- Need to have feedback on Create Plan page if plan created is successful

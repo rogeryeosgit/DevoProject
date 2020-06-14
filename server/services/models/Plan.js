@@ -24,6 +24,6 @@ var PlanSchema = new mongoose.Schema({
   },
 });
 
-var Plan = mongoose.model('Plan', PlanSchema);
-
-module.exports = Plan;
+module.exports = (mongoose.models && mongoose.models.Plan
+  ? mongoose.models.Plan
+  : mongoose.model('Plan', PlanSchema));;
