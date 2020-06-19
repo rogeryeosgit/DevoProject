@@ -12,16 +12,12 @@
 
 <script>
 export default {
-  props: ['passageDate'],
+  props: ['passageDate', 'passageContents', 'reference'],
   computed: {
     passage: function() {
-      var returnedPassage = this.$store.getters['passageStore/getTodaysPassage'];
-      var temp = returnedPassage.replace(/\[/g, '<sup>');
+      // Format passage verses to be superscript
+      var temp = this.passageContents.replace(/\[/g, '<sup>');
       return temp.replace(/\]/g, '</sup>');
-      // return returnedPassage;
-    },
-    reference: function() {
-      return this.$store.getters['passageStore/getTodaysReference'];
     }
   }
 };

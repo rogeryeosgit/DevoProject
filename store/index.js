@@ -23,9 +23,9 @@ export const actions = {
     async nuxtServerInit(vuexContext, context) {
         return await context.app.$axios.$get('/passages/today') //because on server side and not this.$axios
             .then(data => {
-                vuexContext.commit('passageStore/setTodaysPassage', data.passages[0])
-                vuexContext.commit('passageStore/setTodaysReference', data.canonical)
-            }).catch(e => context.error(e))
+                vuexContext.commit('passageStore/setTodaysPassage', data.passages[0]);
+                vuexContext.commit('passageStore/setTodaysReference', data.canonical);
+            }).catch(e => context.error(e));
     }
 }
 

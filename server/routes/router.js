@@ -8,12 +8,19 @@ var PlanModel = require('../services/models/Plan');
 var UserModel = require('../services/models/User');
 
 var p = '';
-var defaultPlanName = "--- Default Nav Plan ---";
 
 // GET route after registering
 router.get('/passages/today', async function (req, res, next) {
 
-  PlanModel.findOne({ planName: defaultPlanName }, async (err, returnedPlan) => {
+  var planName;
+
+  if (req.query.planID != null) {
+    planName = req.query.planID;
+  } else {
+    planName = "--- Default Nav Plan ---";
+  }
+
+  PlanModel.findOne({ planName: planName }, async (err, returnedPlan) => {
     if (err) {
       logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
       p = await BRService.getPassage(getDefaultPassage());
@@ -67,19 +74,14 @@ router.post('/users', async function (req, res, next) {
 
 // Send with user id for plan chosen by user
 router.get('/users/planChosen', async function (req, res) {
-  logger.info("EMAIL : " + req.query.userID);
-  try {
-    await UserModel.findOne({ email: req.body.id }), async (err, returnedUser) => {
-      if (err) {
-        logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
-      } else {
-        p = returnedUser.planChosen;
-        return res.send(p);
-      }
+  await UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+    } else {
+      p = returnedUser.planChosen;
+      return res.send(p);
     }
-  } catch (err) {
-    logger.error("EEEEEEEEEE -> ");
-  }
+  });
 });
 
 router.post('/plans', async function (req, res, next) {
@@ -102,6 +104,19 @@ router.post('/plans', async function (req, res, next) {
     logger.error("SERVER ROUTER: plans --> " + err);
   }
 });
+
+// Get full list of plans
+router.get('/plans', async function (req, res) {
+  await PlanModel.find({ email: req.query.userID }, (err, returnedUser) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+    } else {
+      p = returnedUser.planChosen;
+      return res.send(p);
+    }
+  });
+});
+
 
 module.exports = router;
 

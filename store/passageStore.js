@@ -13,6 +13,17 @@ export const mutations = {
 }
 
 export const actions = {
+    async refreshPassage(vuexContext) {
+        var chosenPlan = vuexContext.rootState.planStore.chosenPlan;
+        return await this.$axios.$get('/passages/today', {
+            params: {
+                planID: chosenPlan
+            }
+        }).then(data => {
+            vuexContext.commit('setTodaysPassage', data.passages[0])
+            vuexContext.commit('setTodaysReference', data.canonical)
+        }).catch(e => context.error(e));
+    }
 }
 
 export const getters = {

@@ -125,6 +125,14 @@
 
 - Asynchronous issue, need to figure out how to send back chosenPlanID.
 
+## 19 June 2020
+
+- Chosen plan retrieved and store in vuex
+
+- Front page passage should update dynamically
+
+- Working on listing saved plans, need to set up route on the server side. 
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -150,3 +158,5 @@
 - Need to have feedback on Create Plan page if plan created is successful
 
 - Server side needs to check cookie for user validity
+
+- Need to handle pagination for plans, in case too many plans get returned all at once in future

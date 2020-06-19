@@ -1,3 +1,4 @@
+// Merely checks if the user is logged in
 export default function (context) {
     console.log('[Middleware] Login Check Done');
     if (!context.store.getters['userStore/isAuthenticated']) {

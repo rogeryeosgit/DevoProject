@@ -105,7 +105,7 @@
 import PassagePicker from "@/components/PassagePicker";
 
 export default {
-  middleware: ["loginCheck"],
+  middleware: ['checkAuth',"loginCheck"],
   data() {
     return {
       valid: false,
