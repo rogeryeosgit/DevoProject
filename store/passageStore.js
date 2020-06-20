@@ -22,7 +22,9 @@ export const actions = {
         }).then(data => {
             vuexContext.commit('setTodaysPassage', data.passages[0])
             vuexContext.commit('setTodaysReference', data.canonical)
-        }).catch(e => context.error(e));
+        }).catch(e => {
+            console.log(e);
+        });
     }
 }
 

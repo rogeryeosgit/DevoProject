@@ -4,8 +4,9 @@
       <v-card-title>{{ planName }}</v-card-title>
       <v-card-subtitle>{{ planDescription }}</v-card-subtitle>
       <v-card-actions>
-        <v-btn text>Update</v-btn>
-        <v-btn @click="$emit('deletePlan', planID)" color="red" text>Delete</v-btn>
+        <v-btn :disabled="notOwner" text>Update</v-btn>
+        <v-btn :disabled="notOwner" @click="$emit('deletePlan', planID)" color="red" text>Delete</v-btn>
+        <v-chip @click="$emit('selected', planID)" class="ma-2" small color="primary" :outlined="outlined">{{ chipText }}</v-chip>
         <v-spacer></v-spacer>
         <v-btn icon @click="show = !show">
           <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
@@ -36,11 +37,34 @@
 
 <script>
 export default {
-  props: ["planID", "planName", "planDescription", "passages"],
+  props: [
+    "planID",
+    "planName",
+    "planDescription",
+    "passages",
+    "notOwner",
+    "isSelected"
+  ],
   data() {
     return {
-      show: false
+      show: false,
     };
+  },
+  computed: {
+    outlined: function() {
+      if (this.isSelected === true) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    chipText: function() {
+      if (this.isSelected === true) {
+        return "plan selected";
+      } else {
+        return "select";
+      }
+    }
   }
 };
 </script>

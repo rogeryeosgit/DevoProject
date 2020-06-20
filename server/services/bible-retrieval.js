@@ -23,6 +23,7 @@ var BRService = {
             return returnedData.data;
         } catch (err) {
             logger.error("BRService Error : " + err);
+            throw(err);
         }
     }
 };

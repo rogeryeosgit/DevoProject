@@ -21,7 +21,7 @@ export const mutations = {
     },
     deletePlan(state, id) {
         for (let i in state.plans) {
-            if (state.plans[i]._id == id) {
+            if (state.plans[i]._id === id) {
                 state.plans.splice(i, 1);
             }
         }
@@ -36,7 +36,7 @@ export const actions = {
             description: planSubmitted.description,
             passages: planSubmitted.passages
         }).then(result => {
-            if (result.status == 201) {
+            if (result.status === 201) {
                 vuexContext.commit('addPlan', planSubmitted);
             }
         }).catch(e => console.log(e));
@@ -66,7 +66,7 @@ export const actions = {
                 planID: pID
             }
         }).then(data => {
-            if (data.status == 204) {
+            if (data.status === 204) {
                 vuexContext.commit('deletePlan', pID);
             }
         }).catch(e => console.log(e))
@@ -76,5 +76,8 @@ export const actions = {
 export const getters = {
     getPlans(state) {
         return state.plans;
+    },
+    getChosenPlan(state) {
+        return state.chosenPlan;
     }
 }

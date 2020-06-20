@@ -96,6 +96,7 @@ export const actions = {
         Cookie.remove('jwt');
         Cookie.remove('expirationTime');
         vuexContext.commit('clearUserID');
+        // Remember to clear plans
     }
 }
 

@@ -7,7 +7,10 @@
       :planName="i.planName"
       :planDescription="i.description"
       :passages="i.passages"
+      :notOwner="!isOwner(i.creatorEmail)"
       @deletePlan="submitPlanDeletion"
+      :isSelected="checkSelected(i._id)"
+      @selected="changeSelected"
     ></PlanCard>
     <br />
     <v-btn to="/plansList/createPlan" nuxt exact color="primary">Create Plan</v-btn>
@@ -38,6 +41,26 @@ export default {
   methods: {
     submitPlanDeletion(id) {
       this.$store.dispatch("planStore/deletePlan", id);
+    },
+    isOwner(ownerEmail) {
+      var currentUserID = this.$store.getters["userStore/getUserID"];
+      if (ownerEmail === currentUserID) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    checkSelected(id) {
+      var selectedPlanID = this.$store.getters["planStore/getChosenPlan"];
+      if (selectedPlanID === id) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    changeSelected(id) {
+      this.$store.dispatch("planStore/setChosenPlan", id);
+      this.$store.dispatch("passageStore/refreshPassage");
     }
   }
 };

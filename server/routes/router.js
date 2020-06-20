@@ -12,32 +12,46 @@ var p = '';
 // GET route after registering
 router.get('/passages/today', async function (req, res, next) {
 
-  var planName;
-
   if (req.query.planID != null) {
-    planName = req.query.planID;
-  } else {
-    planName = "--- Default Nav Plan ---";
-  }
-
-  PlanModel.findOne({ planName: planName }, async (err, returnedPlan) => {
-    if (err) {
-      logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
-      p = await BRService.getPassage(getDefaultPassage());
-      return res.send(p);
-    } else {
-      try {
-        var month = new Date().toString().substr(4,3) + " " + new Date().toString().substr(11,4);
-        var day = new Date().getDate();
-        p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
-        return res.send(p);
-      } catch (err) {
-        logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
+    logger.debug("Does it come here?");
+    PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
+      if (err) {
+        logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
         p = await BRService.getPassage(getDefaultPassage());
         return res.send(p);
+      } else {
+        try {
+          var month = new Date().toString().substr(4, 3) + " " + new Date().toString().substr(11, 4);
+          var day = new Date().getDate();
+          p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
+          return res.send(p);
+        } catch (err) {
+          logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
+          p = await BRService.getPassage(getDefaultPassage());
+          return res.send(p);
+        }
       }
-    }
-  });
+    });
+  } else {
+    PlanModel.findOne({ planName: "--- Default Nav Plan ---" }, async (err, returnedPlan) => {
+      if (err) {
+        logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
+        p = await BRService.getPassage(getDefaultPassage());
+        return res.send(p);
+      } else {
+        try {
+          var month = new Date().toString().substr(4, 3) + " " + new Date().toString().substr(11, 4);
+          var day = new Date().getDate();
+          p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
+          return res.send(p);
+        } catch (err) {
+          logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
+          p = await BRService.getPassage(getDefaultPassage());
+          return res.send(p);
+        }
+      }
+    });
+  }
 });
 
 router.post('/users', async function (req, res, next) {
@@ -53,7 +67,7 @@ router.post('/users', async function (req, res, next) {
   } else {
     try {
       await AuthService.createUser(req.body.id, req.body.pwd, result = async (data) => {
-        PlanModel.findOne({ planName: defaultPlanName }, async (err, returnedPlan) => {
+        PlanModel.findOne({ planName: "--- Default Nav Plan ---" }, async (err, returnedPlan) => {
           if (err) {
             logger.error("SERVER ROUTER: Error in getting default plan ID : " + err);
           } else {

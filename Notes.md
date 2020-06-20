@@ -145,6 +145,12 @@
 
 - Solved date UTC problem, causing some bugs to current month in focus
 
+## 21 June 2020
+
+- need to check owner of plan for update and deletion - solved
+
+- plan selected is now shown in plan list and is dynamically changeable
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -177,4 +183,6 @@
 
 - On plan deletion, need to ascertain there is a catch all for users who use the plan
 
-- need to check owner of plan for update and deletion
+- need to check token for every modification of backend
+
+- When page is reloaded, userID is null, because only token and expiry are around long term.
