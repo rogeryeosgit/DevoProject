@@ -64,7 +64,7 @@ export default {
         {
           icon: "mdi-clipboard-text",
           title: "Plans",
-          to: "/plans"
+          to: "/plansList"
         }
       ],
       miniVariant: false,

@@ -105,7 +105,7 @@
 import PassagePicker from "@/components/PassagePicker";
 
 export default {
-  middleware: ['checkAuth',"loginCheck"],
+  middleware: ["checkAuth", "loginCheck"],
   data() {
     return {
       valid: false,
@@ -141,6 +141,7 @@ export default {
       snackText: "",
       tempStore: {},
       submitStore: {},
+      sortedSubmitStore: {},
       currentPPID: 99,
       reset: {
         resetNow: false,
@@ -180,9 +181,11 @@ export default {
     submitPlan() {
       var userID = this.$store.getters["userStore/getUserID"];
       this.emptyPassageExtraction();
-      // for (let [key, value] of Object.entries(this.submitStore)) {
+      this.sortPassageByDate();
+
+      // for (let [key, value] of Object.entries(this.sortedSubmitStore)) {
       //   console.log(`${key}:`);
-      //   for (let [key2, value2] of Object.entries(this.submitStore[key])) {
+      //   for (let [key2, value2] of Object.entries(this.sortedSubmitStore[key])) {
       //     console.log(`${key2}: ${value2}`);
       //   }
       // }
@@ -191,12 +194,12 @@ export default {
         creatorEmail: userID,
         planName: this.planName,
         description: this.description,
-        passages: this.submitStore
+        passages: this.sortedSubmitStore
       });
-      this.$router.push("/plans");
+      this.$router.push("/plansList");
     },
     cancelPlan() {
-      this.$router.push("/plans");
+      this.$router.push("/plansList");
     },
     // Checking if the chosen month has any passages stored
     isTempStored() {
@@ -229,7 +232,7 @@ export default {
 
       var object2 = {};
       for (let [key, value] of Object.entries(this.tempStore)) {
-        let convertedKey = new Date(key).toUTCString().substr(8, 8);
+        let convertedKey = new Date(key).toString().substr(4,3) + " " + new Date(key).toString().substr(11,4);
         for (let [key2, value2] of Object.entries(this.tempStore[key])) {
           if (this.tempStore[key][key2].passage !== "-- Enter Passage --") {
             var dayKey = this.tempStore[key][key2].day;
@@ -243,12 +246,27 @@ export default {
           this.submitStore[convertedKey] = object2;
         }
       }
+    },
+    // Must be done after submit store is prepared by emptyPassageExtraction()
+    sortPassageByDate() {
+      var sortStore = [];
+      for (let i in this.submitStore) {
+        sortStore.push(new Date(i));
+      }
+
+      var sortedStore = sortStore.slice().sort((a, b) => a - b);
+
+      this.sortedSubmitStore = {};
+      for (let j in sortedStore) {
+        var tempKey = sortedStore[j].toString().substr(4,3) + " " + sortedStore[j].toString().substr(11,4);
+        this.sortedSubmitStore[tempKey] = this.submitStore[tempKey]
+      } 
     }
   },
   computed: {
     displayMonthInUTCFormat() {
       // Needed because Date Picker requires ISO format from model
-      let newDate = new Date(this.date).toUTCString().substr(8, 8);
+      let newDate = new Date(this.date).toString().substr(4,3) + " " + new Date(this.date).toString().substr(11,4);
       return newDate;
     },
     numDaysInMonth: function() {

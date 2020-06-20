@@ -27,7 +27,7 @@ router.get('/passages/today', async function (req, res, next) {
       return res.send(p);
     } else {
       try {
-        var month = new Date().toUTCString().substr(8, 8);
+        var month = new Date().toString().substr(4,3) + " " + new Date().toString().substr(11,4);
         var day = new Date().getDate();
         p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
         return res.send(p);
@@ -97,6 +97,7 @@ router.post('/plans', async function (req, res, next) {
         return next(err);
       } else {
         logger.info("SERVER ROUTER: Plan : " + req.body.planName + " created");
+        return res.sendStatus(201);
       }
     });
   }
@@ -107,16 +108,25 @@ router.post('/plans', async function (req, res, next) {
 
 // Get full list of plans
 router.get('/plans', async function (req, res) {
-  await PlanModel.find({ email: req.query.userID }, (err, returnedUser) => {
+  await PlanModel.find({}, (err, returnedPlans) => {
     if (err) {
-      logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+      logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
     } else {
-      p = returnedUser.planChosen;
-      return res.send(p);
+      return res.send(returnedPlans);
     }
   });
 });
 
+router.delete('/plans', async function (req, res) {
+  await PlanModel.deleteOne({ _id: req.query.planID }, (err) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
+    } else {
+      logger.info("SERVER ROUTER: Plan ID : " + req.query.planID + " has been deleted");
+      return res.sendStatus(204);
+    }
+  });
+});
 
 module.exports = router;
 

@@ -133,6 +133,18 @@
 
 - Working on listing saved plans, need to set up route on the server side. 
 
+## 20 June 2020
+
+- plans can now be read and listed
+
+- Not sure why reload of plans page makes it show json instead - solved
+
+- Need to sort passages in plans according to date - solved
+
+- Plan can now be deleted
+
+- Solved date UTC problem, causing some bugs to current month in focus
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -160,3 +172,9 @@
 - Server side needs to check cookie for user validity
 
 - Need to handle pagination for plans, in case too many plans get returned all at once in future
+
+- How to choose plans?
+
+- On plan deletion, need to ascertain there is a catch all for users who use the plan
+
+- need to check owner of plan for update and deletion
