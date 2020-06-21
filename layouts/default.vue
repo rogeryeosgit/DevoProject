@@ -59,7 +59,7 @@ export default {
         {
           icon: "mdi-pencil",
           title: "Journal",
-          to: "/journal"
+          to: "/journalList"
         },
         {
           icon: "mdi-clipboard-text",

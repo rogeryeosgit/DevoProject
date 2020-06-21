@@ -95,8 +95,8 @@
         </v-snackbar>
         <br />
       </v-container>
-      <v-btn @click="submitPlan" color="success">Create Plan</v-btn>
       <v-btn @click="cancelPlan" color="error">Cancel</v-btn>
+      <v-btn @click="submitPlan" color="success">Create Plan</v-btn>
     </v-form>
   </div>
 </template>
@@ -232,7 +232,10 @@ export default {
 
       var object2 = {};
       for (let [key, value] of Object.entries(this.tempStore)) {
-        let convertedKey = new Date(key).toString().substr(4,3) + " " + new Date(key).toString().substr(11,4);
+        let convertedKey =
+          new Date(key).toString().substr(4, 3) +
+          " " +
+          new Date(key).toString().substr(11, 4);
         for (let [key2, value2] of Object.entries(this.tempStore[key])) {
           if (this.tempStore[key][key2].passage !== "-- Enter Passage --") {
             var dayKey = this.tempStore[key][key2].day;
@@ -258,15 +261,21 @@ export default {
 
       this.sortedSubmitStore = {};
       for (let j in sortedStore) {
-        var tempKey = sortedStore[j].toString().substr(4,3) + " " + sortedStore[j].toString().substr(11,4);
-        this.sortedSubmitStore[tempKey] = this.submitStore[tempKey]
-      } 
+        var tempKey =
+          sortedStore[j].toString().substr(4, 3) +
+          " " +
+          sortedStore[j].toString().substr(11, 4);
+        this.sortedSubmitStore[tempKey] = this.submitStore[tempKey];
+      }
     }
   },
   computed: {
     displayMonthInUTCFormat() {
       // Needed because Date Picker requires ISO format from model
-      let newDate = new Date(this.date).toString().substr(4,3) + " " + new Date(this.date).toString().substr(11,4);
+      let newDate =
+        new Date(this.date).toString().substr(4, 3) +
+        " " +
+        new Date(this.date).toString().substr(11, 4);
       return newDate;
     },
     numDaysInMonth: function() {

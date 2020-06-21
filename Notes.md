@@ -151,6 +151,10 @@
 
 - plan selected is now shown in plan list and is dynamically changeable
 
+- Solved on reload problem, handled with cookie with storage of id
+
+- Starting work on the journal entries part of the app
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -186,3 +190,5 @@
 - need to check token for every modification of backend
 
 - When page is reloaded, userID is null, because only token and expiry are around long term.
+
+- Excessive checkAuth used. Need to figure out best practices.

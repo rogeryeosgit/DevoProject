@@ -52,6 +52,10 @@ export const actions = {
                 sameSite: 'lax',
                 expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
+            Cookie.set('qtAppID', authData.id, {
+                sameSite: 'lax',
+                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+            }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             vuexContext.commit('setUserID', authData.id);
         }).catch(e => {
             vuexContext.commit('setError', e);
@@ -64,6 +68,7 @@ export const actions = {
     initAuth(vuexContext, req) {
         let token;
         let expirationTime;
+        let userID;
 
         if (req) {
             if (!req.headers.cookie) {
@@ -76,9 +81,12 @@ export const actions = {
             token = jwtCookie.split("=")[1];
             expirationTime = req.headers.cookie.split(';').find(c => c.trim().startsWith("expirationTime="))
                 .split("=")[1];
+            userID = req.headers.cookie.split(';').find(c => c.trim().startsWith("qtAppID="))
+                .split("=")[1];
         } else {
             token = Cookie.get("jwt");
             expirationTime = Cookie.get("expirationTime");
+            userID = Cookie.get("qtAppID");
         }
         if (new Date().getTime() > +expirationTime || !token) {
             console.log('No Token or invalid token');
@@ -87,6 +95,8 @@ export const actions = {
         }
         vuexContext.commit("setToken", token);
         vuexContext.commit("setExpiryTime", expirationTime);
+        vuexContext.commit("setUserID", userID);
+        vuexContext.dispatch("planStore/getPlanChosen", '', { root: true });
     },
     logout(vuexContext) {
         // Clearing everthing just in case

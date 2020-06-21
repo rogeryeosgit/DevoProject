@@ -8,7 +8,8 @@ var db = {
     // TODO: Remove access keys when deploying
     mongoose.connect('mongodb+srv://qtappaccess:NZmvVg5xPBi33i7C@firstcluster-xno0w.mongodb.net/devoProjDB', {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useFindAndModify: false
     });
 
     //handle mongo error

@@ -41,8 +41,17 @@ export const actions = {
             }
         }).catch(e => console.log(e));
     },
-    setChosenPlan(vuexContext, planID) {
+    async setChosenPlan(vuexContext, planID) {
         vuexContext.commit('setChosenPlan', planID);
+        var userID = vuexContext.rootState.userStore.userID;
+        return await this.$axios.$post("/users/planChosen", {
+            userID: userID,
+            planChosen: planID
+        }).then(result => {
+            if (result.status === 201) {
+                // Success!
+            }
+        }).catch(e => console.log(e));
     },
     clearChosenPlan(vuexContext) {
         vuexContext.commit('clearChosenPlan');

@@ -13,7 +13,6 @@ var p = '';
 router.get('/passages/today', async function (req, res, next) {
 
   if (req.query.planID != null) {
-    logger.debug("Does it come here?");
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {
         logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
@@ -94,6 +93,22 @@ router.get('/users/planChosen', async function (req, res) {
     } else {
       p = returnedUser.planChosen;
       return res.send(p);
+    }
+  });
+});
+
+// Send with user id for plan chosen by user
+router.post('/users/planChosen', async function (req, res) {
+
+  await UserModel.findOneAndUpdate({
+    email: req.body.userID
+  }, {
+    planChosen: req.body.planChosen
+  }, (err, returnedUser) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+    } else {
+      return res.sendStatus(201);
     }
   });
 });

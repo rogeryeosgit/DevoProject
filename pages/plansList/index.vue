@@ -1,19 +1,27 @@
 <template>
   <div>
-    <PlanCard
-      v-for="i in plans"
-      :key="i._id"
-      :planID="i._id"
-      :planName="i.planName"
-      :planDescription="i.description"
-      :passages="i.passages"
-      :notOwner="!isOwner(i.creatorEmail)"
-      @deletePlan="submitPlanDeletion"
-      :isSelected="checkSelected(i._id)"
-      @selected="changeSelected"
-    ></PlanCard>
-    <br />
-    <v-btn to="/plansList/createPlan" nuxt exact color="primary">Create Plan</v-btn>
+    <section class="planslist-page">
+      <PlanCard
+        class="plan-card"
+        v-for="i in plans"
+        :key="i._id"
+        :planID="i._id"
+        :planName="i.planName"
+        :planDescription="i.description"
+        :passages="i.passages"
+        :notOwner="!isOwner(i.creatorEmail)"
+        @deletePlan="submitPlanDeletion"
+        :isSelected="checkSelected(i._id)"
+        @selected="changeSelected"
+      ></PlanCard>
+    </section>
+    <v-btn
+      class="planslist-button"
+      to="/plansList/createPlan"
+      nuxt
+      exact
+      color="primary"
+    >Create Plan</v-btn>
   </div>
 </template>
 
@@ -66,4 +74,21 @@ export default {
 };
 </script>
 
+<style scoped>
+.plan-card {
+  margin: 10px;
+}
+
+.planslist-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.planslist-button {
+  display: flex;
+  align-items: center;
+}
+</style>
 
