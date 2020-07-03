@@ -155,6 +155,12 @@
 
 - Starting work on the journal entries part of the app
 
+## 3 July 2020
+
+- Started working on updating plans (Still need to make it dynamic)
+
+- sorted out a bug that stores wrong plan data (objects need to be refreshed correctly)
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries

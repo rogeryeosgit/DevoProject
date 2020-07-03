@@ -11,6 +11,7 @@
         :passages="i.passages"
         :notOwner="!isOwner(i.creatorEmail)"
         @deletePlan="submitPlanDeletion"
+        @updatePlan="updateSelectedPlan"
         :isSelected="checkSelected(i._id)"
         @selected="changeSelected"
       ></PlanCard>
@@ -49,6 +50,9 @@ export default {
   methods: {
     submitPlanDeletion(id) {
       this.$store.dispatch("planStore/deletePlan", id);
+    },
+    updateSelectedPlan(id) {
+      this.$router.push("/plansList/" + id);
     },
     isOwner(ownerEmail) {
       var currentUserID = this.$store.getters["userStore/getUserID"];
