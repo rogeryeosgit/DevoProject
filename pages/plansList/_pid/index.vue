@@ -1,7 +1,10 @@
 <template>
   <div>
-    <!-- <h1>Details about plan {{ $route.params.pid }} here</h1> -->
-    <PlanEditor></PlanEditor>
+    <PlanEditor
+      :propPlanName="retrievedPlan.planName"
+      :propDescription="retrievedPlan.description"
+      :propTempStore="retrievedPlan.passages"
+    ></PlanEditor>
     <br />
     <v-btn @click="cancelPlan" color="error">Cancel</v-btn>
     <v-btn @click="updatePlan" color="success">Update Plan</v-btn>
@@ -13,6 +16,11 @@ import PlanEditor from "@/components/PlanEditor";
 
 export default {
   middleware: ["checkAuth", "loginCheck"],
+  data() {
+    return {
+      id: this.$route.params.pid
+    };
+  },
   components: {
     PlanEditor
   },
@@ -22,6 +30,11 @@ export default {
     },
     cancelPlan() {
       this.$router.push("/plansList");
+    }
+  },
+  computed: {
+    retrievedPlan: function() {
+      return this.$store.getters["planStore/getPlanUsingID"](this.id);
     }
   }
 };

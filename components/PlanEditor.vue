@@ -97,19 +97,20 @@
 import PassagePicker from "@/components/PassagePicker";
 
 export default {
+  props: ["propPlanName", "propDescription", "propTempStore"],
   components: {
     PassagePicker
   },
   data() {
     return {
-      planName: "",
+      planName: this.propPlanName || "",
       nameRules: [
         v => !!v || "Name is required",
         v =>
           v.length <= 20 ||
           "Name shouod be restricted to less than 20 characters"
       ],
-      description: "",
+      description: this.propDescription || "",
       descriptionRules: [v => !!v || "Description is required"],
       initialTADescription: "A simple description of your plan",
       initialTARows: "1",
@@ -129,7 +130,7 @@ export default {
           value: "passage"
         }
       ],
-      tempStore: {},
+      tempStore: this.initTempStore(),
       submitStore: {},
       sortedSubmitStore: {},
       currentPPID: 99,
@@ -248,6 +249,13 @@ export default {
         description: this.description,
         passages: this.sortedSubmitStore
       };
+    },
+    initTempStore() {
+      console.log("TERWQER");
+      // find months in plan with data and put into tempstore
+      // pad all the other days with -- Enter Passage --
+      // Find the actual number of days in the month
+      return {};
     }
   },
   computed: {

@@ -88,5 +88,8 @@ export const getters = {
     },
     getChosenPlan(state) {
         return state.chosenPlan;
+    },
+    getPlanUsingID: (state) => (id) => {
+        return state.plans.find(x => x._id === id);
     }
 }
