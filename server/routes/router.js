@@ -146,6 +146,29 @@ router.get('/plans', async function (req, res) {
   });
 });
 
+router.put('/plans', async function (req, res, next) {
+  try {
+    await PlanModel.findByIdAndUpdate({
+      _id: req.body.planID
+    }, {
+      planName: req.body.planName,
+      description: req.body.description,
+      passages: req.body.passages
+    }, function (err, createdPlan) {
+      if (err) {
+        logger.error("SERVER ROUTER: plan update --> " + err);
+        return next(err);
+      } else {
+        logger.info("SERVER ROUTER: Plan : " + req.body.planName + " updated");
+        return res.sendStatus(201);
+      }
+    });
+  }
+  catch (err) {
+    logger.error("SERVER ROUTER: plans --> " + err);
+  }
+});
+
 router.delete('/plans', async function (req, res) {
   await PlanModel.deleteOne({ _id: req.query.planID }, (err) => {
     if (err) {

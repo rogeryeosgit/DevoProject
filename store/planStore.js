@@ -17,12 +17,22 @@ export const mutations = {
         state.plans = [];
     },
     addPlan(state, plan) {
-        state.plan.push(plan);
+        state.plans.$set(state.plans.length, plan);
     },
     deletePlan(state, id) {
         for (let i in state.plans) {
             if (state.plans[i]._id === id) {
                 state.plans.splice(i, 1);
+            }
+        }
+    },
+    updatePlan(state, plan) {
+        for (let i in state.plans) {
+            if (state.plans[i]._id === plan._id) {
+                state.plans[i].creatorEmail = plan.creatorEmail;
+                state.plans[i].planName = plan.planName;
+                state.plans[i].description = plan.description;
+                state.plans[i].passages = plan.passages;
             }
         }
     }
@@ -38,6 +48,19 @@ export const actions = {
         }).then(result => {
             if (result.status === 201) {
                 vuexContext.commit('addPlan', planSubmitted);
+            }
+        }).catch(e => console.log(e));
+    },
+    async updatePlan(vuexContext, planSubmitted) {
+        return await this.$axios.put("/plans", {
+            planID: planSubmitted._id,
+            creatorEmail: planSubmitted.creatorEmail,
+            planName: planSubmitted.planName,
+            description: planSubmitted.description,
+            passages: planSubmitted.passages
+        }).then(result => {
+            if (result.status === 201) {
+                vuexContext.commit('updatePlan', planSubmitted);
             }
         }).catch(e => console.log(e));
     },

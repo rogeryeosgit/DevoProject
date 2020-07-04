@@ -251,11 +251,44 @@ export default {
       };
     },
     initTempStore() {
-      console.log("TERWQER");
-      // find months in plan with data and put into tempstore
-      // pad all the other days with -- Enter Passage --
-      // Find the actual number of days in the month
-      return {};
+      if (this.propTempStore != null || this.propTempStore != undefined) {
+        var object = {};
+        for (let [key, value] of Object.entries(this.propTempStore)) {
+          var numofDays = this.numDaysInMonth(
+            this.monthToNumConvertor(key.slice(0, 3)),
+            key.slice(4, 8)
+          );
+          let currentMonthPassages = [];
+          for (let i = 1; i <= numofDays; i++) {
+            currentMonthPassages.push({
+              day: i,
+              passage: "-- Enter Passage --"
+            });
+          }
+
+          for (let [key2, value2] of Object.entries(this.propTempStore[key])) {
+            currentMonthPassages[key2 - 1].passage = value2;
+          }
+
+          var month = this.monthToNumConvertor(key.slice(0, 3));
+          // ISO month needs 0 in front
+          if (parseInt(month) < 10) {
+            month = "0" + month;
+          }
+          object[key.slice(4, 8) + "-" + month] = currentMonthPassages;
+        }
+      }
+      return object || {};
+    },
+    monthToNumConvertor(month) {
+      return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month) / 3 + 1; // Get month in number
+    },
+    numDaysInMonth(month, year) {
+      return new Date(
+        year, // year
+        month, // month
+        0
+      ).getDate();
     }
   },
   computed: {
@@ -267,7 +300,7 @@ export default {
         new Date(this.date).toString().substr(11, 4);
       return newDate;
     },
-    numDaysInMonth: function() {
+    numDaysInCurrentMonth: function() {
       return new Date(
         this.date.slice(0, 4), // year
         this.date.slice(5, 7), // month
@@ -277,7 +310,7 @@ export default {
     monthPassages: function() {
       if (!this.isTempStored()) {
         let currentMonthPassages = [];
-        for (let i = 1; i <= this.numDaysInMonth; i++) {
+        for (let i = 1; i <= this.numDaysInCurrentMonth; i++) {
           currentMonthPassages.push({
             day: i,
             passage: "-- Enter Passage --"

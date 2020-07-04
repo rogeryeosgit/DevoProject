@@ -4,6 +4,7 @@
       :propPlanName="retrievedPlan.planName"
       :propDescription="retrievedPlan.description"
       :propTempStore="retrievedPlan.passages"
+      ref="planEditorComponent"
     ></PlanEditor>
     <br />
     <v-btn @click="cancelPlan" color="error">Cancel</v-btn>
@@ -26,6 +27,16 @@ export default {
   },
   methods: {
     updatePlan() {
+      var p = this.$refs.planEditorComponent.getPlan();
+
+      this.$store.dispatch("planStore/updatePlan", {
+        _id: this.id,
+        creatorEmail: p.creatorEmail,
+        planName: p.planName,
+        description: p.description,
+        passages: p.passages
+      });
+      this.$store.dispatch("passageStore/refreshPassage");
       this.$router.push("/plansList");
     },
     cancelPlan() {

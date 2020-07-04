@@ -155,9 +155,11 @@
 
 - Starting work on the journal entries part of the app
 
+- When page is reloaded, userID is null, because only token and expiry are around long term. - solved
+
 ## 3 July 2020
 
-- Started working on updating plans (Still need to make it dynamic)
+- Started working on updating plans (updating of plans now possible)
 
 - sorted out a bug that stores wrong plan data (objects need to be refreshed correctly)
 
@@ -175,26 +177,18 @@
 
 - Add additional login methods (Google Sign-In, etc.)
 
-- Create Plans / Pick Plan / Update and DeletePlan (if owner) <---
-
-- Click into Plans to see verses for the month
-
 - Validation that verses chosen are selected after the previous verse
 
 - Allow journaling without passage? (ETWG, Prayer List, or Any other entries?)
 
 - Need to have feedback on Create Plan page if plan created is successful
 
-- Server side needs to check cookie for user validity
+- Server side needs to check cookie for user validity / need to check token for every modification of backend
 
 - Need to handle pagination for plans, in case too many plans get returned all at once in future
 
-- How to choose plans?
-
 - On plan deletion, need to ascertain there is a catch all for users who use the plan
 
-- need to check token for every modification of backend
-
-- When page is reloaded, userID is null, because only token and expiry are around long term.
-
 - Excessive checkAuth used. Need to figure out best practices.
+
+- Perhaps have a way to input plans using csv

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <passage></passage>
+    <Passage :passageDate="date" :passageContents="getPassageContents" :reference="getReference"></Passage>
     <v-form v-model="valid">
       <v-container>
         <v-row>
@@ -37,6 +37,7 @@
 
 <script>
 import Passage from "@/components/Passage";
+
 export default {
   middleware: ["checkAuth", "loginCheck"],
   components: {
@@ -44,6 +45,7 @@ export default {
   },
   data() {
     return {
+      date: new Date(),
       valid: false,
       firstname: "",
       lastname: "",
@@ -65,6 +67,14 @@ export default {
     },
     cancel: function() {
       this.$router.push("/journalList");
+    }
+  },
+  computed: {
+    getPassageContents: function() {
+      return this.$store.getters["passageStore/getTodaysPassage"];
+    },
+    getReference: function() {
+      return this.$store.getters["passageStore/getTodaysReference"];
     }
   }
 };
