@@ -5,27 +5,22 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="4">
-            <v-text-field
-              v-model="firstname"
-              :rules="nameRules"
-              :counter="10"
-              label="First name"
-              required
-            ></v-text-field>
+            <v-text-field v-model="title" :counter="10" label="Title" required></v-text-field>
           </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="lastname"
-              :rules="nameRules"
-              :counter="10"
-              label="Last name"
-              required
-            ></v-text-field>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-textarea
+              solo
+              name="input-7-4"
+              label="Thoughts"
+              value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+            ></v-textarea>
           </v-col>
-
+        </v-row>
+        <v-row>
           <v-col cols="12" md="4">
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+            <v-text-field v-model="application" :counter="10" label="Application / Implication" required></v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -47,17 +42,8 @@ export default {
     return {
       date: new Date(),
       valid: false,
-      firstname: "",
-      lastname: "",
-      nameRules: [
-        v => !!v || "Name is required",
-        v => v.length <= 10 || "Name must be less than 10 characters"
-      ],
-      email: "",
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+/.test(v) || "E-mail must be valid"
-      ]
+      title: "",
+      application: ""
     };
   },
   methods: {

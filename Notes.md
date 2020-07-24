@@ -163,6 +163,10 @@
 
 - sorted out a bug that stores wrong plan data (objects need to be refreshed correctly)
 
+## 24 July 2020
+
+- Thinking about the fields needed for the journal entry. (Date, Passage in Mention, Title, Thoughts, Application / Implication)
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
