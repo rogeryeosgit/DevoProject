@@ -16,13 +16,10 @@
         @selected="changeSelected"
       ></PlanCard>
     </section>
-    <v-btn
-      class="planslist-button"
-      to="/plansList/createPlan"
-      nuxt
-      exact
-      color="primary"
-    >Create Plan</v-btn>
+    <br />
+    <center>
+      <v-btn to="/plansList/createPlan" nuxt exact color="primary">Create Plan</v-btn>
+    </center>
   </div>
 </template>
 
@@ -33,19 +30,19 @@ export default {
   asyncData(context) {
     return context.app.$axios
       .$get("/plans")
-      .then(data => {
+      .then((data) => {
         context.store.dispatch("planStore/storePlans", data);
       })
-      .catch(e => context.error(e));
+      .catch((e) => context.error(e));
   },
   components: {
-    PlanCard
+    PlanCard,
   },
   middleware: ["checkAuth", "loginCheck"],
   computed: {
-    plans: function() {
+    plans: function () {
       return this.$store.getters["planStore/getPlans"];
-    }
+    },
   },
   methods: {
     submitPlanDeletion(id) {
@@ -73,8 +70,8 @@ export default {
     changeSelected(id) {
       this.$store.dispatch("planStore/setChosenPlan", id);
       this.$store.dispatch("passageStore/refreshPassage");
-    }
-  }
+    },
+  },
 };
 </script>
 

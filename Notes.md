@@ -1,4 +1,4 @@
-## 1 Apr 2020
+# 1 Apr 2020
 
 - Fixed Server Middleware - Needs to be included in Nuxt config file
 
@@ -9,7 +9,6 @@
 - Worked on cards and theme displays for Vuetify and made it LIGHT
 
 - Practiced passing props into components
-
 
 ## 9 Apr 2020
 
@@ -27,7 +26,6 @@
 
 - Logging for server side needs to be sorted out (solved server middleware issue) - can't figure out why logging is not coming out from express starting page. - solved sequence of loading. Server middle ware only loaded after express is started.
 
-
 ## 11 Apr 2020
 
 - Figuring out Express structure - In asynchronous programming callbacks are alot more predictable then in "return" statements
@@ -36,13 +34,11 @@
 
 - Implementing logout from app / expired or manual - done
 
-
 ## 12 Apr 2020
 
 - Implemented logout checks on client side, so that journal and plans are not accessible when not logged in
 
 - Figure out how to include token in headers for API calls to server - Will always be included in post to server
-
 
 ## 15 Apr 2020
 
@@ -58,7 +54,6 @@
 
 - Logging in is done. Starting to work on plans and layout of how plans page should be
 
-
 ## 17 Apr 2020
 
 - Did comparison between MongoDB and Cloud Firestore. Mongo is cheaper in the long run. Also more widely used.
@@ -67,18 +62,15 @@
 
 - created structure for plan creation and listing. Form is not completed yet.
 
-
 ## 27 Apr 2020
 
 - Still working on plan creation, still considering how data should be stored if month changes happen.
-
 
 ## 2 May 2020
 
 - Done temp store for plan creation
 
 - Figuring out how to make passage picker component
-
 
 ## 21 May 2020
 
@@ -131,7 +123,7 @@
 
 - Front page passage should update dynamically
 
-- Working on listing saved plans, need to set up route on the server side. 
+- Working on listing saved plans, need to set up route on the server side.
 
 ## 20 June 2020
 
@@ -166,6 +158,16 @@
 ## 24 July 2020
 
 - Thinking about the fields needed for the journal entry. (Date, Passage in Mention, Title, Thoughts, Application / Implication)
+
+## 5 Aug 2020
+
+- Trying to understand flexbox and grid system so as to align items better. Horizontal uses justify while verticle alignment uses alignment
+
+- v-cols need to come right after v-rows
+
+- any column modification for v-col using md lg or xl is like a breakpoint where things change from the original "cols" prop. By default is span by 12
+
+- Started working on JournalStore, stopped at defining rest in store
 
 ## Running TODO LIST
 

@@ -1,6 +1,6 @@
 <template>
   <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
+    <v-flex>
       <v-card>
         <v-card-title>{{ reference }}</v-card-title>
         <v-card-subtitle>{{ passageDate | dateFormatter }}</v-card-subtitle>
