@@ -167,7 +167,9 @@
 
 - any column modification for v-col using md lg or xl is like a breakpoint where things change from the original "cols" prop. By default is span by 12
 
-- Started working on JournalStore, stopped at defining rest in store
+- Started working on JournalStore, stopped at defining rest in store. 
+
+- How should the journal entry data be represented in firebase for most efficient use case? Store 10 last entries in user collection while having the rest of the entries in qtEntries collection? How about the instance where a user wants to see even earlier entries? Get all? How to sort and get?
 
 ## Running TODO LIST
 
@@ -191,7 +193,7 @@
 
 - Server side needs to check cookie for user validity / need to check token for every modification of backend
 
-- Need to handle pagination for plans, in case too many plans get returned all at once in future
+- Need to handle pagination for plans and journal entrieis, in case too many plans and entries get returned all at once in future
 
 - On plan deletion, need to ascertain there is a catch all for users who use the plan
 

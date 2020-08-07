@@ -16,8 +16,8 @@ export default {
   computed: {
     passage: function() {
       // Format passage verses to be superscript
-      var temp = this.passageContents.replace(/\[/g, '<sup>');
-      return temp.replace(/\]/g, '</sup>');
+      var temp = this.passageContents.replace(/\[/g, '<b><sup>');
+      return temp.replace(/\]/g, '</sup></b>');
     }
   }
 };

@@ -1,20 +1,20 @@
 export const state = () => ({
-    entries: []
+    qtEntries: []
 })
 
 export const mutations = {
-    setAllEntries(state, entries) {
-        state.entries = entries
+    setAllQTEntries(state, entries) {
+        state.qtEntries = entries
     },
     addEntry(state, entry) {
-        state.entries.push(entry);
+        state.qtEntries.push(entry);
     }
 }
 
 export const actions = {
     async createEntry(vuexContext, entrySubmitted) {
-        return await this.$axios.$post("/journalEntries", {
-            // creatorEmail: planSubmitted.creatorEmail,   TOBE DONE
+        return await this.$axios.$post("/qtEntries", {
+             creatorEmail: entrySubmitted.creatorID,
             // planName: planSubmitted.planName,
             // description: planSubmitted.description,
             // passages: planSubmitted.passages
@@ -27,7 +27,7 @@ export const actions = {
 }
 
 export const getters = {
-    getAllEntries(state) {
-        return state.entries
+    getAllQTEntries(state) {
+        return state.qtEntries
     }
 }
