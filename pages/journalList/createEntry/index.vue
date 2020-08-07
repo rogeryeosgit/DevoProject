@@ -28,7 +28,11 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="application" label="Application / Implication" required></v-text-field>
+                <v-text-field
+                  v-model="applicationImplication"
+                  label="Application / Implication"
+                  required
+                ></v-text-field>
               </v-col>
             </v-row>
             <v-btn @click="cancel" color="error">Cancel</v-btn>
@@ -54,12 +58,21 @@ export default {
       valid: false,
       title: "",
       thoughts: "",
-      application: "",
+      applicationImplication: "",
     };
   },
   methods: {
     submit: function () {
-      // save function to be done up
+      var userID = this.$store.getters["userStore/getUserID"];
+
+      this.$store.dispatch("journalStore/createEntry", {
+        creatorEmail: userID,
+        date: this.date,
+        passageReference: this.getReference,
+        title: this.title,
+        thoughts: this.thoughts,
+        applicationImplication: this.applicationImplication,
+      });
       this.$router.push("/journalList");
     },
     cancel: function () {

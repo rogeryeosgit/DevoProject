@@ -6,6 +6,7 @@ var BRService = require('../services/bible-retrieval');
 var AuthService = require('../services/auth');
 var PlanModel = require('../services/models/Plan');
 var UserModel = require('../services/models/User');
+var QTEntryModel = require('../services/models/QTEntry');
 
 var p = '';
 
@@ -179,6 +180,42 @@ router.delete('/plans', async function (req, res) {
     }
   });
 });
+
+router.post('/qtEntries', async function (req, res, next) {
+  try {
+    await QTEntryModel.create({
+      creatorEmail: req.body.creatorEmail,
+      date: req.body.date,
+      passageReference: req.body.passageReference,
+      title: req.body.title,
+      thoughts: req.body.thoughts,
+      applicationImplication: req.body.applicationImplication
+    }, function (err, createdEntry) {
+      if (err) {
+        logger.error("SERVER ROUTER: qtEntry creation --> " + err);
+        return next(err);
+      } else {
+        logger.info("SERVER ROUTER: qtEntry created");
+        return res.sendStatus(201);
+      }
+    });
+  }
+  catch (err) {
+    logger.error("SERVER ROUTER: plans --> " + err);
+  }
+});
+
+// Get list of qt entries, need user email
+router.get('/qtEntries', async function (req, res) {
+  await QTEntryModel.find({}, (err, returnedPlans) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + err + " ---- user email : " + req.query.userEmail);
+    } else {
+      return res.send(returnedPlans);
+    }
+  });
+});
+
 
 module.exports = router;
 

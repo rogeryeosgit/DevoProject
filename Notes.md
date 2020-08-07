@@ -167,9 +167,23 @@
 
 - any column modification for v-col using md lg or xl is like a breakpoint where things change from the original "cols" prop. By default is span by 12
 
-- Started working on JournalStore, stopped at defining rest in store. 
+- Started working on JournalStore, stopped at defining rest in store.
 
 - How should the journal entry data be represented in firebase for most efficient use case? Store 10 last entries in user collection while having the rest of the entries in qtEntries collection? How about the instance where a user wants to see even earlier entries? Get all? How to sort and get?
+
+## 7 Aug 2020
+
+- The reason why we do referencing in "qtEntries" documents is because if we keep an ever increasing "user" document, we might hit a document size limit in the future. It is also not so efficient because whenever a document is changed, it has to create one and not just increase the size of the exisiting document to accomodate the new data.
+
+- Pagination can have 2 types. Seeking or Cursor based. Seeking becomes inefficient over time because you still need to iterate through each document to skip to page of need. Cursor based ones store additional data of the previous document and therefore won't hit such limitations over time.
+
+- Why am I using email as my foreign key rather then id and does it actually matter? It doesn't actually matter since email login is unique anyway. (ensure unique)
+
+- When I am creating journal entries, I am using ISO timing so that sorting can happen correctly on MongoDB.
+
+- Removed qtEntries array from mongoose User Schema. Tested seems working. May need to be more thorough in testing.
+
+- Starting to work on retreival of qt entries.
 
 ## Running TODO LIST
 

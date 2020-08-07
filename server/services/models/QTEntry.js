@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
-var QTEntry = new mongoose.Schema({
-    entryData: {
+var QTEntrySchema = new mongoose.Schema({
+    creatorEmail: {
         type: String,
         required: true,
         lowercase: true,
@@ -12,11 +12,29 @@ var QTEntry = new mongoose.Schema({
         required: true,
         trim: true
     },
-    passage: {
+    passageReference: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    title: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true
+    },
+    thoughts: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    applicationImplication: {
         type: String,
         required: true,
         trim: true
     }
 });
 
-module.exports = QTEntry;
+module.exports = (mongoose.models && mongoose.models.QTEntry
+    ? mongoose.models.QTEntry
+    : mongoose.model('QTEntry', QTEntrySchema));

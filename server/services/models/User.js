@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var QTEntry = require('./QTEntry');
 
 var UserSchema = new mongoose.Schema({
     email: {
@@ -12,8 +11,7 @@ var UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
-    },
-    qtEntries: [QTEntry]
+    }
 });
 
 module.exports = (mongoose.models && mongoose.models.User

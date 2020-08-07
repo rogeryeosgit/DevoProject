@@ -10,8 +10,8 @@
         :planDescription="i.description"
         :passages="i.passages"
         :notOwner="!isOwner(i.creatorEmail)"
-        @deletePlan="submitPlanDeletion"
-        @updatePlan="updateSelectedPlan"
+        @delete-plan="submitPlanDeletion"
+        @update-plan="updateSelectedPlan"
         :isSelected="checkSelected(i._id)"
         @selected="changeSelected"
       ></PlanCard>

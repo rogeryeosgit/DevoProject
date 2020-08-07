@@ -3,8 +3,8 @@
     <v-card-title>{{ planName }}</v-card-title>
     <v-card-subtitle>{{ planDescription }}</v-card-subtitle>
     <v-card-actions>
-      <v-btn :disabled="notOwner" @click="$emit('updatePlan', planID)" text>Update</v-btn>
-      <v-btn :disabled="notOwner" @click="$emit('deletePlan', planID)" color="red" text>Delete</v-btn>
+      <v-btn :disabled="notOwner" @click="$emit('update-plan', planID)" text>Update</v-btn>
+      <v-btn :disabled="notOwner" @click="$emit('delete-plan', planID)" color="red" text>Delete</v-btn>
       <v-chip
         @click="$emit('selected', planID)"
         class="ma-2"
