@@ -7,6 +7,24 @@
 
 <script>
 export default {
-  middleware: ["checkAuth", "loginCheck"]
+  asyncData(context) {
+    var userID = context.store.getters["userStore/getUserID"];
+    return context.app.$axios
+      .$get("/qtEntries", {
+        params: {
+          creatorEmail: userID,
+        },
+      })
+      .then((data) => {
+        context.store.dispatch("journalStore/storeAllQTEntries", data);
+      })
+      .catch((e) => context.error(e));
+  },
+  middleware: ["checkAuth", "loginCheck"],
+  computed: {
+    entries: function () {
+      return this.$store.getters["journalStore/getAllQTEntries"];
+    },
+  },
 };
 </script>

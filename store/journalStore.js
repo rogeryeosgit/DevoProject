@@ -20,13 +20,15 @@ export const actions = {
              title: entrySubmitted.title,
              thoughts: entrySubmitted.thoughts,
              applicationImplication: entrySubmitted.applicationImplication
-        }).then(result => {
-            if (result.status === 201) {
-                console.log("201 for qt entry post created received.");
-                //vuexContext.commit('addEntry', entrySubmitted); HRM... doesn't arrive here?!
+        }).then(response => {
+            if (response === 'Created') { // 201
+                vuexContext.commit('addEntry', entrySubmitted);
             }
         }).catch(e => console.log(e));
     },
+    storeAllQTEntries(vuexContext, entries) {
+        vuexContext.commit('setAllQTEntries', entries);
+    }
 }
 
 export const getters = {

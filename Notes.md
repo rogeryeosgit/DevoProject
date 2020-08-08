@@ -185,6 +185,12 @@
 
 - Starting to work on retreival of qt entries.
 
+## 8 Aug 2020
+
+- Finished creating new QT Entries
+
+- Spotted some problems with 201 return status for plans.
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
