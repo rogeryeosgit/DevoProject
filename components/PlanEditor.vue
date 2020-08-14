@@ -52,6 +52,8 @@
             <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
           </v-date-picker>
         </v-menu>
+
+        
       </v-col>
     </v-row>
     <v-data-table
@@ -63,7 +65,8 @@
       disable-pagination
       hide-default-footer
     >
-      <template v-slot:item.passage="props">
+      <template v-slot:[`item.passage`]="props">
+        <!-- The item here relates to data-table's item slot -->
         <v-edit-dialog
           :return-value.sync="props.item.passage"
           large
@@ -99,19 +102,19 @@ import PassagePicker from "@/components/PassagePicker";
 export default {
   props: ["propPlanName", "propDescription", "propTempStore"],
   components: {
-    PassagePicker
+    PassagePicker,
   },
   data() {
     return {
       planName: this.propPlanName || "",
       nameRules: [
-        v => !!v || "Name is required",
-        v =>
+        (v) => !!v || "Name is required",
+        (v) =>
           v.length <= 20 ||
-          "Name shouod be restricted to less than 20 characters"
+          "Name shouod be restricted to less than 20 characters",
       ],
       description: this.propDescription || "",
-      descriptionRules: [v => !!v || "Description is required"],
+      descriptionRules: [(v) => !!v || "Description is required"],
       initialTADescription: "A simple description of your plan",
       initialTARows: "1",
       date: new Date().toISOString().substr(0, 7),
@@ -122,13 +125,13 @@ export default {
           text: "Day of Month",
           align: "left",
           sortable: false,
-          value: "day"
+          value: "day",
         },
         {
           text: "Passage",
           sortable: false,
-          value: "passage"
-        }
+          value: "passage",
+        },
       ],
       tempStore: this.initTempStore(),
       submitStore: {},
@@ -139,8 +142,8 @@ export default {
       snackText: "",
       reset: {
         resetNow: false,
-        ppID: 199
-      }
+        ppID: 199,
+      },
     };
   },
   methods: {
@@ -236,7 +239,7 @@ export default {
       // this.reset.resetNow = true;
       this.reset = Object.assign({}, this.reset, {
         ppID: this.currentPPID,
-        resetNow: true
+        resetNow: true,
       }); // Needed for reactivity
     },
     getPlan() {
@@ -247,7 +250,7 @@ export default {
         creatorEmail: userID,
         planName: this.planName,
         description: this.description,
-        passages: this.sortedSubmitStore
+        passages: this.sortedSubmitStore,
       };
     },
     initTempStore() {
@@ -262,7 +265,7 @@ export default {
           for (let i = 1; i <= numofDays; i++) {
             currentMonthPassages.push({
               day: i,
-              passage: "-- Enter Passage --"
+              passage: "-- Enter Passage --",
             });
           }
 
@@ -289,7 +292,7 @@ export default {
         month, // month
         0
       ).getDate();
-    }
+    },
   },
   computed: {
     displayMonthInUTCFormat() {
@@ -300,27 +303,27 @@ export default {
         new Date(this.date).toString().substr(11, 4);
       return newDate;
     },
-    numDaysInCurrentMonth: function() {
+    numDaysInCurrentMonth: function () {
       return new Date(
         this.date.slice(0, 4), // year
         this.date.slice(5, 7), // month
         0
       ).getDate();
     },
-    monthPassages: function() {
+    monthPassages: function () {
       if (!this.isTempStored()) {
         let currentMonthPassages = [];
         for (let i = 1; i <= this.numDaysInCurrentMonth; i++) {
           currentMonthPassages.push({
             day: i,
-            passage: "-- Enter Passage --"
+            passage: "-- Enter Passage --",
           });
         }
         return currentMonthPassages;
       } else {
         return this.tempStore[this.date];
       }
-    }
-  }
+    },
+  },
 };
 </script>

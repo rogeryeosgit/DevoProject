@@ -181,7 +181,7 @@ router.delete('/plans', async function (req, res) {
   });
 });
 
-router.post('/qtEntries', async function (req, res, next) {
+router.post('/qtJournalEntries', async function (req, res, next) {
   try {
     await QTEntryModel.create({
       creatorEmail: req.body.creatorEmail,
@@ -206,7 +206,7 @@ router.post('/qtEntries', async function (req, res, next) {
 });
 
 // Get list of qt entries, need user email
-router.get('/qtEntries', async function (req, res) {
+router.get('/qtJournalEntries', async function (req, res) {
   await QTEntryModel.find({ creatorEmail: req.query.creatorEmail }, (err, returnedEntries) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + err + " ---- user email : " + req.query.creatorEmail);

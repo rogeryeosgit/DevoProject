@@ -191,6 +191,16 @@
 
 - Spotted some problems with 201 return status for plans.
 
+## 14 Aug 2020
+
+- Solved some ES6 issues with VSCode. Backticks keep changing to unicode. Solved by installing ESLint extension, setting default auto formatter and reloading.
+
+- Thinking through layout of journal entries.
+
+- Seems like mx-auto did most of the trick
+
+- Started working on QTJournalEditor and templating the form. Need to finish up individual journal edits as well as use template in entry creation.
+
 ## Running TODO LIST
 
 - Set authentication in place so that users can journal in private and see past journal entries
@@ -220,3 +230,15 @@
 - Excessive checkAuth used. Need to figure out best practices.
 
 - Perhaps have a way to input plans using csv
+
+- Automatically find images that suit tone of journal entries?
+
+- Analyze for keywords in the journals and give option to give summary automatically over timeframe?
+
+- Make a highlighting component that automatically quotes text and add highlighting while journalling.
+
+- Deletion of plans need to ask for confirmation
+
+- If logged in show write journal button on front page, if logged out show log in to write or something like that
+
+- Add number of characters in the thoughts box in the journal entry page

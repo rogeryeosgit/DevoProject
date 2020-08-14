@@ -35,12 +35,12 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-btn @click="cancel" color="error">Cancel</v-btn>
-            <v-btn @click="submit" color="success">Save</v-btn>
           </v-col>
         </v-row>
       </v-container>
     </v-form>
+    <v-btn @click="cancel" color="error">Cancel</v-btn>
+    <v-btn @click="submit" color="success">Save</v-btn>
   </div>
 </template>
 

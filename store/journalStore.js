@@ -13,7 +13,7 @@ export const mutations = {
 
 export const actions = {
     async createEntry(vuexContext, entrySubmitted) {
-        return await this.$axios.$post("/qtEntries", {
+        return await this.$axios.$post("/qtJournalEntries", {
              creatorEmail: entrySubmitted.creatorEmail,
              date: entrySubmitted.date,
              passageReference: entrySubmitted.passageReference,
@@ -34,5 +34,8 @@ export const actions = {
 export const getters = {
     getAllQTEntries(state) {
         return state.qtEntries
+    },
+    getEntryUsingID: (state) => (id) => {
+        return state.qtEntries.find(x => x._id === id);
     }
 }
