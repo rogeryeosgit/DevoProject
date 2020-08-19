@@ -10,9 +10,11 @@ export const state = () => ({
 export const mutations = {
     setToken(state, token) {
         state.token = token
+        this.$axios.setToken(token, 'Bearer');
     },
     clearToken(state) {
         state.token = null;
+        this.$axios.setToken(false);
     },
     setExpiryTime(state, time) {
         state.exTime = time;
@@ -105,9 +107,9 @@ export const actions = {
         vuexContext.commit('clearExpiryTime');
         Cookie.remove('jwt');
         Cookie.remove('expirationTime');
+        vuexContext.commit('clearUserID');
         vuexContext.dispatch("planStore/clearPlans", '', { root: true });
         vuexContext.dispatch("journalStore/clearEntries", '', { root: true });
-        vuexContext.commit('clearUserID');
     }
 }
 

@@ -217,6 +217,8 @@
 
 - Remove entries stored in store upon logout - Has intermitten errors that keep it cycling....
 
+- Looking through authentication again to see if I can verify token through Firebase Admin SDK. Is Axios using https?
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers

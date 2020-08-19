@@ -3,6 +3,7 @@ const { Nuxt, Builder } = require('nuxt');
 const log4js = require('log4js');
 const app = express();
 var db = require('./services/db-connector');
+var AuthService = require('./services/auth');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')

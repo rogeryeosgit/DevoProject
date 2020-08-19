@@ -213,6 +213,7 @@ router.post('/qtJournalEntries', async function (req, res, next) {
 
 // Get list of qt entries, need user email
 router.get('/qtJournalEntries', async function (req, res, next) {
+  AuthService.checkUser(req);
   await QTEntryModel.find({ creatorEmail: req.query.creatorEmail }, (err, returnedEntries) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + err + " ---- user email : " + req.query.creatorEmail);

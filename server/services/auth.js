@@ -51,6 +51,16 @@ var AuthService = {
             logger.error("AUTH: IN getUser: Error Returned during Axios -> " + err);
             throw(err);
         }
+    },
+    checkUser: async function(req) {
+        const bearerHeader = req.headers['authorization'];
+
+        if (bearerHeader) {
+          const bearer = bearerHeader.split(' ');
+          const bearerToken = bearer[1];
+          logger.info("It arrived here!");
+        // Do firebase admin sdk here!
+        }
     }
 };
 
