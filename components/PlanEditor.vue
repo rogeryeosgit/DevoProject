@@ -52,8 +52,6 @@
             <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
           </v-date-picker>
         </v-menu>
-
-        
       </v-col>
     </v-row>
     <v-data-table
@@ -66,7 +64,8 @@
       hide-default-footer
     >
       <template v-slot:[`item.passage`]="props">
-        <!-- The item here relates to data-table's item slot -->
+        <!-- BEWARE of backticks
+        The item here relates to data-table's item slot -->
         <v-edit-dialog
           :return-value.sync="props.item.passage"
           large

@@ -7,7 +7,7 @@
     <br />
     <JournalCard
       class="mx-auto"
-      v-for="i in entries"
+      v-for="i in entriesInReverse"
       :key="i._id"
       :entryID="i._id"
       :entryTitle="i.title"
@@ -40,9 +40,10 @@ export default {
   components: {
     JournalCard
   },
-  computed: {
-    entries: function () {
-      return this.$store.getters["journalStore/getAllQTEntries"];
+  computed: { 
+    entriesInReverse: function () {
+      var entries = this.$store.getters["journalStore/getAllQTEntries"];
+      return entries.slice().reverse();
     },
   },
   methods: {
@@ -52,6 +53,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-</style>

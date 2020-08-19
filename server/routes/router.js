@@ -54,6 +54,12 @@ router.get('/passages/today', async function (req, res, next) {
   }
 });
 
+// Get a particular passage
+router.get('/passages', async function (req, res, next) {
+  p = await BRService.getPassage(req.query.passageReference);
+  return res.send(p);
+});
+
 router.post('/users', async function (req, res, next) {
   if (req.body.isLogin) {
     try {
@@ -87,7 +93,7 @@ router.post('/users', async function (req, res, next) {
 });
 
 // Send with user id for plan chosen by user
-router.get('/users/planChosen', async function (req, res) {
+router.get('/users/planChosen', async function (req, res, next) {
   await UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
@@ -99,7 +105,7 @@ router.get('/users/planChosen', async function (req, res) {
 });
 
 // Send with user id for plan chosen by user
-router.post('/users/planChosen', async function (req, res) {
+router.post('/users/planChosen', async function (req, res, next) {
 
   await UserModel.findOneAndUpdate({
     email: req.body.userID
@@ -137,7 +143,7 @@ router.post('/plans', async function (req, res, next) {
 });
 
 // Get full list of plans
-router.get('/plans', async function (req, res) {
+router.get('/plans', async function (req, res, next) {
   await PlanModel.find({}, (err, returnedPlans) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
@@ -170,10 +176,10 @@ router.put('/plans', async function (req, res, next) {
   }
 });
 
-router.delete('/plans', async function (req, res) {
+router.delete('/plans', async function (req, res, next) {
   await PlanModel.deleteOne({ _id: req.query.planID }, (err) => {
     if (err) {
-      logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
+      logger.error("SERVER ROUTER: Error in deleting plan : " + err);
     } else {
       logger.info("SERVER ROUTER: Plan ID : " + req.query.planID + " has been deleted");
       return res.sendStatus(204);
@@ -206,7 +212,7 @@ router.post('/qtJournalEntries', async function (req, res, next) {
 });
 
 // Get list of qt entries, need user email
-router.get('/qtJournalEntries', async function (req, res) {
+router.get('/qtJournalEntries', async function (req, res, next) {
   await QTEntryModel.find({ creatorEmail: req.query.creatorEmail }, (err, returnedEntries) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + err + " ---- user email : " + req.query.creatorEmail);
@@ -216,6 +222,39 @@ router.get('/qtJournalEntries', async function (req, res) {
   });
 });
 
+router.put('/qtJournalEntries', async function (req, res, next) {
+  try {
+    await QTEntryModel.findByIdAndUpdate({
+      _id: req.body.journalID
+    }, {
+      title: req.body.title,
+      thoughts: req.body.thoughts,
+      applicationImplication: req.body.applicationImplication
+    }, function (err, createdEntry) {
+      if (err) {
+        logger.error("SERVER ROUTER: QT Journal entry update --> " + err);
+        return next(err);
+      } else {
+        logger.info("SERVER ROUTER: QT Journal entry : " + req.body.title + " updated");
+        return res.sendStatus(200);
+      }
+    });
+  }
+  catch (err) {
+    logger.error("SERVER ROUTER: QT Journal entry update --> " + err);
+  }
+});
+
+router.delete('/qtJournalEntries', async function (req, res, next) {
+  await QTEntryModel.deleteOne({ _id: req.query.journalID }, (err) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in deleting entry : " + err);
+    } else {
+      logger.info("SERVER ROUTER: QT Journal Entry ID : " + req.query.journalID + " has been deleted");
+      return res.sendStatus(200);
+    }
+  });
+});
 
 module.exports = router;
 

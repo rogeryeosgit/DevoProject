@@ -189,7 +189,7 @@
 
 - Finished creating new QT Entries
 
-- Spotted some problems with 201 return status for plans.
+- Spotted some problems with 201 return status for plans. - done (no problem, just have to be careful which Axio method I'm using)
 
 ## 14 Aug 2020
 
@@ -201,9 +201,23 @@
 
 - Started working on QTJournalEditor and templating the form. Need to finish up individual journal edits as well as use template in entry creation.
 
-## Running TODO LIST
+## 19 Aug 2020
 
-- Set authentication in place so that users can journal in private and see past journal entries
+- Finished QTJournalEditor Component and solved some minor visual padding issues.
+
+- Used QTJournalEditor Component on journal entry creation
+
+- Reversing journal entry display
+
+- Working on Journal entry update and deletion - done
+
+- There is a difference in the received response status for Axios $put $post and delete. Appearantly on delete it returns as an object and not a status string.
+
+- Add number of characters in the thoughts box in the journal entry page - done
+
+- Remove entries stored in store upon logout - Has intermitten errors that keep it cycling....
+
+## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
 
@@ -223,7 +237,7 @@
 
 - Server side needs to check cookie for user validity / need to check token for every modification of backend
 
-- Need to handle pagination for plans and journal entrieis, in case too many plans and entries get returned all at once in future
+- Need to handle pagination for plans and journal entries, in case too many plans and entries get returned all at once in future
 
 - On plan deletion, need to ascertain there is a catch all for users who use the plan
 
@@ -241,4 +255,4 @@
 
 - If logged in show write journal button on front page, if logged out show log in to write or something like that
 
-- Add number of characters in the thoughts box in the journal entry page
+- Need to have a cache on the server so that I don't have to always access ESVApi and reduces the chance of it hitting the limit

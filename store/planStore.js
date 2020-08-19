@@ -102,6 +102,9 @@ export const actions = {
                 vuexContext.commit('deletePlan', pID);
             }
         }).catch(e => console.log(e))
+    },
+    clearPlans(vuexContext) {
+        vuexContext.commit('clearPlans');
     }
 }
 

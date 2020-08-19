@@ -1,8 +1,8 @@
 <template>
-  <v-form v-model="valid">
-    <v-container>
+  <v-form>
+    <v-container class="pa-0">
       <v-row justify="center">
-        <v-col cols="12" md="8">
+        <v-col cols="12" md="7">
           <Passage
             :passageDate="entryDate"
             :passageContents="entryPassageContents"
@@ -12,7 +12,7 @@
         <v-col>
           <v-row>
             <v-col>
-              <v-text-field v-model="entryTitle" :counter="20" label="Title" required></v-text-field>
+              <v-text-field v-model="entryTitle" label="Title" required></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -20,6 +20,7 @@
               <v-textarea
                 auto-grow
                 solo
+                counter
                 v-model="entryThoughts"
                 label="This part of the passage tells me that..."
               ></v-textarea>
@@ -27,11 +28,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field
-                v-model="entryAppImp"
-                label="Application / Implication"
-                required
-              ></v-text-field>
+              <v-text-field v-model="entryAppImp" label="Application / Implication" required></v-text-field>
             </v-col>
           </v-row>
         </v-col>
@@ -41,6 +38,8 @@
 </template>
 
 <script>
+import Passage from "@/components/Passage";
+
 export default {
   props: [
     "entryDate",
@@ -48,17 +47,27 @@ export default {
     "entryReference",
     "propEntryTitle",
     "propEntryThoughts",
-    "propEntryAppImp"
+    "propEntryAppImp",
   ],
+  components: {
+    Passage,
+  },
   data() {
     return {
       entryTitle: this.propEntryTitle || "",
       entryThoughts: this.propEntryThoughts || "",
-      entryAppImp: this.propEntryAppImp || ""
+      entryAppImp: this.propEntryAppImp || "",
     };
   },
-  computed: {
-  }
+  methods: {
+    getEntry: function () {
+      return {
+        title: this.entryTitle,
+        thoughts: this.entryThoughts,
+        applicationImplication: this.entryAppImp
+      };
+    },
+  },
 };
 </script>
 

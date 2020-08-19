@@ -7,6 +7,5 @@
     
     },
     "eslint.format.enable": true,
-    "vetur.format.defaultFormatter.js": "prettier-eslint",
     "editor.defaultFormatter": "octref.vetur"
 }
