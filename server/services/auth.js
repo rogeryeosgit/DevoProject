@@ -1,5 +1,7 @@
 var axios = require('axios');
 var log4js = require('log4js');
+var admin = require('firebase-admin');
+var serviceAccount = require("../../qtapp-3b06e-firebase-adminsdk-crr23-15b020dc01.json");
 
 var endPt;
 var fbAPIKey = "AIzaSyC0uyISu-yNt96T8VBT9_attsIDuuw77O4"; /* TODO: To be removed on deploy */
@@ -53,14 +55,27 @@ var AuthService = {
         }
     },
     checkUser: async function(req) {
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            databaseURL: "https://qtapp-3b06e.firebaseio.com"
+        });
+
         const bearerHeader = req.headers['authorization'];
 
         if (bearerHeader) {
-          const bearer = bearerHeader.split(' ');
-          const bearerToken = bearer[1];
-          logger.info("It arrived here!");
-        // Do firebase admin sdk here!
+            const bearer = bearerHeader.split(' ');
+            const bearerToken = bearer[1];
+
+            // idToken comes from the client app
+            admin.auth().verifyIdToken(bearerToken).then(function(decodedToken) {
+                logger.info("decodedToken uid : " + decodedToken.uid);
+                logger.info("decodedToken id : " + decodedToken.id);
+                logger.info("decodedToken email : " + decodedToken.email);
+            }).catch(function(error) {
+                console.log(error);
+            });
         }
+        // console.log(req.headers['cookie']);
     }
 };
 

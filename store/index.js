@@ -25,7 +25,7 @@ export const actions = {
             .then(data => {
                 vuexContext.commit('passageStore/setTodaysPassage', data.passages[0]);
                 vuexContext.commit('passageStore/setTodaysReference', data.canonical);
-            }).catch(e => context.error(e));
+            }).catch(e => console.error(e));
     }
 }
 

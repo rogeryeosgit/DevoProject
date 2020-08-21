@@ -219,6 +219,32 @@
 
 - Looking through authentication again to see if I can verify token through Firebase Admin SDK. Is Axios using https?
 
+## 21 Aug 2020
+
+- Dealing with Axios https.
+
+- Used mkcert to make a localhost cert and CA for dev purposes. 
+
+- Tried using this, https://stackoverflow.com/questions/56966137/how-to-run-nuxt-npm-run-dev-with-https-in-localhost but didn't work out. mkcert needs to be done in project folder for keys to be in folder.
+
+- Finally used this in the end https://stackoverflow.com/questions/55440261/nuxt-js-problem-with-server-side-api-call-with-https to overcome localhost certificate trusting issues
+
+- There is a difference between Intermediate Certification Authorities and Trusted Root Certification Authorities. Place CA certs in TRCA.
+
+- Question regarding httpOnly cookie. if I use it, I lose the ability to check for "logged in" users on client side. What should I do?
+
+- Using token because cookie information changes order? Seems strange.
+
+- Reading firebase admin sdk docs.
+
+- When I send token to FB server, I get a uid.. but what do i check for to ensure user is who he claims to be? I can use email returned from check to ensure that email has not been changed.
+
+- Generated a key for firebase proj. Trying to see what I can verify using returned data
+
+- https://github.com/gerywahyunugraha/heroku-google-application-credentials-buildpack this will come in handy for deploying in heroku for google cred.
+
+- Need to think through abit more what I actually want to verify from the client end.
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers

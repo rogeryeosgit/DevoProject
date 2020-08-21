@@ -12,7 +12,6 @@ var p = '';
 
 // GET route after registering
 router.get('/passages/today', async function (req, res, next) {
-
   if (req.query.planID != null) {
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {

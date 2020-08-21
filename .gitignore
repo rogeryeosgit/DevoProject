@@ -88,3 +88,8 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Self made certs
+localhost.pem
+localhost-key.pem
+qtapp-3b06e-firebase*.*

@@ -48,15 +48,18 @@ export const actions = {
             vuexContext.commit('setExpiryTime', expiringTimeInMS);
             Cookie.set('jwt', result.idToken, {
                 sameSite: 'lax',
-                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+                expires: new Date(expiringTimeInMS), // JS in millisecond * 1000
+                secure: true
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             Cookie.set('expirationTime', expiringTimeInMS, {
                 sameSite: 'lax',
-                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+                expires: new Date(expiringTimeInMS), // JS in millisecond * 1000
+                secure: true
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             Cookie.set('qtAppID', authData.id, {
                 sameSite: 'lax',
-                expires: new Date(expiringTimeInMS) // JS in millisecond * 1000
+                expires: new Date(expiringTimeInMS), // JS in millisecond * 1000
+                secure: true
             }); // sameSite only allows cookies to be attached to get requests for cross origin requests
             vuexContext.commit('setUserID', authData.id);
         }).catch(e => {
@@ -105,9 +108,10 @@ export const actions = {
         console.log("UserStore: Logout is called");
         vuexContext.commit('clearToken');
         vuexContext.commit('clearExpiryTime');
+        vuexContext.commit('clearUserID');
         Cookie.remove('jwt');
         Cookie.remove('expirationTime');
-        vuexContext.commit('clearUserID');
+        Cookie.remove('qtAppID');
         vuexContext.dispatch("planStore/clearPlans", '', { root: true });
         vuexContext.dispatch("journalStore/clearEntries", '', { root: true });
     }

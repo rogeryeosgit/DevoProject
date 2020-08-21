@@ -2,6 +2,7 @@ const express = require('express');
 const { Nuxt, Builder } = require('nuxt');
 const log4js = require('log4js');
 const app = express();
+const https = require('https');
 var db = require('./services/db-connector');
 var AuthService = require('./services/auth');
 
@@ -26,7 +27,8 @@ async function start() {
   app.use(nuxt.render)
 
   // Listen the server
-  app.listen(port, host)
+  https.createServer(nuxt.options.server.https, app).listen(port, host);
+  // app.listen(port, host);
 
   // Setting up logging for Express Server
   log4js.configure({
@@ -35,7 +37,7 @@ async function start() {
   });
 
   const logger = log4js.getLogger();
-  logger.info(`Server listening on http://${host}:${port}`);
+  logger.info(`Server listening on https://${host}:${port}`);
 
   db.init();
 }
