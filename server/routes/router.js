@@ -190,13 +190,20 @@ router.post("/plans", async function(req, res, next) {
 
 // Get full list of plans
 router.get("/plans", async function(req, res, next) {
-  await PlanModel.find({}, (err, returnedPlans) => {
-    if (err) {
-      logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
-    } else {
-      return res.send(returnedPlans);
-    }
-  });
+  await AuthService.checkUser(req)
+    .then(async () => {
+      await PlanModel.find({}, (err, returnedPlans) => {
+        if (err) {
+          logger.error("SERVER ROUTER: Error in retrieving all plans : " + err);
+        } else {
+          return res.send(returnedPlans);
+        }
+      });
+    })
+    .catch(error => {
+      logger.error("SERVER ROUTER: Error in retrieving all plans : " + error);
+      return res.sendStatus(401);
+    });
 });
 
 router.put("/plans", async function(req, res, next) {
@@ -228,16 +235,49 @@ router.put("/plans", async function(req, res, next) {
 });
 
 router.delete("/plans", async function(req, res, next) {
-  await PlanModel.deleteOne({ _id: req.query.planID }, err => {
-    if (err) {
-      logger.error("SERVER ROUTER: Error in deleting plan : " + err);
-    } else {
-      logger.info(
-        "SERVER ROUTER: Plan ID : " + req.query.planID + " has been deleted"
+  await AuthService.checkUser(req)
+    .then(async () => {
+      await PlanModel.findOne(
+        { _id: req.query.planID },
+        async (err, returnedPlan) => {
+          if (err) {
+            logger.error(
+              "SERVER ROUTER: Error in checks for deletion : " + err
+            );
+          } else {
+            if (
+              await AuthService.checkPlanOwnership(
+                req,
+                returnedPlan.creatorEmail
+              )
+            ) {
+              console.log("Comes here!");
+              await PlanModel.deleteOne({ _id: req.query.planID }, err => {
+                if (err) {
+                  logger.error(
+                    "SERVER ROUTER: Error in deleting plan : " + err
+                  );
+                } else {
+                  logger.info(
+                    "SERVER ROUTER: Plan ID : " +
+                      req.query.planID +
+                      " has been deleted"
+                  );
+                  return res.sendStatus(204);
+                }
+              });
+            } else {
+              console.log("Comes her 2!");
+              res.sendStatus(400);
+            }
+          }
+        }
       );
-      return res.sendStatus(204);
-    }
-  });
+    })
+    .catch(error => {
+      logger.error("SERVER ROUTER: Error in deleting plan : " + error);
+      return res.sendStatus(401);
+    });
 });
 
 router.post("/qtJournalEntries", async function(req, res, next) {
@@ -268,9 +308,7 @@ router.post("/qtJournalEntries", async function(req, res, next) {
       }
     })
     .catch(error => {
-      logger.error(
-        "SERVER ROUTER: Error in creating qt entry : " + error
-      );
+      logger.error("SERVER ROUTER: Error in creating qt entry : " + error);
       return res.sendStatus(401);
     });
 });

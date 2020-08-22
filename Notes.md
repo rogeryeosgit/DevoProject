@@ -245,6 +245,10 @@
 
 - Need to think through abit more what I actually want to verify from the client end.
 
+## 22 Aug 2020
+
+- Starting working on checking tokens. Done with journal entries. Figuring out plan deletion at the moment. Some concurrency issue.
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers

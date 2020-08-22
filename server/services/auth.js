@@ -90,6 +90,31 @@ var AuthService = {
         });
     }
     // console.log(req.headers['cookie']);
+  },
+  checkPlanOwnership: async function(req, planCreator) {
+    const bearerHeader = req.headers["authorization"];
+
+    if (bearerHeader) {
+      const bearer = bearerHeader.split(" ");
+      const bearerToken = bearer[1];
+
+      await admin
+        .auth()
+        .verifyIdToken(bearerToken)
+        .then(function(decodedToken) {
+          if (decodedToken.email === planCreator) {
+            console.log("here T!");
+            return true;
+          } else {
+            console.log("here F!");
+            return false;
+          }
+        })
+        .catch(function(error) {
+          logger.error("AUTH: Token Error");
+          throw new Error("Not Authorized!");
+        });
+    }
   }
 };
 
