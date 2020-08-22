@@ -4,7 +4,7 @@ const log4js = require('log4js');
 const app = express();
 const https = require('https');
 var db = require('./services/db-connector');
-var AuthService = require('./services/auth');
+var authService = require('./services/auth');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
@@ -22,7 +22,9 @@ async function start() {
     const builder = new Builder(nuxt)
     await builder.build()
   }
-
+  
+  authService.init();
+  
   // Give nuxt middleware to express
   app.use(nuxt.render)
 

@@ -6,6 +6,5 @@
     "eslint.options": {
     
     },
-    "eslint.format.enable": true,
-    "editor.defaultFormatter": "octref.vetur"
+    "eslint.format.enable": true
 }
