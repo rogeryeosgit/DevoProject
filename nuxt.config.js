@@ -71,7 +71,7 @@ module.exports = {
   axios: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     credentials: false,
-    https: true
+    https: false
   },
   /*
   ** vuetify module configuration
