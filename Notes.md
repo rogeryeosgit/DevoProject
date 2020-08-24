@@ -225,9 +225,9 @@
 
 - Used mkcert to make a localhost cert and CA for dev purposes. 
 
-- Tried using this, https://stackoverflow.com/questions/56966137/how-to-run-nuxt-npm-run-dev-with-https-in-localhost but didn't work out. mkcert needs to be done in project folder for keys to be in folder.
+- Tried using this, <https://stackoverflow.com/questions/56966137/how-to-run-nuxt-npm-run-dev-with-https-in-localhost> but didn't work out. mkcert needs to be done in project folder for keys to be in folder.
 
-- Finally used this in the end https://stackoverflow.com/questions/55440261/nuxt-js-problem-with-server-side-api-call-with-https to overcome localhost certificate trusting issues
+- Finally used this in the end <https://stackoverflow.com/questions/55440261/nuxt-js-problem-with-server-side-api-call-with-https> to overcome localhost certificate trusting issues
 
 - There is a difference between Intermediate Certification Authorities and Trusted Root Certification Authorities. Place CA certs in TRCA.
 
@@ -241,7 +241,7 @@
 
 - Generated a key for firebase proj. Trying to see what I can verify using returned data
 
-- https://github.com/gerywahyunugraha/heroku-google-application-credentials-buildpack this will come in handy for deploying in heroku for google cred.
+- <https://github.com/gerywahyunugraha/heroku-google-application-credentials-buildpack> this will come in handy for deploying in heroku for google cred.
 
 - Need to think through abit more what I actually want to verify from the client end.
 
@@ -251,7 +251,11 @@
 
 ## 24 Aug 2020
 
-- Got deleting plans working with checks. Need to test creating plans with checks. With token change still can delete.
+- Got deleting plans working with checks. Need to test creating plans with checks. With token change still can delete..
+
+- Solved logout loop issue
+
+- Update, deletes need to think through abit more about change of cookies. Checks done.
 
 ## Running TODO LIST
 

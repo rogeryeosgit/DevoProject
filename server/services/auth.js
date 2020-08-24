@@ -26,7 +26,7 @@ var AuthService = {
           idToken: result.data.idToken,
           exTime: result.data.expiresIn
         };
-        logger.info("AUTH: In createUser: " + id + " has been created");
+        logger.info("******************************************************** AUTH: In createUser: " + id + " has been created ********************************************************");
         callback(tokenData);
       });
     } catch (err) {
@@ -51,7 +51,7 @@ var AuthService = {
         };
         callback(tokenData);
       });
-      logger.info("AUTH: In getUser: " + id + " has logged in");
+      logger.info("******************************************************** AUTH: In getUser: " + id + " has logged in ********************************************************");
     } catch (err) {
       logger.error("AUTH: IN getUser: Error Returned during Axios -> " + err);
       throw err;
@@ -91,10 +91,8 @@ var AuthService = {
 
       await admin.auth().verifyIdToken(bearerToken).then(function (decodedToken) {
         if (decodedToken.email === planCreator) {
-          console.log("here T!");
           isOwner(true);
         } else {
-          console.log("here F!");
           isOwner(false);
         }
       }).catch(function (error) {

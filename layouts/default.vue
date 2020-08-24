@@ -18,7 +18,7 @@
             <v-list-item-title>Login</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="isAuthenticated" to="/logout" nuxt exact>
+        <v-list-item v-if="isAuthenticated" @click="logout" to="/" nuxt exact>
           <v-list-item-action>
             <v-icon>mdi-exit-to-app</v-icon>
           </v-list-item-action>
@@ -78,6 +78,11 @@ export default {
     },
     isAuthenticated() {
       return this.$store.getters["userStore/isAuthenticated"];
+    }
+  },
+  methods: {
+     logout: function() {
+      this.$store.dispatch('userStore/logout');
     }
   }
 };

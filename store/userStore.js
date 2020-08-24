@@ -70,17 +70,17 @@ export const actions = {
     clearError(vuexContext, req) {
         vuexContext.commit('clearError');
     },
-    initAuth(vuexContext, req) {
+    checkCookie(vuexContext, req) {
         let token;
         let expirationTime;
         let userID;
 
         if (req) {
-            if (!req.headers.cookie) {
+            if (!req.headers.cookie) { // Addresses when store is still on Server side. No cookie yet
                 return;
             }
             const jwtCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith("jwt="));
-            if (!jwtCookie) {
+            if (!jwtCookie) { // Address when there is no cookie for some reason, logged out, etc.
                 return;
             }
             token = jwtCookie.split("=")[1];
@@ -88,7 +88,7 @@ export const actions = {
                 .split("=")[1];
             userID = req.headers.cookie.split(';').find(c => c.trim().startsWith("qtAppID="))
                 .split("=")[1];
-        } else {
+        } else { // Local Cookie
             token = Cookie.get("jwt");
             expirationTime = Cookie.get("expirationTime");
             userID = Cookie.get("qtAppID");
@@ -102,6 +102,24 @@ export const actions = {
         vuexContext.commit("setExpiryTime", expirationTime);
         vuexContext.commit("setUserID", userID);
         vuexContext.dispatch("planStore/getPlanChosen", '', { root: true });
+    },
+    syncCookie(vuexContext) {
+        let token;
+        let expirationTime;
+        let userID;
+        
+        token = Cookie.get("jwt");
+        expirationTime = Cookie.get("expirationTime");
+        userID = Cookie.get("qtAppID");
+
+        if (new Date().getTime() > +expirationTime || !token) {
+            console.log('No Token or invalid token');
+            vuexContext.dispatch('logout');
+            return;
+        }
+        vuexContext.commit("setToken", token);
+        vuexContext.commit("setExpiryTime", expirationTime);
+        vuexContext.commit("setUserID", userID);
     },
     logout(vuexContext) {
         // Clearing everthing just in case

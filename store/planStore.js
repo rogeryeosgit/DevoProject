@@ -52,6 +52,7 @@ export const actions = {
         }).catch(e => console.log(e));
     },
     async updatePlan(vuexContext, planSubmitted) {
+        vuexContext.dispatch("userStore/syncCookie", '', { root: true });
         return await this.$axios.put("/plans", {
             planID: planSubmitted._id,
             creatorEmail: planSubmitted.creatorEmail,
@@ -93,6 +94,7 @@ export const actions = {
         }).catch(e => console.log(e))
     },
     async deletePlan(vuexContext, pID) {
+        vuexContext.dispatch("userStore/syncCookie", '', { root: true });
         return await this.$axios.delete('/plans', {
             params: {
                 planID: pID

@@ -15,9 +15,7 @@ router.get("/passages/today", async function (req, res, next) {
   if (req.query.planID != null) {
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {
-        logger.error(
-          "SERVER ROUTER: Error after looking up DB for default Plan : " + err
-        );
+        logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
         p = await BRService.getPassage(getDefaultPassage());
         return res.send(p);
       } else {
@@ -32,18 +30,14 @@ router.get("/passages/today", async function (req, res, next) {
           );
           return res.send(p);
         } catch (err) {
-          logger.error(
-            "SERVER ROUTER: Error after trying to access ESV API during default : " +
-            err
-          );
+          logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
           p = await BRService.getPassage(getDefaultPassage());
           return res.send(p);
         }
       }
     });
   } else {
-    PlanModel.findOne(
-      { planName: "--- Default Nav Plan ---" },
+    PlanModel.findOne({ planName: "--- Default Nav Plan ---" },
       async (err, returnedPlan) => {
         if (err) {
           logger.error(
@@ -200,31 +194,41 @@ router.get("/plans", async function (req, res, next) {
 });
 
 router.put("/plans", async function (req, res, next) {
-  try {
-    await PlanModel.findByIdAndUpdate(
-      {
-        _id: req.body.planID
-      },
-      {
-        planName: req.body.planName,
-        description: req.body.description,
-        passages: req.body.passages
-      },
-      function (err, createdPlan) {
+  await AuthService.checkUser(req)
+    .then(async () => {
+      await PlanModel.findOne({ _id: req.body.planID }, async (err, returnedPlan) => {
         if (err) {
-          logger.error("SERVER ROUTER: plan update --> " + err);
-          return next(err);
+          logger.error("SERVER ROUTER: Error in checks for update of plans : " + err);
         } else {
-          logger.info(
-            "SERVER ROUTER: Plan : " + req.body.planName + " updated"
-          );
-          return res.sendStatus(201);
+          await AuthService.checkPlanOwnership(req, returnedPlan.creatorEmail, (async isOwner => {
+            if (isOwner) {
+              try {
+                await PlanModel.findByIdAndUpdate({ _id: req.body.planID }, {
+                  planName: req.body.planName,
+                  description: req.body.description,
+                  passages: req.body.passages
+                }, function (err, createdPlan) {
+                  if (err) {
+                    logger.error("SERVER ROUTER: plan update --> " + err);
+                    return next(err);
+                  } else {
+                    logger.info("SERVER ROUTER: Plan : " + req.body.planName + " updated");
+                    return res.sendStatus(201);
+                  }
+                });
+              } catch (err) {
+                logger.error("SERVER ROUTER: Plan Update Error --> " + err);
+              }
+            } else {
+              res.sendStatus(400);
+            }
+          }));
         }
-      }
-    );
-  } catch (err) {
-    logger.error("SERVER ROUTER: plans --> " + err);
-  }
+      });
+    }).catch(error => {
+      logger.error("SERVER ROUTER: Error in updating plan : " + error);
+      return res.sendStatus(401);
+    });
 });
 
 router.delete("/plans", async function (req, res, next) {
@@ -232,7 +236,7 @@ router.delete("/plans", async function (req, res, next) {
     .then(async () => {
       await PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
         if (err) {
-          logger.error("SERVER ROUTER: Error in checks for deletion : " + err);
+          logger.error("SERVER ROUTER: Error in checks for deletion of plans : " + err);
         } else {
           await AuthService.checkPlanOwnership(req, returnedPlan.creatorEmail, (async isOwner => {
             if (isOwner) {
