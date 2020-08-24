@@ -249,6 +249,10 @@
 
 - Starting working on checking tokens. Done with journal entries. Figuring out plan deletion at the moment. Some concurrency issue.
 
+## 24 Aug 2020
+
+- Got deleting plans working with checks. Need to test creating plans with checks. With token change still can delete.
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers

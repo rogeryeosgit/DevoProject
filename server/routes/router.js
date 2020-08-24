@@ -11,7 +11,7 @@ var QTEntryModel = require("../services/models/QTEntry");
 var p = "";
 
 // GET route after registering
-router.get("/passages/today", async function(req, res, next) {
+router.get("/passages/today", async function (req, res, next) {
   if (req.query.planID != null) {
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {
@@ -34,7 +34,7 @@ router.get("/passages/today", async function(req, res, next) {
         } catch (err) {
           logger.error(
             "SERVER ROUTER: Error after trying to access ESV API during default : " +
-              err
+            err
           );
           p = await BRService.getPassage(getDefaultPassage());
           return res.send(p);
@@ -65,7 +65,7 @@ router.get("/passages/today", async function(req, res, next) {
           } catch (err) {
             logger.error(
               "SERVER ROUTER: Error after trying to access ESV API during default : " +
-                err
+              err
             );
             p = await BRService.getPassage(getDefaultPassage());
             return res.send(p);
@@ -77,21 +77,17 @@ router.get("/passages/today", async function(req, res, next) {
 });
 
 // Get a particular passage
-router.get("/passages", async function(req, res, next) {
+router.get("/passages", async function (req, res, next) {
   p = await BRService.getPassage(req.query.passageReference);
   return res.send(p);
 });
 
-router.post("/users", async function(req, res, next) {
+router.post("/users", async function (req, res, next) {
   if (req.body.isLogin) {
     try {
-      await AuthService.getUser(
-        req.body.id,
-        req.body.pwd,
-        (result = async data => {
-          return res.send(data);
-        })
-      );
+      await AuthService.getUser(req.body.id, req.body.pwd, (result = async data => {
+        return res.send(data);
+      }));
     } catch (err) {
       logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
       return res.status(500).send("Authentication Failed");
@@ -128,7 +124,7 @@ router.post("/users", async function(req, res, next) {
 });
 
 // Send with user id for plan chosen by user
-router.get("/users/planChosen", async function(req, res, next) {
+router.get("/users/planChosen", async function (req, res, next) {
   await UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
@@ -144,52 +140,50 @@ router.get("/users/planChosen", async function(req, res, next) {
 });
 
 // Send with user id for plan chosen by user
-router.post("/users/planChosen", async function(req, res, next) {
-  await UserModel.findOneAndUpdate(
-    {
-      email: req.body.userID
-    },
-    {
-      planChosen: req.body.planChosen
-    },
-    (err, returnedUser) => {
-      if (err) {
-        logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
-      } else {
-        return res.sendStatus(201);
-      }
+router.post("/users/planChosen", async function (req, res, next) {
+  await UserModel.findOneAndUpdate({ email: req.body.userID }, { planChosen: req.body.planChosen }, (err, returnedUser) => {
+    if (err) {
+      logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
+    } else {
+      return res.sendStatus(201);
     }
-  );
+  });
 });
 
-router.post("/plans", async function(req, res, next) {
-  try {
-    await PlanModel.create(
-      {
-        creatorEmail: req.body.creatorEmail,
-        planName: req.body.planName,
-        description: req.body.description,
-        passages: req.body.passages
-      },
-      function(err, createdPlan) {
-        if (err) {
-          logger.error("SERVER ROUTER: plan creation --> " + err);
-          return next(err);
-        } else {
-          logger.info(
-            "SERVER ROUTER: Plan : " + req.body.planName + " created"
-          );
-          return res.sendStatus(201);
-        }
+router.post("/plans", async function (req, res, next) {
+  await AuthService.checkUser(req)
+    .then(async () => {
+      try {
+        await PlanModel.create(
+          {
+            creatorEmail: req.body.creatorEmail,
+            planName: req.body.planName,
+            description: req.body.description,
+            passages: req.body.passages
+          },
+          function (err, createdPlan) {
+            if (err) {
+              logger.error("SERVER ROUTER: plan creation --> " + err);
+              return next(err);
+            } else {
+              logger.info(
+                "SERVER ROUTER: Plan : " + req.body.planName + " created"
+              );
+              return res.sendStatus(201);
+            }
+          }
+        );
+      } catch (err) {
+        logger.error("SERVER ROUTER: plans --> " + err);
       }
-    );
-  } catch (err) {
-    logger.error("SERVER ROUTER: plans --> " + err);
-  }
+    }).catch(error => {
+      logger.error("SERVER ROUTER: Error in creating plan : " + error);
+      return res.sendStatus(401);
+    });
 });
 
 // Get full list of plans
-router.get("/plans", async function(req, res, next) {
+router.get("/plans", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
       await PlanModel.find({}, (err, returnedPlans) => {
@@ -199,14 +193,13 @@ router.get("/plans", async function(req, res, next) {
           return res.send(returnedPlans);
         }
       });
-    })
-    .catch(error => {
+    }).catch(error => {
       logger.error("SERVER ROUTER: Error in retrieving all plans : " + error);
       return res.sendStatus(401);
     });
 });
 
-router.put("/plans", async function(req, res, next) {
+router.put("/plans", async function (req, res, next) {
   try {
     await PlanModel.findByIdAndUpdate(
       {
@@ -217,7 +210,7 @@ router.put("/plans", async function(req, res, next) {
         description: req.body.description,
         passages: req.body.passages
       },
-      function(err, createdPlan) {
+      function (err, createdPlan) {
         if (err) {
           logger.error("SERVER ROUTER: plan update --> " + err);
           return next(err);
@@ -234,53 +227,36 @@ router.put("/plans", async function(req, res, next) {
   }
 });
 
-router.delete("/plans", async function(req, res, next) {
+router.delete("/plans", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
-      await PlanModel.findOne(
-        { _id: req.query.planID },
-        async (err, returnedPlan) => {
-          if (err) {
-            logger.error(
-              "SERVER ROUTER: Error in checks for deletion : " + err
-            );
-          } else {
-            if (
-              await AuthService.checkPlanOwnership(
-                req,
-                returnedPlan.creatorEmail
-              )
-            ) {
-              console.log("Comes here!");
+      await PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
+        if (err) {
+          logger.error("SERVER ROUTER: Error in checks for deletion : " + err);
+        } else {
+          await AuthService.checkPlanOwnership(req, returnedPlan.creatorEmail, (async isOwner => {
+            if (isOwner) {
               await PlanModel.deleteOne({ _id: req.query.planID }, err => {
                 if (err) {
-                  logger.error(
-                    "SERVER ROUTER: Error in deleting plan : " + err
-                  );
+                  logger.error("SERVER ROUTER: Error in deleting plan : " + err);
                 } else {
-                  logger.info(
-                    "SERVER ROUTER: Plan ID : " +
-                      req.query.planID +
-                      " has been deleted"
-                  );
+                  logger.info("SERVER ROUTER: Plan ID : " + req.query.planID + " has been deleted");
                   return res.sendStatus(204);
                 }
               });
             } else {
-              console.log("Comes her 2!");
               res.sendStatus(400);
             }
-          }
+          }));
         }
-      );
-    })
-    .catch(error => {
+      });
+    }).catch(error => {
       logger.error("SERVER ROUTER: Error in deleting plan : " + error);
       return res.sendStatus(401);
     });
 });
 
-router.post("/qtJournalEntries", async function(req, res, next) {
+router.post("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req, req.query.creatorEmail)
     .then(async () => {
       try {
@@ -293,7 +269,7 @@ router.post("/qtJournalEntries", async function(req, res, next) {
             thoughts: req.body.thoughts,
             applicationImplication: req.body.applicationImplication
           },
-          function(err, createdEntry) {
+          function (err, createdEntry) {
             if (err) {
               logger.error("SERVER ROUTER: qtEntry creation --> " + err);
               return next(err);
@@ -314,7 +290,7 @@ router.post("/qtJournalEntries", async function(req, res, next) {
 });
 
 // Get list of qt entries, need user email
-router.get("/qtJournalEntries", async function(req, res, next) {
+router.get("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req, req.query.creatorEmail)
     .then(async () => {
       await QTEntryModel.find(
@@ -323,9 +299,9 @@ router.get("/qtJournalEntries", async function(req, res, next) {
           if (err) {
             logger.error(
               "SERVER ROUTER: Error in retrieving all qt entries : " +
-                err +
-                " ---- user email : " +
-                req.query.creatorEmail
+              err +
+              " ---- user email : " +
+              req.query.creatorEmail
             );
           } else {
             return res.send(returnedEntries);
@@ -341,7 +317,7 @@ router.get("/qtJournalEntries", async function(req, res, next) {
     });
 });
 
-router.put("/qtJournalEntries", async function(req, res, next) {
+router.put("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
       try {
@@ -354,15 +330,15 @@ router.put("/qtJournalEntries", async function(req, res, next) {
             thoughts: req.body.thoughts,
             applicationImplication: req.body.applicationImplication
           },
-          function(err, createdEntry) {
+          function (err, createdEntry) {
             if (err) {
               logger.error("SERVER ROUTER: QT Journal entry update --> " + err);
               return next(err);
             } else {
               logger.info(
                 "SERVER ROUTER: QT Journal entry : " +
-                  req.body.title +
-                  " updated"
+                req.body.title +
+                " updated"
               );
               return res.sendStatus(200);
             }
@@ -378,7 +354,7 @@ router.put("/qtJournalEntries", async function(req, res, next) {
     });
 });
 
-router.delete("/qtJournalEntries", async function(req, res, next) {
+router.delete("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
       await QTEntryModel.deleteOne({ _id: req.query.journalID }, err => {
@@ -387,8 +363,8 @@ router.delete("/qtJournalEntries", async function(req, res, next) {
         } else {
           logger.info(
             "SERVER ROUTER: QT Journal Entry ID : " +
-              req.query.journalID +
-              " has been deleted"
+            req.query.journalID +
+            " has been deleted"
           );
           return res.sendStatus(200);
         }
