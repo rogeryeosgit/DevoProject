@@ -223,7 +223,7 @@
 
 - Dealing with Axios https.
 
-- Used mkcert to make a localhost cert and CA for dev purposes. 
+- Used mkcert to make a localhost cert and CA for dev purposes.
 
 - Tried using this, <https://stackoverflow.com/questions/56966137/how-to-run-nuxt-npm-run-dev-with-https-in-localhost> but didn't work out. mkcert needs to be done in project folder for keys to be in folder.
 
@@ -256,6 +256,10 @@
 - Solved logout loop issue
 
 - Update, deletes need to think through abit more about change of cookies. Checks done.
+
+- Button at bottom of front page done.
+
+- Enabled Dark theme - Ready for deployment after extraction of keys
 
 ## Running TODO LIST
 

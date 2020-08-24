@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     setTheme() {
-      return (this.$vuetify.theme.dark = false);
+      return (this.$vuetify.theme.dark = true);
     },
     isAuthenticated() {
       return this.$store.getters["userStore/isAuthenticated"];
