@@ -1,5 +1,6 @@
 const colors = require('vuetify/es5/util/colors').default
 const bodyParser = require('body-parser');
+const path = require('path');
 const fs = require('fs');
 
 module.exports = {
@@ -52,6 +53,8 @@ module.exports = {
   server: {
     https: {
       // Remove when not using localhost anymore
+      // key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      // cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
       key: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/privkey.pem'),
       cert: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/fullchain.pem')
     }
@@ -68,7 +71,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL || 'https://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
     credentials: false,
     https: true
   },
