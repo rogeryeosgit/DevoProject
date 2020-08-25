@@ -50,13 +50,13 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
   ],
-  // server: {
-  //   https: {
-  //     // Remove when not using localhost anymore
-  //     key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-  //     cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
-  //   }
-  // },
+  server: {
+    https: {
+      // Remove when not using localhost anymore
+      key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+    }
+  },
   /*
   ** Serverside middleware
   */
@@ -69,9 +69,9 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'https://localhost:3000',
     credentials: false,
-    https: false
+    https: true
   },
   /*
   ** vuetify module configuration
