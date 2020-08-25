@@ -261,6 +261,16 @@
 
 - Enabled Dark theme - Ready for deployment after extraction of keys
 
+- Trying to deploy but not serving page yet.
+
+- <https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04>
+
+- <https://medium.com/codeartisan/how-to-run-nuxt-js-on-digitalocean-159fc558d2ab>
+
+- <https://nuxtjs.org/faq/deployment-pm2/>
+
+- <https://pm2.keymetrics.io/docs/usage/log-management/>
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
