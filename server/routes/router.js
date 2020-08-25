@@ -12,33 +12,32 @@ var p = "";
 
 // GET route after registering
 router.get("/passages/today", async function (req, res, next) {
-  try {
-    if (req.query.planID != null) {
-      PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
-        if (err) {
-          logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
+  logger.error("1");
+  if (req.query.planID != null) {
+    PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
+      if (err) {
+        logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
+        p = await BRService.getPassage(getDefaultPassage());
+        return res.send(p);
+      } else {
+        try {
+          var month =
+            new Date().toString().substr(4, 3) +
+            " " +
+            new Date().toString().substr(11, 4);
+          var day = new Date().getDate();
+          p = await BRService.getPassage(
+            returnedPlan.passages.get(month).get(day.toString())
+          );
+          return res.send(p);
+        } catch (err) {
+          logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
           p = await BRService.getPassage(getDefaultPassage());
           return res.send(p);
-        } else {
-          try {
-            var month =
-              new Date().toString().substr(4, 3) +
-              " " +
-              new Date().toString().substr(11, 4);
-            var day = new Date().getDate();
-            p = await BRService.getPassage(
-              returnedPlan.passages.get(month).get(day.toString())
-            );
-            return res.send(p);
-          } catch (err) {
-            logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
-            p = await BRService.getPassage(getDefaultPassage());
-            return res.send(p);
-          }
         }
-      });
-    }
-  } catch {
+      }
+    });
+  } else {
     PlanModel.findOne({ planName: "--- Default Nav Plan ---" },
       async (err, returnedPlan) => {
         if (err) {
@@ -74,11 +73,13 @@ router.get("/passages/today", async function (req, res, next) {
 
 // Get a particular passage
 router.get("/passages", async function (req, res, next) {
+  logger.error("2");
   p = await BRService.getPassage(req.query.passageReference);
   return res.send(p);
 });
 
 router.post("/users", async function (req, res, next) {
+  logger.error("3");
   if (req.body.isLogin) {
     try {
       await AuthService.getUser(req.body.id, req.body.pwd, (result = async data => {
@@ -121,6 +122,7 @@ router.post("/users", async function (req, res, next) {
 
 // Send with user id for plan chosen by user
 router.get("/users/planChosen", async function (req, res, next) {
+  logger.error("4");
   await UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
@@ -137,6 +139,7 @@ router.get("/users/planChosen", async function (req, res, next) {
 
 // Send with user id for plan chosen by user
 router.post("/users/planChosen", async function (req, res, next) {
+  logger.error("5");
   await UserModel.findOneAndUpdate({ email: req.body.userID }, { planChosen: req.body.planChosen }, (err, returnedUser) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
@@ -147,6 +150,7 @@ router.post("/users/planChosen", async function (req, res, next) {
 });
 
 router.post("/plans", async function (req, res, next) {
+  logger.error("6");
   await AuthService.checkUser(req)
     .then(async () => {
       try {
@@ -388,6 +392,7 @@ module.exports = router;
 
 // Default if anything goes wrong in a plan is proverb for the day of the month
 function getDefaultPassage() {
+  logger.error("7");
   var day = new Date().getDate();
   var s = "Proverbs " + day;
   return s;
