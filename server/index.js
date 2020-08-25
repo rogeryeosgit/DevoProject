@@ -29,8 +29,8 @@ async function start() {
   app.use(nuxt.render)
 
   // Listen the server
-  https.createServer(nuxt.options.server.https, app).listen(port, host);
-  // app.listen(port, host);
+  // https.createServer(nuxt.options.server.https, app).listen(port, host);
+  app.listen(port, host);
 
   // Setting up logging for Express Server
   log4js.configure({
