@@ -13,7 +13,7 @@ var p = "";
 // GET route after registering
 router.get("/passages/today", async function (req, res, next) {
   logger.error("1");
-  if (req.query.planID != null) {
+  if (typeof req.query.planID != undefined && req.query.planID != null) {
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {
         logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
