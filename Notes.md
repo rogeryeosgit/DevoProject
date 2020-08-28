@@ -281,6 +281,8 @@
 
 - Adding a user on Ubuntu <https://www.cyberciti.biz/faq/create-a-user-account-on-ubuntu-linux/>
 
+- Setting up PM2 for auto reboot
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
