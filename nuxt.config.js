@@ -71,6 +71,7 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    browserBaseURL: 'https://qt.navigators.tech',
     baseURL: process.env.BASE_URL || 'https://127.0.0.1:3000',
     credentials: false,
     https: true
