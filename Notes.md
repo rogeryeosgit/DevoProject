@@ -283,6 +283,8 @@
 
 - Setting up PM2 for auto reboot
 
+- Need permissions for Git SSH to work
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
