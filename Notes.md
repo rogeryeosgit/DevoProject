@@ -263,13 +263,19 @@
 
 - Trying to deploy but not serving page yet.
 
-- <https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04>
+- <https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04>
 
 - <https://medium.com/codeartisan/how-to-run-nuxt-js-on-digitalocean-159fc558d2ab>
 
 - <https://nuxtjs.org/faq/deployment-pm2/>
 
 - <https://pm2.keymetrics.io/docs/usage/log-management/>
+
+## 28 Aug 2020
+
+- Load PM2 on start up <https://pm2.keymetrics.io/docs/usage/startup/>
+
+- Launch Nginx on startup <https://serverfault.com/questions/69350/launch-nginx-on-startup/994316>
 
 ## Running TODO LIST
 
