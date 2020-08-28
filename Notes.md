@@ -279,6 +279,8 @@
 
 - Setting up SSH with dev computer <https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-on-ubuntu-20-04>
 
+- Adding a user on Ubuntu <https://www.cyberciti.biz/faq/create-a-user-account-on-ubuntu-linux/>
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
