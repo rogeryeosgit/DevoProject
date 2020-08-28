@@ -277,6 +277,8 @@
 
 - Launch Nginx on startup <https://serverfault.com/questions/69350/launch-nginx-on-startup/994316>
 
+- Setting up SSH with dev computer <https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-on-ubuntu-20-04>
+
 ## Running TODO LIST
 
 - Implementing encryption between client and server communication and server encryption to other servers
