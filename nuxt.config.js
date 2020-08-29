@@ -2,8 +2,6 @@ const colors = require('vuetify/es5/util/colors').default
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
-const loadedKey = process.env.SSL_KEY;
-const loadedCert = process.env.SSL_CERT;
 
 module.exports = {
   mode: 'universal',
@@ -57,8 +55,8 @@ module.exports = {
       // Remove when not using localhost anymore
       // key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
       // cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
-      key: fs.readFileSync(loadedKey) || fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-      cert: fs.readFileSync(loadedCert) || fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+      key: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/privkey.pem') || fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/fullchain.pem') || fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
     }
   },
   /*
@@ -73,8 +71,8 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    browserBaseURL: process.env.BROWSER_BASE_URL,
-    baseURL: process.env.BASE_URL,
+    browserBaseURL: 'https://qt.navigators.tech',
+    baseURL: 'https://127.0.0.1:3000',
     credentials: false,
     https: true
   },
