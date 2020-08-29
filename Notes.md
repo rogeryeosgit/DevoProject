@@ -281,9 +281,13 @@
 
 - Adding a user on Ubuntu <https://www.cyberciti.biz/faq/create-a-user-account-on-ubuntu-linux/>
 
-- Setting up PM2 for auto reboot
+- Setting up PM2 for auto reboot. pm2 start --name qtapp npm -- start
 
 - Need permissions for Git SSH to work
+
+## 29 Aug 2020
+
+- Setting up environment variables. 
 
 ## Running TODO LIST
 

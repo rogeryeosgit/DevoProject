@@ -5,10 +5,14 @@ var serviceAccount = require("../../qtapp-3b06e-firebase-adminsdk-crr23-15b020dc
 
 var endPt;
 var fbAPIKey = process.env.FB_KEY; /* TODO: To be removed on deploy */
+const fbK = process.env.FB_KEY;
 var logger = log4js.getLogger();
 
 var AuthService = {
   init: function () {
+    logger.error("FBAPIKEY : " + process.env.FB_KEY);
+    logger.error("FB2 : " + fbAPIKey);
+    logger.error("Const FB : " + fbK);
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       databaseURL: "https://qtapp-3b06e.firebaseio.com"
