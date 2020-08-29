@@ -89,7 +89,10 @@ sw.*
 # Vim swap files
 *.swp
 
-# Self made certs
+# Self made certs and keys
 localhost.pem
 localhost-key.pem
 fb-service-account.json
+
+#Editor Configs
+.vscode

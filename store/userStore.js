@@ -94,7 +94,7 @@ export const actions = {
             userID = Cookie.get("qtAppID");
         }
         if (new Date().getTime() > +expirationTime || !token) {
-            console.log('No Token or invalid token');
+            // No Token or invalid token
             vuexContext.dispatch('logout');
             return;
         }
@@ -113,7 +113,7 @@ export const actions = {
         userID = Cookie.get("qtAppID");
 
         if (new Date().getTime() > +expirationTime || !token) {
-            console.log('No Token or invalid token');
+            // No Token or invalid token
             vuexContext.dispatch('logout');
             return;
         }
@@ -122,8 +122,7 @@ export const actions = {
         vuexContext.commit("setUserID", userID);
     },
     logout(vuexContext) {
-        // Clearing everthing just in case
-        console.log("UserStore: Logout is called");
+        // Clearing everthing for logout just in case
         vuexContext.commit('clearToken');
         vuexContext.commit('clearExpiryTime');
         vuexContext.commit('clearUserID');
