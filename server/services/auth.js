@@ -1,11 +1,10 @@
 var axios = require("axios");
 var log4js = require("log4js");
 var admin = require("firebase-admin");
-var serviceAccount = require("../../qtapp-3b06e-firebase-adminsdk-crr23-15b020dc01.json");
+var serviceAccount = require("../../fb-service-account.json");
 
 var endPt;
-var fbAPIKey = process.env.FB_KEY; /* TODO: To be removed on deploy */
-const fbK = process.env.FB_KEY;
+var fbAPIKey = process.env.FB_KEY;
 var logger = log4js.getLogger();
 
 var AuthService = {
@@ -16,9 +15,6 @@ var AuthService = {
     });
   },
   createUser: async function (id, pwd, callback) {
-    logger.error("FBAPIKEY : " + process.env.FB_KEY);
-    logger.error("FB2 : " + fbAPIKey);
-    logger.error("Const FB : " + fbK);
     endPt = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=";
     try {
       await axios.post(endPt + fbAPIKey, {

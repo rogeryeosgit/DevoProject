@@ -281,7 +281,7 @@
 
 - Adding a user on Ubuntu <https://www.cyberciti.biz/faq/create-a-user-account-on-ubuntu-linux/>
 
-- Setting up PM2 for auto reboot. pm2 start --name qtapp npm -- start
+- Setting up PM2 for auto reboot. pm2 start ecosystem.config.js (sudo it!)
 
 - Need permissions for Git SSH to work
 

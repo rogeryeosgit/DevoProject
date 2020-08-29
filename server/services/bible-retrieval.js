@@ -4,7 +4,7 @@ var log4js = require('log4js');
 // ESV API
 const BRUrl = 'https://api.esv.org/v3/passage/text/';
 const header = {
-    'Authorization': 'Token ' + '8eb188ee45d184cdcd17a8b09de3f0157c6e1546' /* TODO: To be removed on deploy */
+    'Authorization': 'Token ' + process.env.ESVAPI_KEY
 };
 
 var BRService = {

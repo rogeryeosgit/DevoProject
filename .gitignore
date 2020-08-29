@@ -92,4 +92,4 @@ sw.*
 # Self made certs
 localhost.pem
 localhost-key.pem
-qtapp-3b06e-firebase*.*
+fb-service-account.json

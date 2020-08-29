@@ -55,8 +55,8 @@ module.exports = {
       // Remove when not using localhost anymore
       // key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
       // cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
-      key: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/privkey.pem'),
-      cert: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/fullchain.pem')
+      key: fs.readFileSync(process.env.SSL_KEY) || fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync(process.env.SSL_CERT) || fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
     }
   },
   /*
@@ -71,8 +71,8 @@ module.exports = {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    browserBaseURL: 'https://qt.navigators.tech',
-    baseURL: process.env.BASE_URL || 'https://127.0.0.1:3000',
+    browserBaseURL: process.env.BROWSER_BASE_URL,
+    baseURL: process.env.BASE_URL,
     credentials: false,
     https: true
   },
