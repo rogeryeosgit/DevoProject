@@ -2,6 +2,8 @@ const colors = require('vuetify/es5/util/colors').default
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const loadedKey = process.env.SSL_KEY;
+const loadedCert = process.env.SSL_CERT;
 
 module.exports = {
   mode: 'universal',
@@ -55,8 +57,8 @@ module.exports = {
       // Remove when not using localhost anymore
       // key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
       // cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
-      key: fs.readFileSync(process.env.SSL_KEY) || fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-      cert: fs.readFileSync(process.env.SSL_CERT) || fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+      key: fs.readFileSync(loadedKey) || fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync(loadedCert) || fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
     }
   },
   /*
