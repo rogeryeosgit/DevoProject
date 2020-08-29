@@ -10,15 +10,15 @@ var logger = log4js.getLogger();
 
 var AuthService = {
   init: function () {
-    logger.error("FBAPIKEY : " + process.env.FB_KEY);
-    logger.error("FB2 : " + fbAPIKey);
-    logger.error("Const FB : " + fbK);
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
       databaseURL: "https://qtapp-3b06e.firebaseio.com"
     });
   },
   createUser: async function (id, pwd, callback) {
+    logger.error("FBAPIKEY : " + process.env.FB_KEY);
+    logger.error("FB2 : " + fbAPIKey);
+    logger.error("Const FB : " + fbK);
     endPt = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=";
     try {
       await axios.post(endPt + fbAPIKey, {
