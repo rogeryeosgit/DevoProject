@@ -4,7 +4,7 @@ var admin = require("firebase-admin");
 var serviceAccount = require("../../qtapp-3b06e-firebase-adminsdk-crr23-15b020dc01.json");
 
 var endPt;
-var fbAPIKey = "AIzaSyC0uyISu-yNt96T8VBT9_attsIDuuw77O4"; /* TODO: To be removed on deploy */
+var fbAPIKey = process.env.FB_KEY; /* TODO: To be removed on deploy */
 var logger = log4js.getLogger();
 
 var AuthService = {
