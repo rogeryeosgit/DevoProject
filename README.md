@@ -3,7 +3,7 @@
 > Overview
 
 This project is a culmination of my own technical learning over the last year or so. It is meant to move me from pen and paper journaling of my Quiet Times to being internet based.
-It is also meant to make it easy for people who ever want to read a passage of scripture for devotion without the hassle of finding a book. You can find the final form at (https://qt.navigators.tech)
+It is also meant to make it easy for people who ever want to read a passage of scripture for devotion without the hassle of finding a book. You can find the final form at (<https://qt.navigators.tech>)
 
 > Technical Stack
 
