@@ -17,7 +17,7 @@ It is also meant to make it easy for people who ever want to read a passage of s
 
 > Extra Stuff
 
-Don't suppose anyone would ever want to read it, but my thinking and work progress is documented in (Notes.md) along with some of the other repos in my github.
+Don't suppose anyone would ever want to read it, but my thinking and work progress is documented in [Notes.md](Notes.md) along with some of the other repos in my github.
 Project work progress can be seen in the github Projects Tab. Welcome comments for improvement and pull requests.
 
 ## Version 1.0
