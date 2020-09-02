@@ -1,19 +1,19 @@
 # DevoProject
 
-> Overview
+## Overview
 
 This project is a culmination of my own technical learning over the last year or so. It is meant to move me from pen and paper journaling of my Quiet Times to being internet based.
 It is also meant to make it easy for people who ever want to read a passage of scripture for devotion without the hassle of finding a book. You can find the final form at (<https://qt.navigators.tech>)
 
 > Technical Stack
 
-[Vuetify](https://vuetifyjs.com/en/) - Vue UI Library based on [Material Design](https://material.io/design/introduction)
-[Nuxt](https://nuxtjs.org/) - Vue Framework that allowed me to do SSR
-[VueJS](https://vuejs.org/) - JS Framework for frontend
-[Node](https://nodejs.org/en/) - JS Runtime built on top of Chrome V8 engine
-[Express](https://expressjs.com/) - Web Application frame work for Node
-[MongoDB](https://www.mongodb.com/cloud/atlas) - Cloud hosted MongoDB database. AWS behind the scenes.
-[Firebase Auth](https://firebase.google.com/products/auth) - Simple free multiplatform sign in
+- [Vuetify](https://vuetifyjs.com/en/) - Vue UI Library based on [Material Design](https://material.io/design/introduction)
+- [Nuxt](https://nuxtjs.org/) - Vue Framework that allowed me to do SSR
+- [VueJS](https://vuejs.org/) - JS Framework for frontend
+- [Node](https://nodejs.org/en/) - JS Runtime built on top of Chrome V8 engine
+- [Express](https://expressjs.com/) - Web Application frame work for Node
+- [MongoDB](https://www.mongodb.com/cloud/atlas) - Cloud hosted MongoDB database. AWS behind the scenes.
+- [Firebase Auth](https://firebase.google.com/products/auth) - Simple free multiplatform sign in
 
 > Extra Stuff
 
