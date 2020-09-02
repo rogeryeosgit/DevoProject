@@ -52,10 +52,10 @@ module.exports = {
   server: {
     https: {
       // Remove when not using localhost anymore
-      // key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
-      // cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
-      key: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/privkey.pem'),
-      cert: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/fullchain.pem')
+      key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
+      // key: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/privkey.pem'),
+      // cert: fs.readFileSync('../etc/letsencrypt/live/qt.navigators.tech/fullchain.pem')
     }
   },
   /*

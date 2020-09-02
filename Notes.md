@@ -287,7 +287,11 @@
 
 ## 29 Aug 2020
 
-- Setting up environment variables. 
+- Setting up environment variables.
+
+## 2 Sep 2020
+
+- Tidying up notes for open sourcing Project.
 
 ## Running TODO LIST
 

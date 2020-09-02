@@ -1,7 +1,7 @@
 {
   "name": "qtapp",
   "version": "1.0.0",
-  "description": "QT App",
+  "description": "Your Personal QT App and Journaling App",
   "author": "RogerY",
   "private": true,
   "scripts": {

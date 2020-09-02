@@ -1,6 +1,34 @@
-# QTNuxtProject
+# DevoProject
 
-> QT App
+> Overview
+
+This project is a culmination of my own technical learning over the last year or so. It is meant to move me from pen and paper journaling of my Quiet Times to being internet based.
+It is also meant to make it easy for people who ever want to read a passage of scripture for devotion without the hassle of finding a book. You can find the final form at (https://qt.navigators.tech)
+
+> Technical Stack
+
+[Vuetify](https://vuetifyjs.com/en/) - Vue UI Library based on [Material Design](https://material.io/design/introduction)
+[Nuxt](https://nuxtjs.org/) - Vue Framework that allowed me to do SSR
+[VueJS](https://vuejs.org/) - JS Framework for frontend
+[Node](https://nodejs.org/en/) - JS Runtime built on top of Chrome V8 engine
+[Express](https://expressjs.com/) - Web Application frame work for Node
+[MongoDB](https://www.mongodb.com/cloud/atlas) - Cloud hosted MongoDB database. AWS behind the scenes.
+[Firebase Auth](https://firebase.google.com/products/auth) - Simple free multiplatform sign in
+
+> Extra Stuff
+
+Don't suppose anyone would ever want to read it, but my thinking and work progress is documented in (Notes.md) along with some of the other repos in my github.
+Project work progress can be seen in the github Projects Tab. Welcome comments for improvement and pull requests.
+
+## Version 1.0
+
+> Features
+
+- Authenticated access to Journal and Plans for personalization with Authorization checks
+- Create, list, update, delete and select QT Plans
+- Ability to write, list, update and delete QT journal entries
+- Passages are obtained from chosen QT Plans and shown on the landing page
+- Default passage comes from Proverbs
 
 ## Build Setup
 
@@ -15,8 +43,4 @@ $ npm run dev
 $ npm run build
 $ npm run start
 
-# generate static project
-$ npm run generate
-```
-
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+Created using Nuxt, check out [Nuxt.js docs](https://nuxtjs.org).
