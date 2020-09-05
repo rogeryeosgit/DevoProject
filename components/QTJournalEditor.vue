@@ -18,7 +18,6 @@
           <v-row>
             <v-col>
               <v-textarea
-                auto-grow
                 solo
                 counter
                 v-model="entryThoughts"

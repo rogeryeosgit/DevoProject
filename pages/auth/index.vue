@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-text>
         <v-form>
-          <v-text-field v-model="email" label="Username" prepend-icon="mdi-account-circle" />
+          <v-text-field v-model="email" label="Email" prepend-icon="mdi-account-circle" />
           <v-text-field
             :type="showPassword ? 'text' : 'password'"
             label="Password"
