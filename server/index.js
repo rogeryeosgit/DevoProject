@@ -43,7 +43,7 @@ async function start() {
       cert: fs.readFileSync(process.env.SSLCERT)
     }
   }
-
+  console.log("How many times???");
   https.createServer(httpsOptions, app).listen(port, host);
 
   // Listen to the server
