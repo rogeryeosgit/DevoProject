@@ -6,7 +6,7 @@
       :entryDate="date"
       :entryReference="getReference"
     ></QTJournalEditor>
-    <v-btn @click="cancel" color="error">Cancel</v-btn>
+    <v-btn @click="cancel" color="warning">Cancel</v-btn>
     <v-btn @click="submit" color="success">Save</v-btn>
   </div>
 </template>

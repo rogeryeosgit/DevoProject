@@ -298,3 +298,11 @@
 - Server side needs to check cookie for user validity / need to check token for every modification of backend - done
 
 - If logged in show write journal button on front page, if logged out show log in to write or something like that - done
+
+## 9 Sep 2020
+
+- Enabled local and production ssl certs without a change of code on deployment
+
+- Fine tuned some button color issues
+
+- Took away footer

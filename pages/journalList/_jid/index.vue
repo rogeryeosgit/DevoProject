@@ -9,7 +9,7 @@
       :propEntryThoughts="retrievedEntry.thoughts"
       :propEntryAppImp="retrievedEntry.applicationImplication"
     ></QTJournalEditor>
-    <v-btn @click="cancel" color="error">Cancel</v-btn>
+    <v-btn @click="cancel" color="warning">Cancel</v-btn>
     <v-btn @click="updateEntry" color="success">Update</v-btn>
     <v-btn @click="deleteEntry" color="error" to="/journalList" nuxt>Delete</v-btn>
   </div>
