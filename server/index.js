@@ -5,6 +5,7 @@ const app = express();
 const https = require('https');
 var db = require('./services/db-connector');
 var authService = require('./services/auth');
+const fs = require('fs');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js')
@@ -22,15 +23,30 @@ async function start() {
     const builder = new Builder(nuxt)
     await builder.build()
   }
-  
+
   authService.init();
-  
+
   // Give nuxt middleware to express
   app.use(nuxt.render)
 
-  // Listen the server
-  https.createServer(nuxt.options.server.https, app).listen(port, host);
-  // app.listen(port, host);
+  // Config for both local server and prod server
+  if (config.dev) {
+    var httpsOptions = {
+      key: fs.readFileSync(process.env.LOCAL_SSLKEY),
+      cert: fs.readFileSync(process.env.LOCAL_SSLCERT)
+    }
+  } else {
+    var httpsOptions = {
+      key: fs.readFileSync(process.env.SSLKEY),
+      cert: fs.readFileSync(process.env.SSLCERT)
+    }
+  }
+
+  https.createServer(httpsOptions, app).listen(port, host);
+
+  // Listen to the server
+  // https.createServer(nuxt.options.server.https, app).listen(port, host);
+  // app.listen(port, host); if no https
 
   // Setting up logging for Express Server
   log4js.configure({

@@ -293,42 +293,16 @@
 
 - Tidying up notes for open sourcing Project.
 
-## Running TODO LIST
+- Implementing encryption between client and server communication and server encryption to other servers - done
 
-- Implementing encryption between client and server communication and server encryption to other servers
+- Server side needs to check cookie for user validity / need to check token for every modification of backend - done
 
-- Figure out refresh token procedures
+- If logged in show write journal button on front page, if logged out show log in to write or something like that - done
 
-- Personalize front page after people have signed in
+## 9 Sep 2020
 
-- Validate login data, provide a forget password feature and validate email address to be authentic
+- Enabled local and production ssl certs without a change of code on deployment
 
-- Add additional login methods (Google Sign-In, etc.)
+- Fine tuned some button color issues
 
-- Validation that verses chosen are selected after the previous verse
-
-- Allow journaling without passage? (ETWG, Prayer List, or Any other entries?)
-
-- Need to have feedback on Create Plan page if plan created is successful
-
-- Server side needs to check cookie for user validity / need to check token for every modification of backend
-
-- Need to handle pagination for plans and journal entries, in case too many plans and entries get returned all at once in future
-
-- On plan deletion, need to ascertain there is a catch all for users who use the plan
-
-- Excessive checkAuth used. Need to figure out best practices.
-
-- Perhaps have a way to input plans using csv
-
-- Automatically find images that suit tone of journal entries?
-
-- Analyze for keywords in the journals and give option to give summary automatically over timeframe?
-
-- Make a highlighting component that automatically quotes text and add highlighting while journalling.
-
-- Deletion of plans need to ask for confirmation
-
-- If logged in show write journal button on front page, if logged out show log in to write or something like that
-
-- Need to have a cache on the server so that I don't have to always access ESVApi and reduces the chance of it hitting the limit
+- Took away footer
