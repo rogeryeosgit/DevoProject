@@ -1,39 +1,62 @@
 <template>
   <v-app>
-    <h1 v-if="error.statusCode === 404">{{ pageNotFound }}</h1>
-    <h1 v-else>{{ otherError }}</h1>
-    <h1>You might have to log in to view this page</h1>
-    <NuxtLink to="/">Home page</NuxtLink>
+    <v-container>
+      <v-row justify="center">
+        <v-col cols="12" md="10">
+          <v-card outlined>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="headline mb-1 text-wrap"
+                >Your Personal QT and Journaling App</v-list-item-title>
+                <v-list-item-subtitle
+                  v-if="error.statusCode === 404"
+                  class="text--primary text-wrap"
+                >
+                  {{ pageNotFound }}
+                  <br />You will have to log in to view this page
+                </v-list-item-subtitle>
+                <v-list-item-subtitle v-else class="text--primary text-wrap">
+                  {{ otherError }}
+                  <br />You will have to log in to view this page
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+    <center>
+      <v-btn
+        to="/auth"
+        nuxt
+        exact
+        color="primary"
+      >Proceed to log in</v-btn>
+    </center>
   </v-app>
 </template>
 
 <script>
 export default {
-  layout: "empty",
   props: {
     error: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       pageNotFound: "404 Not Found",
-      otherError: "An error occurred"
+      otherError: "An error occurred",
     };
   },
   head() {
     const title =
       this.error.statusCode === 404 ? this.pageNotFound : this.otherError;
     return {
-      title
+      title,
     };
-  }
+  },
 };
 </script>
-
-<style scoped>
-h1 {
-  font-size: 20px;
-}
-</style>
