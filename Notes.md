@@ -310,3 +310,7 @@
 - Some problem on the server use <https://stackoverflow.com/questions/4075287/node-express-eaddrinuse-address-already-in-use-kill-server> kill -15
 
 - Found a problem with saving. Double saves in journal to test more to figure out how that happened.
+
+## 23 Sep 2020
+
+- Updating some packages
