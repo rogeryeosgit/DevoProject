@@ -316,3 +316,7 @@
 - Updating some npm and environment packages
 
 - Updating meta information and fav icon
+
+- Worked on validation for journal entries and plans
+
+- Working on getting confirmation for deletion and updating of journals and plans

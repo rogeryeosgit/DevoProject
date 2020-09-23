@@ -8,7 +8,21 @@
     ></PlanEditor>
     <br />
     <v-btn class="mr-1" @click="cancelPlan" color="warning">Cancel</v-btn>
-    <v-btn @click="updatePlan" color="success">Update Plan</v-btn>
+
+    <v-dialog v-model="updateDialog" persistent max-width="290" dark>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-bind="attrs" v-on="on" color="success">Update Plan</v-btn>
+      </template>
+      <v-card>
+        <v-card-title class="headline">Just to be sure...</v-card-title>
+        <v-card-text>Are you sure you would like to update this plan?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="warning" text @click="updateDialog = false">Cancel</v-btn>
+          <v-btn color="success" text @click="updatePlan(); updateDialog = false">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -20,6 +34,7 @@ export default {
   data() {
     return {
       id: this.$route.params.pid,
+      updateDialog: false
     };
   },
   components: {
