@@ -41,7 +41,7 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    '@nuxtjs/google-analytics', '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify'
   ],
   /*
   ** Nuxt.js modules
@@ -49,6 +49,7 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/google-analytics'
   ],
   server: {
   },
