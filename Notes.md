@@ -313,4 +313,6 @@
 
 ## 23 Sep 2020
 
-- Updating some packages
+- Updating some npm and environment packages
+
+- Updating meta information and fav icon

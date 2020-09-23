@@ -33,11 +33,11 @@
       <v-spacer />
       <v-app-bar-nav-icon right @click.stop="drawer = !drawer" />
     </v-app-bar>
-    <v-content>
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
