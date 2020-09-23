@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-form ref="PlanEditorForm">
     <v-row>
       <v-col cols="12" md="4">
         <v-text-field
@@ -55,9 +55,7 @@
           >
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu.save(date)"
-              >OK</v-btn
-            >
+            <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
           </v-date-picker>
         </v-menu>
       </v-col>
@@ -100,7 +98,7 @@
       {{ snackText }}
       <v-btn text @click="snack = false">Close</v-btn>
     </v-snackbar>
-  </div>
+  </v-form>
 </template>
 
 <script>
@@ -115,10 +113,8 @@ export default {
     return {
       planName: this.propPlanName || "",
       nameRules: [
-        v => !!v || "Name is required",
-        v =>
-          v.length <= 20 ||
-          "Name shouod be restricted to less than 20 characters"
+        v => !!v || "Name is required", // !! converts to boolean
+        v => v.length <= 20 || "Name shouod be restricted to less than 20 characters"
       ],
       description: this.propDescription || "",
       descriptionRules: [v => !!v || "Description is required"],
@@ -299,6 +295,9 @@ export default {
         month, // month
         0
       ).getDate();
+    },
+    checkValidation() {
+      return this.$refs.PlanEditorForm.validate();
     }
   },
   computed: {

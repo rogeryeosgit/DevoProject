@@ -20,7 +20,6 @@ var QTEntrySchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        lowercase: true,
         trim: true
     },
     thoughts: {

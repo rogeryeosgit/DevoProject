@@ -9,8 +9,8 @@
       :propEntryThoughts="retrievedEntry.thoughts"
       :propEntryAppImp="retrievedEntry.applicationImplication"
     ></QTJournalEditor>
-    <v-btn @click="cancel" color="warning">Cancel</v-btn>
-    <v-btn @click="updateEntry" color="success">Update</v-btn>
+    <v-btn class="mr-1" @click="cancel" color="warning">Cancel</v-btn>
+    <v-btn class="mr-1" @click="updateEntry" color="success">Update</v-btn>
     <v-btn @click="deleteEntry" color="error" to="/journalList" nuxt>Delete</v-btn>
   </div>
 </template>
@@ -53,19 +53,21 @@ export default {
       this.$router.push("/journalList");
     },
     updateEntry: function () {
-      var entry = this.$refs.QTJournalEditorComponent.getEntry();
+      if (this.$refs.QTJournalEditorComponent.checkValidation()) {
+        var entry = this.$refs.QTJournalEditorComponent.getEntry();
 
-      this.$store.dispatch("journalStore/updateEntry", {
-        journalID: this.id,
-        title: entry.title,
-        thoughts: entry.thoughts,
-        applicationImplication: entry.applicationImplication,
-      });
-      this.$router.push("/journalList");
+        this.$store.dispatch("journalStore/updateEntry", {
+          journalID: this.id,
+          title: entry.title,
+          thoughts: entry.thoughts,
+          applicationImplication: entry.applicationImplication,
+        });
+        this.$router.push("/journalList");
+      }
     },
     deleteEntry: function () {
       this.$store.dispatch("journalStore/deleteEntry", this.id);
     },
-  }
+  },
 };
 </script>
