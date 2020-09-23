@@ -1,5 +1,5 @@
 <template>
-  <v-form>
+  <v-form ref="QTJournalEditorForm">
     <v-container class="pa-0">
       <v-row justify="center">
         <v-col cols="12" md="7">
@@ -12,7 +12,7 @@
         <v-col>
           <v-row>
             <v-col>
-              <v-text-field v-model="entryTitle" label="Title" required></v-text-field>
+              <v-text-field v-model="entryTitle" label="Title" :rules="titleRules" required></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -22,12 +22,18 @@
                 counter
                 v-model="entryThoughts"
                 label="This part of the passage tells me that..."
+                :rules="thoughtsRules"
               ></v-textarea>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <v-text-field v-model="entryAppImp" label="Application / Implication" required></v-text-field>
+              <v-text-field
+                v-model="entryAppImp"
+                label="Application / Implication"
+                :rules="appImpRules"
+                required
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-col>
@@ -56,6 +62,11 @@ export default {
       entryTitle: this.propEntryTitle || "",
       entryThoughts: this.propEntryThoughts || "",
       entryAppImp: this.propEntryAppImp || "",
+      titleRules: [(v) => !!v || "Please enter a title for your entry."],
+      thoughtsRules: [(v) => !!v || "Please journal down some thoughts"],
+      appImpRules: [
+        (v) => !!v || "Please fill in an application for your life",
+      ],
     };
   },
   methods: {
@@ -63,9 +74,12 @@ export default {
       return {
         title: this.entryTitle,
         thoughts: this.entryThoughts,
-        applicationImplication: this.entryAppImp
+        applicationImplication: this.entryAppImp,
       };
     },
+    checkValidation: function() {
+      return this.$refs.QTJournalEditorForm.validate();
+    }
   },
 };
 </script>

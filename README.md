@@ -30,6 +30,12 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Passages are obtained from chosen QT Plans and shown on the landing page
 - Default passage comes from Proverbs
 
+## Version 1.0.1
+
+- Updated site meta and visuals
+- Resolved a number of bugs
+- Journal entry creation and Plans creation now includes some validation to ensure fields are filled
+
 ## Build Setup
 
 ``` bash

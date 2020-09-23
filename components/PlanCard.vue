@@ -5,7 +5,26 @@
       <v-card-subtitle>{{ planDescription }}</v-card-subtitle>
       <v-card-actions>
         <v-btn :disabled="notOwner" @click="$emit('update-plan', planID)" text>Update</v-btn>
-        <v-btn :disabled="notOwner" @click="$emit('delete-plan', planID)" color="red" text>Delete</v-btn>
+
+        <v-dialog v-model="deleteDialog" persistent max-width="290" dark>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :disabled="notOwner" v-bind="attrs" v-on="on" color="red" text>Delete</v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">Just to be sure...</v-card-title>
+            <v-card-text>Are you sure you would like to delete this plan?</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="warning" text @click="deleteDialog = false">Cancel</v-btn>
+              <v-btn
+                color="success"
+                text
+                @click="$emit('delete-plan', planID); deleteDialog = false"
+              >Yes</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
         <v-chip
           @click="$emit('selected', planID)"
           class="ma-2"
@@ -49,29 +68,30 @@ export default {
     "planDescription",
     "passages",
     "notOwner",
-    "isSelected"
+    "isSelected",
   ],
   data() {
     return {
-      show: false
+      show: false,
+      deleteDialog: false,
     };
   },
   computed: {
-    outlined: function() {
+    outlined: function () {
       if (this.isSelected === true) {
         return false;
       } else {
         return true;
       }
     },
-    chipText: function() {
+    chipText: function () {
       if (this.isSelected === true) {
         return "plan selected";
       } else {
         return "select";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
