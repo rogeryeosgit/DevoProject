@@ -7,17 +7,20 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    title: 'Your QT App',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
     ]
   },
+  /*
+  ** Prevent telemetry aquisition from nuxt
+  */
+  telemetry: false,
   /*
   ** Customize the progress-bar color
   */
@@ -38,7 +41,7 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    '@nuxtjs/vuetify',
+    '@nuxtjs/google-analytics', '@nuxtjs/vuetify'
   ],
   /*
   ** Nuxt.js modules
@@ -84,6 +87,11 @@ module.exports = {
           success: colors.green.accent3
         }
       }
+    }
+  },
+  publicRuntimeConfig: {
+    googleAnalytics: {
+      id: process.env.GA_ID
     }
   },
   /*
