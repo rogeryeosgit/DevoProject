@@ -41,7 +41,7 @@ module.exports = {
   ** Nuxt.js dev-modules
   */
   buildModules: [
-    '@nuxtjs/vuetify',
+    '@nuxtjs/google-analytics', '@nuxtjs/vuetify'
   ],
   /*
   ** Nuxt.js modules
@@ -87,6 +87,11 @@ module.exports = {
           success: colors.green.accent3
         }
       }
+    }
+  },
+  publicRuntimeConfig: {
+    googleAnalytics: {
+      id: process.env.GA_ID
     }
   },
   /*
