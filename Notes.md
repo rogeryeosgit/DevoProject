@@ -326,3 +326,5 @@
 ## 25 Sep 2020
 
 - Working on encryption of journal entries <https://github.com/wheresvic/mongoose-field-encryption>
+
+- Mostly ok, but facing a small deprecation error

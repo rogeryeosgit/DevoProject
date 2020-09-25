@@ -21,6 +21,7 @@
     "js-cookie": "^2.2.1",
     "log4js": "^6.3.0",
     "mongoose": "^5.10.6",
+    "mongoose-field-encryption": "3.0.6",
     "nuxt": "^2.14.6"
   },
   "devDependencies": {
