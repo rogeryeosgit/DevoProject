@@ -6,10 +6,12 @@ const BRUrl = 'https://api.esv.org/v3/passage/text/';
 const header = {
     'Authorization': 'Token ' + process.env.ESVAPI_KEY
 };
+var counter = 0;
 
 var BRService = {
     getPassage: async function (passage) {
         var logger = log4js.getLogger();
+        logger.info("BRService Count : " + counter++);
         try {
             const returnedData = await axios.get(BRUrl, {
                 headers: header,

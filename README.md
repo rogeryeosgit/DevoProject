@@ -36,6 +36,11 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Resolved a number of bugs
 - Journal entry creation and Plans creation now includes some validation to ensure fields are filled
 
+## Version 1.0.2
+
+- Set up encryption for journal entries (I can't read them in plain text now...)
+
+
 ## Build Setup
 
 ``` bash

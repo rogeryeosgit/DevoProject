@@ -320,14 +320,14 @@ router.put("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
       try {
-        await QTEntryModel.findByIdAndUpdate(
+        await QTEntryModel.findOneAndUpdate(
           {
             _id: req.body.journalID
           },
           {
             title: req.body.title,
             thoughts: req.body.thoughts,
-            applicationImplication: req.body.applicationImplication
+            applicationImplication: req.body.applicationImplication,
           },
           function (err, createdEntry) {
             if (err) {

@@ -328,3 +328,5 @@
 - Working on encryption of journal entries <https://github.com/wheresvic/mongoose-field-encryption>
 
 - Mostly ok, but facing a small deprecation error
+
+- Started looking at node-cache and caching for verses
