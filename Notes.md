@@ -322,3 +322,7 @@
 - Working on getting confirmation for deletion and updating of journals and plans
 
 - When not logged in, redirection to login page instead of error
+
+## 25 Sep 2020
+
+- Working on encryption of journal entries <https://github.com/wheresvic/mongoose-field-encryption>
