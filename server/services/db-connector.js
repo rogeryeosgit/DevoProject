@@ -5,7 +5,6 @@ const logger = log4js.getLogger();
 var db = {
   init() {
     // connect to MongoDB
-    // TODO: Remove access keys when deploying
     mongoose.connect(process.env.MONGODB_ACCESS, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

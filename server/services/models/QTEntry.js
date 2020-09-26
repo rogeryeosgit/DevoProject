@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const mongooseFieldEncryption = require('mongoose-field-encryption').fieldEncryption;
 
 var QTEntrySchema = new mongoose.Schema({
     creatorEmail: {
@@ -33,6 +34,8 @@ var QTEntrySchema = new mongoose.Schema({
         trim: true
     }
 });
+
+QTEntrySchema.plugin(mongooseFieldEncryption, { fields: ["thoughts", "applicationImplication"], secret: process.env.MONGOOSE_SECRET });
 
 module.exports = (mongoose.models && mongoose.models.QTEntry
     ? mongoose.models.QTEntry

@@ -66,7 +66,6 @@ export default {
     },
     changeSelected(id) {
       this.$store.dispatch("planStore/setChosenPlan", id);
-      this.$store.dispatch("passageStore/refreshPassage");
     },
   },
 };

@@ -1,5 +1,5 @@
 export const state = () => ({
-    chosenPlan: null,
+    chosenPlan: '',
     plans: []
 })
 
@@ -91,6 +91,9 @@ export const actions = {
             }
         }).then(data => {
             vuexContext.commit('setChosenPlan', data);
+        }).then(() => {
+            // to ensure only done after set plan is done.
+            vuexContext.dispatch('passageStore/refreshPassage', '', { root: true });
         }).catch(e => console.log(e))
     },
     async deletePlan(vuexContext, pID) {

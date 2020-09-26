@@ -26,9 +26,7 @@ router.get("/passages/today", async function (req, res, next) {
             " " +
             new Date().toString().substr(11, 4);
           var day = new Date().getDate();
-          p = await BRService.getPassage(
-            returnedPlan.passages.get(month).get(day.toString())
-          );
+          p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
           return res.send(p);
         } catch (err) {
           logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
@@ -198,7 +196,7 @@ router.put("/plans", async function (req, res, next) {
           await AuthService.checkPlanOwnership(req, returnedPlan.creatorEmail, (async isOwner => {
             if (isOwner) {
               try {
-                await PlanModel.findByIdAndUpdate({ _id: req.body.planID }, {
+                await PlanModel.findOneAndUpdate({ _id: req.body.planID }, {
                   planName: req.body.planName,
                   description: req.body.description,
                   passages: req.body.passages
@@ -290,44 +288,33 @@ router.post("/qtJournalEntries", async function (req, res, next) {
 
 // Get list of qt entries, need user email
 router.get("/qtJournalEntries", async function (req, res, next) {
-  await AuthService.checkUser(req, req.query.creatorEmail)
-    .then(async () => {
-      await QTEntryModel.find(
-        { creatorEmail: req.query.creatorEmail },
-        (err, returnedEntries) => {
-          if (err) {
-            logger.error(
-              "SERVER ROUTER: Error in retrieving all qt entries : " +
-              err +
-              " ---- user email : " +
-              req.query.creatorEmail
-            );
-          } else {
-            return res.send(returnedEntries);
-          }
-        }
-      );
-    })
-    .catch(error => {
-      logger.error(
-        "SERVER ROUTER: Error in retrieving all qt entries : " + error
-      );
-      return res.sendStatus(401);
-    });
+  await AuthService.checkUser(req, req.query.creatorEmail).then(async () => {
+    await QTEntryModel.find({ creatorEmail: req.query.creatorEmail }, (err, returnedEntries) => {
+      if (err) {
+        logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + err + " ---- user email : " + req.query.creatorEmail);
+      } else {
+        return res.send(returnedEntries);
+      }
+    }
+    );
+  }).catch(error => {
+    logger.error("SERVER ROUTER: Error in retrieving all qt entries : " + error);
+    return res.sendStatus(401);
+  });
 });
 
 router.put("/qtJournalEntries", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
       try {
-        await QTEntryModel.findByIdAndUpdate(
+        await QTEntryModel.findOneAndUpdate(
           {
             _id: req.body.journalID
           },
           {
             title: req.body.title,
             thoughts: req.body.thoughts,
-            applicationImplication: req.body.applicationImplication
+            applicationImplication: req.body.applicationImplication,
           },
           function (err, createdEntry) {
             if (err) {

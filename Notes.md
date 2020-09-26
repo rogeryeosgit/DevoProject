@@ -322,3 +322,17 @@
 - Working on getting confirmation for deletion and updating of journals and plans
 
 - When not logged in, redirection to login page instead of error
+
+## 25 Sep 2020
+
+- Working on encryption of journal entries <https://github.com/wheresvic/mongoose-field-encryption>
+
+- Mostly ok, but facing a small deprecation error
+
+- Started looking at node-cache and caching for verses
+
+## 26 Sep 2020
+
+- Setting up cache for ESVApi
+
+- Solving bug when plan is updated, home page is not refreshed. or if a person logs in, page is not immediately refreshed. Reactivity? - done

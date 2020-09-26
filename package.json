@@ -1,6 +1,6 @@
 {
   "name": "qtapp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Your Personal QT App and Journaling App",
   "author": "RogerY",
   "private": true,
@@ -21,6 +21,8 @@
     "js-cookie": "^2.2.1",
     "log4js": "^6.3.0",
     "mongoose": "^5.10.6",
+    "mongoose-field-encryption": "3.0.6",
+    "node-cache": "^5.1.2",
     "nuxt": "^2.14.6"
   },
   "devDependencies": {

@@ -13,7 +13,7 @@ export const mutations = {
 }
 
 export const actions = {
-    async refreshPassage(vuexContext) {
+    async refreshPassage(vuexContext, req) {
         var chosenPlan = vuexContext.rootState.planStore.chosenPlan;
         return await this.$axios.$get('/passages/today', {
             params: {

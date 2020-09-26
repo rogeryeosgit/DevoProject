@@ -24,6 +24,17 @@ async function start() {
     await builder.build()
   }
 
+  // Setting up logging for Express Server
+  log4js.configure({
+    appenders: { QTApp: { type: 'file', filename: 'QTApp.log' } },
+    categories: { default: { appenders: ['QTApp'], level: 'ALL' } }
+  });
+
+  const logger = log4js.getLogger();
+  logger.info(`Server listening on https://${host}:${port}`);
+
+  db.init();
+  
   authService.init();
 
   // Give nuxt middleware to express
@@ -47,15 +58,5 @@ async function start() {
   // https.createServer(nuxt.options.server.https, app).listen(port, host);
   // app.listen(port, host); if no https
 
-  // Setting up logging for Express Server
-  log4js.configure({
-    appenders: { QTApp: { type: 'file', filename: 'QTApp.log' } },
-    categories: { default: { appenders: ['QTApp'], level: 'ALL' } }
-  });
-
-  const logger = log4js.getLogger();
-  logger.info(`Server listening on https://${host}:${port}`);
-
-  db.init();
 }
 start()
