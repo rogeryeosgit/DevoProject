@@ -85,6 +85,9 @@ export const actions = {
     },
     async getPlanChosen(vuexContext) {
         var id = vuexContext.rootState.userStore.userID;
+        if (id == null) {
+            return; // When no one has logged in yet
+        }
         return await this.$axios.$get('/users/planChosen', {
             params: {
                 userID: id
