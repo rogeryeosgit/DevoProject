@@ -48,6 +48,10 @@
 import Passage from "@/components/Passage";
 
 export default {
+  mounted() {
+    // To ensure that if there were a refresh, correct passage from plan is shown
+    this.$store.dispatch("planStore/getPlanChosen");
+  },
   data() {
     return {
       date: new Date(),

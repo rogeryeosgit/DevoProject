@@ -330,3 +330,9 @@
 - Mostly ok, but facing a small deprecation error
 
 - Started looking at node-cache and caching for verses
+
+## 26 Sep 2020
+
+- Setting up cache for ESVApi
+
+- Solving bug when plan is updated, home page is not refreshed. or if a person logs in, page is not immediately refreshed. Reactivity? - done

@@ -67,7 +67,7 @@ export const actions = {
             console.log(e);
         });
     },
-    clearError(vuexContext, req) {
+    clearError(vuexContext) {
         vuexContext.commit('clearError');
     },
     checkCookie(vuexContext, req) {
@@ -103,6 +103,7 @@ export const actions = {
         vuexContext.commit("setUserID", userID);
         vuexContext.dispatch("planStore/getPlanChosen", '', { root: true });
     },
+    // Makes sure that token and what is sent out for axios is the same
     syncCookie(vuexContext) {
         let token;
         let expirationTime;

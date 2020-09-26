@@ -66,7 +66,6 @@ export default {
     isAuthenticated: function() {
       if (this.isAuthenticated) {
         this.$store.dispatch("planStore/getPlanChosen");
-        this.$store.dispatch("passageStore/refreshPassage"); 
         this.$router.push("/");
       }
     },
