@@ -14,6 +14,7 @@
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
             v-model="password"
+            v-on:keyup.enter="login"
           />
         </v-form>
       </v-card-text>
