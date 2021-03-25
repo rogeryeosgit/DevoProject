@@ -336,3 +336,9 @@
 - Setting up cache for ESVApi
 
 - Solving bug when plan is updated, home page is not refreshed. or if a person logs in, page is not immediately refreshed. Reactivity? - done
+
+## 22 Mar 2021
+
+- Updated node packages for latest vulnerabilities
+
+- Fixed wrong Psalm chapters
