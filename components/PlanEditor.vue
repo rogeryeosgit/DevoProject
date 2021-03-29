@@ -114,7 +114,6 @@ export default {
       planName: this.propPlanName || "",
       nameRules: [
         v => !!v || "Name is required", // !! converts to boolean
-        v => v.length <= 20 || "Name shouod be restricted to less than 20 characters"
       ],
       description: this.propDescription || "",
       descriptionRules: [v => !!v || "Description is required"],

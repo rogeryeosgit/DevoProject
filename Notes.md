@@ -342,3 +342,9 @@
 - Updated node packages for latest vulnerabilities
 
 - Fixed wrong Psalm chapters
+
+## 29 Mar 2021
+
+- Removed restrictions for length of Plan Name
+
+- Removed unnecessary ReadMes
