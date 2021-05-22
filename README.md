@@ -20,7 +20,7 @@ It is also meant to make it easy for people who ever want to read a passage of s
 Don't suppose anyone would ever want to read it, but my thinking and work progress is documented in [Notes.md](Notes.md) along with some of the other repos in my github.
 Project work progress can be seen in the github Projects Tab. Welcome comments for improvement and pull requests.
 
-## Version 1.0
+## Version 1.0 - 2 Sep 2020
 
 > Features
 
@@ -30,17 +30,22 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Passages are obtained from chosen QT Plans and shown on the landing page
 - Default passage comes from Proverbs
 
-## Version 1.0.1
+## Version 1.0.1 - 23 Sep 2020
 
 - Updated site meta and visuals
 - Resolved a number of bugs
 - Journal entry creation and Plans creation now includes some validation to ensure fields are filled
 
-## Version 1.0.2
+## Version 1.0.2 - 26 Sep 2020
 
 - Set up encryption for journal entries (I can't read them in plain text now...)
 - Passages are cached for quick access
 - Solved a reload bug for front page
+
+## Version 1.0.3
+
+- Patched Pslams wrong number of verses bug
+- 
 
 
 ## Build Setup

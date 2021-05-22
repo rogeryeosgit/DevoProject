@@ -5,7 +5,6 @@
         <v-text-field
           v-model="planName"
           :rules="nameRules"
-          :counter="20"
           label="Plan Name"
           required
         ></v-text-field>

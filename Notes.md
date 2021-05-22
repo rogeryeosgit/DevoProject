@@ -348,3 +348,11 @@
 - Removed restrictions for length of Plan Name
 
 - Removed unnecessary ReadMes
+
+## 22 May 2021
+
+- Working on forget password for logins.
+
+- Don't quite understand what a continueUrl Query means. Which url should I put? https://firebase.google.com/docs/reference/js/firebase.auth#actioncodesettings
+
+- https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendpasswordresetemail
