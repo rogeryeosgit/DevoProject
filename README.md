@@ -45,7 +45,7 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 ## Version 1.0.3
 
 - Patched Pslams wrong number of verses bug
-- 
+- Implemented reset password functionality
 
 
 ## Build Setup

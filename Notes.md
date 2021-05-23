@@ -351,8 +351,16 @@
 
 ## 22 May 2021
 
-- Working on forget password for logins.
+- Working on forget password for logins. - done
 
 - Don't quite understand what a continueUrl Query means. Which url should I put? https://firebase.google.com/docs/reference/js/firebase.auth#actioncodesettings
 
-- https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendpasswordresetemail
+- https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendpasswordresetemail - For client
+
+- https://firebase.google.com/docs/reference/admin/node/admin.auth.Auth-1#generatepasswordresetlink
+
+- https://medium.com/@paulbreslin/is-it-safe-to-expose-your-firebase-api-key-to-the-public-7e5bd01e637b
+
+- Need to implement email validity check from list of users - done
+
+- Need to provide feedback to user once reset password email is sent - done
