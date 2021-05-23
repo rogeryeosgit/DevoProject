@@ -42,7 +42,7 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Passages are cached for quick access
 - Solved a reload bug for front page
 
-## Version 1.0.3
+## Version 1.0.3 - 23 May 2021
 
 - Patched Pslams wrong number of verses bug
 - Implemented reset password functionality
