@@ -94,31 +94,17 @@ module.exports = {
   publicRuntimeConfig: {
     googleAnalytics: {
       id: process.env.GA_ID
-    },
-    firebase: {
-      config: {
-        apiKey: process.env.FB_KEY,
-        authDomain: process.env.FB_AUTH_DOMAIN,
-        databaseURL: process.env.FB_DATABASE_URL,
-        projectId: process.env.FB_PROJECT_ID,
-        storageBucket: process.env.FB_STORAGE_BUCKET,
-        messagingSenderId: process.env.FB_MESSAGING_SENDER_ID,
-        appId: process.env.FB_APP_ID
-      },
-      services: {
-        auth: true
-      }
     }
   },
   firebase: {
     config: {
-      apiKey: process.env.FB_KEY,
-      authDomain: process.env.FB_AUTH_DOMAIN,
-      databaseURL: process.env.FB_DATABASE_URL,
-      projectId: process.env.FB_PROJECT_ID,
-      storageBucket: process.env.FB_STORAGE_BUCKET,
-      messagingSenderId: process.env.FB_MESSAGING_SENDER_ID,
-      appId: process.env.FB_APP_ID
+      apiKey: 'AIzaSyAOYahacsrT-2O_T__716n1Kw6fX9X3Zzk',
+      authDomain: 'qtapp-3b06e.firebaseapp.com',
+      databaseURL: 'https://qtapp-3b06e.firebaseio.com',
+      projectId: 'qtapp-3b06e',
+      storageBucket: 'qtapp-3b06e.appspot.com',
+      messagingSenderId: '614414854141',
+      appId: '1:614414854141:web:fa63f8d748856cea151b94'
     },
     services: {
       auth: true
