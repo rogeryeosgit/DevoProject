@@ -364,3 +364,13 @@
 - Need to implement email validity check from list of users - done
 
 - Need to provide feedback to user once reset password email is sent - done
+
+## 6 Aug 2021
+
+- Looking through what are the best ways to share via phone. Contact Picker API only for Android and Chrome 80 https://web.dev/contact-picker/
+
+- Checking out Twilio's support for whatsapp message sending
+
+- Perhaps the best way is to copy to clip board and format it accordingly https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
+
+- Figuring out how share button should look like and is it only in the update journal page?
