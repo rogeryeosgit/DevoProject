@@ -380,3 +380,7 @@
 - Fixing security vulnerabilities
 
 - Checking if MongoDB needs to be updated
+
+- Need to remove awaits when await and callbacks are used at the same time (wrong usage)
+
+- Prettier has some issues with parser (?)

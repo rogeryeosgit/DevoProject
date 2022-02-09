@@ -14,7 +14,7 @@ var p = "";
 router.get("/passages/today", async function (req, res, next) {
   // if (req.hasOwnProperty('query') && typeof req.query.planID !== 'undefined' && req.query.planID != null) {
   if (req.query.planID != null) {
-    await PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
+    PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
       if (err) {
         logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
         p = await BRService.getPassage(getDefaultPassage());
@@ -36,7 +36,7 @@ router.get("/passages/today", async function (req, res, next) {
       }
     });
   } else {
-    await PlanModel.findOne({ planName: "--- Default Nav Plan ---" },
+    PlanModel.findOne({ planName: "--- Default Nav Plan ---" },
       async (err, returnedPlan) => {
         if (err) {
           logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
@@ -81,10 +81,7 @@ router.post("/users", async function (req, res, next) {
     }
   } else {
     try {
-      await AuthService.createUser(
-        req.body.id,
-        req.body.pwd,
-        (result = async data => {
+      await AuthService.createUser(req.body.id, req.body.pwd, (result = async data => {
           PlanModel.findOne(
             { planName: "--- Default Nav Plan ---" },
             async (err, returnedPlan) => {
@@ -112,7 +109,7 @@ router.post("/users", async function (req, res, next) {
 
 // Send with user id for plan chosen by user
 router.get("/users/planChosen", async function (req, res, next) {
-  await UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
+  UserModel.findOne({ email: req.query.userID }, (err, returnedUser) => {
     if (err) {
       logger.error("SERVER ROUTER: Error in getting User plan ID : " + err);
     } else {
@@ -189,7 +186,7 @@ router.get("/plans", async function (req, res, next) {
 router.put("/plans", async function (req, res, next) {
   await AuthService.checkUser(req)
     .then(async () => {
-      await PlanModel.findOne({ _id: req.body.planID }, async (err, returnedPlan) => {
+      PlanModel.findOne({ _id: req.body.planID }, async (err, returnedPlan) => {
         if (err) {
           logger.error("SERVER ROUTER: Error in checks for update of plans : " + err);
         } else {

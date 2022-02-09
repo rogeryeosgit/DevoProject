@@ -7,8 +7,7 @@ var db = {
     // connect to MongoDB
     mongoose.connect(process.env.MONGODB_ACCESS, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
+      useUnifiedTopology: true
     });
 
     //handle mongo error
