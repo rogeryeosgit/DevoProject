@@ -47,7 +47,6 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Patched Pslams wrong number of verses bug
 - Implemented reset password functionality
 
-
 ## Build Setup
 
 ``` bash

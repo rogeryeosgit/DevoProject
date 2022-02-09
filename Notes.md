@@ -353,13 +353,13 @@
 
 - Working on forget password for logins. - done
 
-- Don't quite understand what a continueUrl Query means. Which url should I put? https://firebase.google.com/docs/reference/js/firebase.auth#actioncodesettings
+- Don't quite understand what a continueUrl Query means. Which url should I put? <https://firebase.google.com/docs/reference/js/firebase.auth#actioncodesettings>
 
-- https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendpasswordresetemail - For client
+- <https://firebase.google.com/docs/reference/js/firebase.auth.Auth#sendpasswordresetemail> - For client
 
-- https://firebase.google.com/docs/reference/admin/node/admin.auth.Auth-1#generatepasswordresetlink
+- <https://firebase.google.com/docs/reference/admin/node/admin.auth.Auth-1#generatepasswordresetlink>
 
-- https://medium.com/@paulbreslin/is-it-safe-to-expose-your-firebase-api-key-to-the-public-7e5bd01e637b
+- <https://medium.com/@paulbreslin/is-it-safe-to-expose-your-firebase-api-key-to-the-public-7e5bd01e637b>
 
 - Need to implement email validity check from list of users - done
 
@@ -367,10 +367,16 @@
 
 ## 6 Aug 2021
 
-- Looking through what are the best ways to share via phone. Contact Picker API only for Android and Chrome 80 https://web.dev/contact-picker/
+- Looking through what are the best ways to share via phone. Contact Picker API only for Android and Chrome 80 <https://web.dev/contact-picker/>
 
 - Checking out Twilio's support for whatsapp message sending
 
-- Perhaps the best way is to copy to clip board and format it accordingly https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
+- Perhaps the best way is to copy to clip board and format it accordingly <https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText>
 
 - Figuring out how share button should look like and is it only in the update journal page?
+
+## 9 Feb 2022
+
+- Fixing security vulnerabilities
+
+- Checking if MongoDB needs to be updated
