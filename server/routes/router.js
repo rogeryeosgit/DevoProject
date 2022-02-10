@@ -63,13 +63,9 @@ router.get("/passages", async function (req, res, next) {
 router.post("/users", async function (req, res, next) {
   if (req.body.isLogin) {
     try {
-      await AuthService.getUser(
-        req.body.id,
-        req.body.pwd,
-        (result = async (data) => {
-          return res.send(data);
-        })
-      );
+      await AuthService.getUser(req.body.id, req.body.pwd, (result = async (data) => {
+        return res.send(data);
+      }));
     } catch (err) {
       logger.error("SERVER ROUTER: Error after calling AuthService -> " + err);
       return res.status(500).send("Authentication Failed");
@@ -203,11 +199,10 @@ router.put("/plans", async function (req, res, next) {
         });
       }
     });
-  })
-    .catch((error) => {
-      logger.error("SERVER ROUTER: Error in updating plan : " + error);
-      return res.sendStatus(401);
-    });
+  }).catch((error) => {
+    logger.error("SERVER ROUTER: Error in updating plan : " + error);
+    return res.sendStatus(401);
+  });
 });
 
 router.delete("/plans", async function (req, res, next) {

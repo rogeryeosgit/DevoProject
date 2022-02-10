@@ -7,5 +7,5 @@
     
     },
     "eslint.format.enable": true,
-    "prettier.printWidth": 250
+    "editor.wordWrapColumn": 250,
 }

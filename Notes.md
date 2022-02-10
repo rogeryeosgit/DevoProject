@@ -379,7 +379,7 @@
 
 - Fixing security vulnerabilities
 
-- Checking if MongoDB needs to be updated
+- Checking if MongoDB needs to be updated - done
 
 - Need to remove awaits when await and callbacks are used at the same time (wrong usage)
 
