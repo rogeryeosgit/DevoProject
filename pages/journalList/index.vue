@@ -2,7 +2,9 @@
   <div>
     <h1>Your Journal Entries</h1>
     <center>
-      <v-btn to="/journalList/createEntry" nuxt exact color="primary">Write QT Thoughts</v-btn>
+      <v-btn to="/journalList/createEntry" nuxt exact color="primary"
+        >Write QT Thoughts</v-btn
+      >
     </center>
     <br />
     <JournalCard
@@ -38,9 +40,9 @@ export default {
   },
   middleware: ["checkAuth", "loginCheck"],
   components: {
-    JournalCard
+    JournalCard,
   },
-  computed: { 
+  computed: {
     entriesInReverse: function () {
       var entries = this.$store.getters["journalStore/getAllQTEntries"];
       return entries.slice().reverse();
@@ -49,7 +51,7 @@ export default {
   methods: {
     viewSelectedEntry(id) {
       this.$router.push("/journalList/" + id);
-    }
-  }
+    },
+  },
 };
 </script>

@@ -101,7 +101,18 @@ export default {
   },
   computed: {
     retrievedEntry: function () {
-      return this.$store.getters["journalStore/getEntryUsingID"](this.id);
+      if (this.$store.getters["journalStore/getEntryUsingID"](this.id) != null) {
+        return this.$store.getters["journalStore/getEntryUsingID"](this.id);
+      } else {
+        // Need this to get out of the component after deletion
+        return {
+          title: "",
+          date: new Date(),
+          passageReference: "",
+          thoughts: "",
+          applicationImplication: "",
+        };
+      }
     },
   },
   methods: {
