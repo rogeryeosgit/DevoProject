@@ -75,6 +75,7 @@ export default {
         title: this.entryTitle,
         thoughts: this.entryThoughts,
         applicationImplication: this.entryAppImp,
+        passageReference: this.entryReference
       };
     },
     checkValidation: function() {

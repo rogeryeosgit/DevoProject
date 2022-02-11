@@ -33,6 +33,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar v-model="snack" :timeout="4000" :color="snackColor">
+      {{ snackText }}
+      <v-btn text @click="snack = false">Close</v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -44,16 +49,13 @@ export default {
     var entry = context.store.getters["journalStore/getEntryUsingID"](
       context.route.params.jid
     );
-    return context.app.$axios
-      .$get("/passages", {
+    return context.app.$axios.$get("/passages", {
         params: {
           passageReference: entry.passageReference,
         },
-      })
-      .then((data) => {
+      }).then((data) => {
         return { passageContents: data.passages[0] };
-      })
-      .catch((e) => context.error(e));
+      }).catch((e) => context.error(e));
   },
   middleware: ["checkAuth", "loginCheck"],
   components: {
@@ -64,6 +66,9 @@ export default {
       id: this.$route.params.jid,
       updateDialog: false,
       deleteDialog: false,
+      snack: false,
+      snackColor: "",
+      snackText: ""
     };
   },
   computed: {
@@ -84,14 +89,13 @@ export default {
   },
   methods: {
     copyContents: function () {
-      navigator.clipboard.writeText("<empty clipboard>").then(
-        function () {
-          console.log("Test");
-        },
-        function () {
-          console.log("Nope!");
-        }
-      );
+      var entry = this.$refs.QTJournalEditorComponent.getEntry();
+      var copyText = entry.passageReference + "\n\nTitle: " + entry.title + "\n\n" + entry.thoughts + "\n\nApplication: " + entry.applicationImplication;
+      navigator.clipboard.writeText(copyText).then(()=> {
+        this.snack = true;
+        this.snackColor = "success";
+        this.snackText = "Copied to Clipboard";
+      });
     },
     cancel: function () {
       this.$router.push("/journalList");

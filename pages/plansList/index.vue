@@ -1,19 +1,6 @@
 <template>
   <div>
-    <PlanCard
-      class="mx-auto"
-      v-for="i in plans"
-      :key="i._id"
-      :planID="i._id"
-      :planName="i.planName"
-      :planDescription="i.description"
-      :passages="i.passages"
-      :notOwner="!isOwner(i.creatorEmail)"
-      @delete-plan="submitPlanDeletion"
-      @update-plan="updateSelectedPlan"
-      :isSelected="checkSelected(i._id)"
-      @selected="changeSelected"
-    ></PlanCard>
+    <PlanCard class="mx-auto" v-for="i in plans" :key="i._id" :planID="i._id" :planName="i.planName" :planDescription="i.description" :passages="i.passages" :notOwner="!isOwner(i.creatorEmail)" @delete-plan="submitPlanDeletion" @update-plan="updateSelectedPlan" :isSelected="checkSelected(i._id)" @selected="changeSelected" :ref="i._id" :selectedLater="false"></PlanCard>
     <center>
       <v-btn to="/plansList/createPlan" nuxt exact color="primary">Create Plan</v-btn>
     </center>
@@ -25,12 +12,10 @@ import PlanCard from "@/components/PlanCard";
 
 export default {
   asyncData(context) {
-    return context.app.$axios
-      .$get("/plans")
-      .then((data) => {
+    context.store.dispatch("planStore/getPlanChosen");
+    return context.app.$axios.$get("/plans").then((data) => {
         context.store.dispatch("planStore/storePlans", data);
-      })
-      .catch((e) => context.error(e));
+    }).catch((e) => context.error(e));
   },
   components: {
     PlanCard,
@@ -67,7 +52,7 @@ export default {
     changeSelected(id) {
       this.$store.dispatch("planStore/setChosenPlan", id);
     },
-  },
+  }
 };
 </script>
 

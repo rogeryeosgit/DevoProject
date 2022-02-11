@@ -1,5 +1,5 @@
 export const state = () => ({
-    chosenPlan: '',
+    chosenPlan: null,
     plans: []
 })
 
@@ -72,8 +72,9 @@ export const actions = {
             userID: userID,
             planChosen: planID
         }).then(result => {
-            if (result.status === 201) {
+            if (result === "Created") {
                 // Success!
+                vuexContext.dispatch('passageStore/refreshPassage', '', { root: true });
             }
         }).catch(e => console.log(e));
     },
@@ -94,9 +95,6 @@ export const actions = {
             }
         }).then(data => {
             vuexContext.commit('setChosenPlan', data);
-        }).then(() => {
-            // to ensure only done after set plan is done.
-            vuexContext.dispatch('passageStore/refreshPassage', '', { root: true });
         }).catch(e => console.log(e))
     },
     async deletePlan(vuexContext, pID) {

@@ -101,7 +101,8 @@ export const actions = {
         vuexContext.commit("setToken", token);
         vuexContext.commit("setExpiryTime", expirationTime);
         vuexContext.commit("setUserID", userID);
-        vuexContext.dispatch("planStore/getPlanChosen", '', { root: true });
+        // Commenting this out because of excessive backend calls, may have been resolved with some updated code, KIV to delete
+        // vuexContext.dispatch("planStore/getPlanChosen", '', { root: true });
     },
     // Makes sure that token and what is sent out for axios is the same
     syncCookie(vuexContext) {

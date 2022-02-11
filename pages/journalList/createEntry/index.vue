@@ -1,11 +1,6 @@
 <template>
   <div>
-    <QTJournalEditor
-      ref="QTJournalEditorComponent"
-      :entryPassageContents="getPassageContents"
-      :entryDate="date"
-      :entryReference="getReference"
-    ></QTJournalEditor>
+    <QTJournalEditor ref="QTJournalEditorComponent" :entryPassageContents="getPassageContents" :entryDate="date" :entryReference="getReference"></QTJournalEditor>
     <v-btn class="mr-1" @click="cancel" color="warning">Cancel</v-btn>
     <v-btn @click="submit" color="success">Save</v-btn>
   </div>
@@ -15,6 +10,12 @@
 import QTJournalEditor from "@/components/QTJournalEditor";
 
 export default {
+    mounted() {
+    // To ensure that if there were a refresh, correct passage from plan is shown
+    this.$store.dispatch("planStore/getPlanChosen").then(() => {
+      this.$store.dispatch("passageStore/refreshPassage");
+    });
+  },
   middleware: ["checkAuth", "loginCheck"],
   components: {
     QTJournalEditor,

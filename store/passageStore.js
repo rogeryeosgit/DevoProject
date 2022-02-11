@@ -25,6 +25,12 @@ export const actions = {
         }).catch(e => {
             console.log(e);
         });
+    },
+    refreshTodaysPassage(vuexContext, todaysPassage) {
+        vuexContext.commit('setTodaysPassage', todaysPassage);
+    },
+    refreshTodaysReference(vuexContext, todaysReference) {
+        vuexContext.commit('setTodaysReference', todaysReference);
     }
 }
 

@@ -15,7 +15,7 @@ router.get("/passages/today", async function (req, res, next) {
   // if (req.hasOwnProperty('query') && typeof req.query.planID !== 'undefined' && req.query.planID != null) {
   if (req.query.planID != null) {
     PlanModel.findOne({ _id: req.query.planID }, async (err, returnedPlan) => {
-      if (err) {
+      if (err || returnedPlan == null) {
         logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
         p = await BRService.getPassage(getDefaultPassage());
         return res.send(p);
@@ -35,7 +35,7 @@ router.get("/passages/today", async function (req, res, next) {
   } else {
     PlanModel.findOne({ planName: "--- Default Nav Plan ---" }, async (err, returnedPlan) => {
       if (err) {
-        logger.error("SERVER ROUTER: Error after looking up DB for default Plan : " + err);
+        logger.error("SERVER ROUTER: Error after looking up DB for default Plan with null PlanID : " + err);
         p = await BRService.getPassage(getDefaultPassage());
         return res.send(p);
       } else {
@@ -45,7 +45,7 @@ router.get("/passages/today", async function (req, res, next) {
           p = await BRService.getPassage(returnedPlan.passages.get(month).get(day.toString()));
           return res.send(p);
         } catch (err) {
-          logger.error("SERVER ROUTER: Error after trying to access ESV API during default : " + err);
+          logger.error("SERVER ROUTER: Error after trying to access ESV API during default with null PlanID : " + err);
           p = await BRService.getPassage(getDefaultPassage());
           return res.send(p);
         }

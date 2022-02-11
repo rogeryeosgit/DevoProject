@@ -97,7 +97,8 @@ export default {
   watch: {
     isAuthenticated: function() {
       if (this.isAuthenticated) {
-        this.$store.dispatch("planStore/getPlanChosen");
+        // Removed because of excessive calls on the backend, believe to have been superceded by updates. To be deleted KIV
+        // this.$store.dispatch("planStore/getPlanChosen");
         this.$router.push("/");
       }
     },

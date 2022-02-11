@@ -50,7 +50,9 @@ import Passage from "@/components/Passage";
 export default {
   mounted() {
     // To ensure that if there were a refresh, correct passage from plan is shown
-    this.$store.dispatch("planStore/getPlanChosen");
+    this.$store.dispatch("planStore/getPlanChosen").then(() => {
+      this.$store.dispatch("passageStore/refreshPassage");
+    });
   },
   data() {
     return {

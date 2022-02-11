@@ -384,3 +384,7 @@
 - Need to remove awaits when await and callbacks are used at the same time (wrong usage)
 
 - Prettier has some issues with parser (?) - Reverted to ESLint
+
+## 11 Feb 2022
+
+- Finishing up QT entries copy and pasting
