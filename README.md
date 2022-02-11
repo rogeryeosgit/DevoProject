@@ -47,7 +47,7 @@ Project work progress can be seen in the github Projects Tab. Welcome comments f
 - Patched Pslams wrong number of verses bug
 - Implemented reset password functionality
 
-## Version 1.0.4 - soon Feb 2022
+## Version 1.0.4 - 12 Feb 2022
 
 - Updated to work with MongoDB 5.0
 - Functionality to copy journal entries to clipboard
