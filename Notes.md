@@ -388,3 +388,5 @@
 ## 11 Feb 2022
 
 - Finishing up QT entries copy and pasting
+
+- Fixed bugs related to refreshing pages with passages / selected plans

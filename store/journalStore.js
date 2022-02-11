@@ -84,5 +84,8 @@ export const getters = {
     },
     getEntryUsingID: (state) => (id) => {
         return state.qtEntries.find(x => x._id === id);
+    },
+    getQTEntriesLength(state) {
+        return state.qtEntries.length;
     }
 }

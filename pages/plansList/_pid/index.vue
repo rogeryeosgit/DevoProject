@@ -1,11 +1,6 @@
 <template>
   <div>
-    <PlanEditor
-      :propPlanName="retrievedPlan.planName"
-      :propDescription="retrievedPlan.description"
-      :propTempStore="retrievedPlan.passages"
-      ref="PlanEditorComponent"
-    ></PlanEditor>
+    <PlanEditor :propPlanName="retrievedPlan.planName" :propDescription="retrievedPlan.description" :propTempStore="retrievedPlan.passages" ref="PlanEditorComponent"></PlanEditor>
     <br />
     <v-btn class="mr-1" @click="cancelPlan" color="warning">Cancel</v-btn>
 
@@ -30,6 +25,13 @@
 import PlanEditor from "@/components/PlanEditor";
 
 export default {
+  asyncData(context) {
+    if (context.store.getters["planStore/getPlansSize"] === 0) {
+      return context.app.$axios.$get("/plans").then((data) => {
+        context.store.dispatch("planStore/storePlans", data);
+      }).catch((e) => context.error(e));
+    }
+  },
   middleware: ["checkAuth", "loginCheck"],
   data() {
     return {

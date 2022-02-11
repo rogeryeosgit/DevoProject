@@ -123,5 +123,8 @@ export const getters = {
     },
     getPlanUsingID: (state) => (id) => {
         return state.plans.find(x => x._id === id);
+    },
+    getPlansSize(state) {
+        return state.plans.length;
     }
 }
