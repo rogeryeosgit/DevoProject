@@ -34,7 +34,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/gtag',
+    '~/plugins/gtag',
     '~plugins/date-filter.js',
     '@/plugins/axios'
   ],
@@ -91,11 +91,6 @@ module.exports = {
       }
     }
   },
-  // publicRuntimeConfig: {
-  //   googleAnalytics: {
-  //     id: process.env.GA_ID
-  //   }
-  // },
   firebase: {
     config: {
       apiKey: 'AIzaSyAOYahacsrT-2O_T__716n1Kw6fX9X3Zzk',
