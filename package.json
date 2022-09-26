@@ -13,20 +13,19 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/firebase": "^8.2.2",
-    "@nuxtjs/google-analytics": "^2.4.0",
-    "@nuxtjs/vuetify": "^1.11.2",
+    "@nuxtjs/vuetify": "1.11.2",
     "body-parser": "^1.19.0",
     "cross-env": "^5.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
-    "firebase": "^8.6.2",
     "firebase-admin": "^11.0.1",
     "js-cookie": "^2.2.1",
     "log4js": "^6.4.0",
     "mongoose": "^6.4.6",
     "mongoose-field-encryption": "3.0.6",
     "node-cache": "^5.1.2",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "vue-gtag": "^1.16.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

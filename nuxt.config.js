@@ -34,6 +34,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@/plugins/gtag',
     '~plugins/date-filter.js',
     '@/plugins/axios'
   ],
@@ -49,7 +50,6 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/google-analytics',
     '@nuxtjs/firebase'
   ],
   server: {
@@ -91,11 +91,11 @@ module.exports = {
       }
     }
   },
-  publicRuntimeConfig: {
-    googleAnalytics: {
-      id: process.env.GA_ID
-    }
-  },
+  // publicRuntimeConfig: {
+  //   googleAnalytics: {
+  //     id: process.env.GA_ID
+  //   }
+  // },
   firebase: {
     config: {
       apiKey: 'AIzaSyAOYahacsrT-2O_T__716n1Kw6fX9X3Zzk',

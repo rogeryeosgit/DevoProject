@@ -390,3 +390,9 @@
 - Finishing up QT entries copy and pasting
 
 - Fixed bugs related to refreshing pages with passages / selected plans
+
+## 26 Sep 2022
+
+- Fixed some dependencies
+
+- Updating to google analytics 4
