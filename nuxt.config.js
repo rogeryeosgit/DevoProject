@@ -109,6 +109,8 @@ module.exports = {
   ** Build configuration
   */
   build: {
+
+    postcss: null,
     /*
     ** You can extend webpack config here
     */
