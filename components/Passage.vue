@@ -14,10 +14,18 @@
 export default {
   props: ['passageDate', 'passageContents', 'reference'],
   computed: {
-    passage: function() {
+    passage: function () {
       // Format passage verses to be superscript
-      var temp = this.passageContents.replace(/\[/g, '<b><sup>');
-      return temp.replace(/\]/g, '</sup></b>');
+      var temp = this.passageContents.replace(/(\[)(\d)/g, this.frontBracketReplacer);
+      return temp.replace(/(\d)(\])/g, this.backBracketReplacer);
+    }
+  },
+  methods: {
+    frontBracketReplacer(match, p1, p2) {
+      return '<b><sup>' + p2;
+    },
+    backBracketReplacer(match, p1, p2) {
+      return p1 + '</sup></b>';
     }
   }
 };

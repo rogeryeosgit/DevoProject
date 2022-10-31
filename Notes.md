@@ -399,6 +399,10 @@
 
 - Have to use Node 14.20.1 (LTS) to build, Node 16 has some issues with Vuetify - fibers <https://github.com/nuxt/nuxt.js/issues/9722>
 
-- Had to also manually include sass and sass-loader <https://stackoverflow.com/questions/67631879/nuxtjs-vuetify-throwing-lots-of-using-for-division-is-deprecated-and-will-be> and <https://stackoverflow.com/questions/68728903/how-to-setup-sass-scss-sass-loader-in-nuxt/68730454#68730454> since I'm using WebPack 4. Beyond that, WebPack 5 comes into play, but Nuxt 2 is still at 4. 
+- Had to also manually include sass and sass-loader <https://stackoverflow.com/questions/67631879/nuxtjs-vuetify-throwing-lots-of-using-for-division-is-deprecated-and-will-be> and <https://stackoverflow.com/questions/68728903/how-to-setup-sass-scss-sass-loader-in-nuxt/68730454#68730454> since I'm using WebPack 4. Beyond that, WebPack 5 comes into play, but Nuxt 2 is still at 4.
 
 - Need to consider upgrading to Nuxt 3 asap.
+
+## 31 Oct 2022
+
+- Fixed formatting bug when text comes with brackets. Front end may need to identify versions moving forward to deal with formatting issues. Or push editing of text to backend and front end only displays. (for consideration)
