@@ -13,7 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/firebase": "^8.2.2",
-    "@nuxtjs/vuetify": "^1.11.2",
+    "@nuxtjs/vuetify": "^1.12.3",
     "body-parser": "^1.19.0",
     "cross-env": "^5.2.0",
     "dotenv": "^8.2.0",
@@ -25,7 +25,7 @@
     "mongoose": "^6.4.6",
     "mongoose-field-encryption": "3.0.6",
     "node-cache": "^5.1.2",
-    "nuxt": "^2.14.6",
+    "nuxt": "^3.0.0",
     "vue-gtag": "^1.16.1",
     "sass": "~1.32.12",
     "sass-loader": "10.1.1"
