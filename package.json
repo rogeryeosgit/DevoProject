@@ -25,7 +25,7 @@
     "mongoose": "^6.4.6",
     "mongoose-field-encryption": "3.0.6",
     "node-cache": "^5.1.2",
-    "nuxt": "^2.14.6",
+    "nuxt": "^2.17.0",
     "vue-gtag": "^1.16.1",
     "sass": "~1.32.12",
     "sass-loader": "10.1.1"
