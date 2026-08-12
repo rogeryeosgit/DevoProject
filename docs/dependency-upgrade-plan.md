@@ -13,13 +13,19 @@ personal data can't afford.
 **This plan assumes the `nuxt4-migration` branch has already been merged to `master` and cut over
 to production.** It is a follow-on project, not something to run concurrently with that migration
 — stacking two large changes on one branch makes it much harder to isolate what broke if something
-does. `docs/migration-plan.md` and `FEATURES.md` §11 remain the source of truth for that prior
-migration; this plan starts from a stable post-cutover baseline.
+does. `docs/migration-plan.md` remains the source of truth for that prior migration; this plan
+starts from a stable post-cutover baseline. **Note:** `FEATURES.md` (the parity-QA checklist
+`migration-plan.md` references throughout as "§11") was deleted in `0b209ae` on 2026-07-26 —
+before this doc's most recent updates, so every "`FEATURES.md` §11" reference below is stale.
+There is no standalone QA checklist doc anymore; manual verification for this plan means
+exercising the app's core flows directly (see CLAUDE.md's Domain model / API endpoints sections
+for what those are: auth, plan CRUD, journal CRUD, today's-passage retrieval) against
+https://qt.navigators.tech, per CLAUDE.md's general "no automated tests" guidance.
 
 **Definition of done:** `npm audit` reports zero known vulnerabilities, every dependency in
 `package.json` is on its latest stable (non-RC, non-experimental) version compatible with this
-app, CI/deploy/production all run Node 24, and every flow in `FEATURES.md` §11 still passes
-manual QA against the upgraded build.
+app, CI/deploy/production all run Node 24, and every core flow (auth, plans, journal entries,
+today's passage) still passes manual QA against the upgraded build.
 
 **Maintenance note:** a clean `npm audit` is a point-in-time result, not a finish line — the
 `brace-expansion` wave (see Phase 0) hit an already-"done" tree just days after Phase 0 landed. Expect
@@ -40,8 +46,8 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
   build. Do the higher-risk phases (3) on their own commit(s), separate from the low-risk batch
   (Phase 1), so a revert doesn't have to take back everything at once.
 - No automated test suite exists (per `CLAUDE.md`) — verification at every phase is `npm run dev`
-  plus manually exercising the relevant flows in `FEATURES.md` §11, compared against the live app
-  at https://qt.navigators.tech where relevant.
+  plus manually exercising the core flows (auth, plan CRUD, journal CRUD, today's-passage
+  retrieval), compared against the live app at https://qt.navigators.tech where relevant.
 
 ## Progress checklist
 
@@ -77,6 +83,31 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
     cleared every alert without touching `nuxt`. Verified `npm ci`, `typecheck`, and `build` all
     succeed clean afterward. Current overrides block: `esbuild ^0.28.1`, `uuid ^11.1.1`,
     `brace-expansion ^5.0.8` — `npm audit` still reports 0 vulnerabilities as of 2026-07-29.
+  - **Update 2026-08-12:** a routine `npm audit` (prompted by a request to check what needed
+    updating) surfaced a third wave — **7 vulnerabilities: 1 critical, 4 high, 2 moderate**.
+    Confirms the "point-in-time, not a finish line" warning above yet again. Breakdown:
+    `@nuxt/devtools <3.3.1` (critical — unauthenticated dev-server RPC arbitrary command
+    execution), `nuxt 4.0.0-4.5.0` (high — 7 advisories, all pulled in transitively via
+    `@nuxt/vite-builder`/`undici`/`nanoid`/`postcss`), and `brace-expansion 4.0.0-5.0.8` (high —
+    the Phase 0 override's floor was overtaken by a new advisory, `GHSA-rgw5-rvv9-x895`). Of the
+    7 Nuxt advisories, 5 concern Server Islands (not used anywhere in this app — no
+    `*.server.vue`, no `<NuxtIsland>`, no `componentIslands` config) and 1 concerns mixed-case
+    `routeRules` (low exposure here — only one lowercase rule exists, at `nuxt.config.ts:124`,
+    and auth gating goes through `definePageMeta` middleware, not route rules). The one that
+    matters: `GHSA-wm8w-6qjm-cv43`, the runtime payload cache disclosing one user's SSR data to
+    another — real exposure for an SSR app serving per-user journal entries. **Resolution:**
+    bumped `nuxt` `^4.5.0` -> `^4.5.2` (closes 6 of 7 on its own -- 4.5.2 pins
+    `@nuxt/devtools ^3.4.1`, `undici ^8.10.0`, `@nuxt/vite-builder 4.5.2` which pulls patched
+    `postcss`/`nanoid`) and the `brace-expansion` override `^5.0.8` -> `^5.0.9`. Also picked up
+    the in-range minor/patch drift sitting in the lockfile: `vuetify` 3.12.10 -> 3.13.1,
+    `firebase` 12.16.0 -> 12.17.1, `mongoose` 8.24.1 -> 8.24.3, `vue` 3.5.40 -> 3.5.41, `vue-tsc`
+    3.3.8 -> 3.3.9, `@vue/devtools-api` 8.1.5 -> 8.2.1 -- all still v3/v8-line, none of the
+    deferred majors below. An incremental `npm install` hit a `rolldown` peer-dependency
+    ERESOLVE (nuxt 4.5.2's peer range `~1.2.1` conflicting with the existing resolved graph,
+    despite `1.2.3` satisfying that range) -- resolved with a full
+    `rm -rf node_modules package-lock.json && npm install` rather than
+    `--force`/`--legacy-peer-deps`. Verified `npm audit` (0 vulnerabilities), `npm run typecheck`
+    (0 errors), and `npm run build` (clean `.output/`) all succeed afterward.
 
 - [x] **Phase 1** — Low-risk dependency bumps (batch together) — **done 2026-07-24**
   - `nuxt` 4.4.8 → 4.5.0 (minor) ✓
@@ -96,9 +127,9 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
     no Firestore/Storage/Messaging/Instance ID usage): `firebase` (client) 11.10.0 → 12.16.0 ✓,
     `firebase-admin` 13.10.0 → 14.2.0 ✓.
   - Verify: `npm run build` ✓, `npm run typecheck` (0 errors) ✓, `npm run dev` boot + manual smoke
-    test (`/` and `/auth` render 200 SSR) ✓. Full FEATURES.md §11 flow QA still recommended before
-    this reaches production, but blocked locally on this dev machine's Mongo Atlas/ESV API
-    credentials (unrelated to this upgrade — flagged separately).
+    test (`/` and `/auth` render 200 SSR) ✓. Full core-flow QA (auth, plans, journal CRUD) still
+    recommended before this reaches production, but blocked locally on this dev machine's Mongo
+    Atlas/ESV API credentials (unrelated to this upgrade — flagged separately).
 
 - [ ] **Phase 2** — Medium-risk bumps
   - `mongoose` 8.24.1 → 9.8.0 — requires Node ≥20.19 (satisfied by Phase 0). Codebase inventory
@@ -118,8 +149,8 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
     `CLAUDE.md`), expect the same kind of multi-round visual-regression hunt the Vuetify 2→3
     migration already went through (see `docs/migration-plan.md` Phase 5 notes). Migrate
     incrementally using Vuetify's official revert-snippets/codemods; reuse the existing
-    parity-QA process (`FEATURES.md` §11, page-by-page comparison against prod) rather than
-    inventing a new one.
+    parity-QA process from the Nuxt 4 migration (page-by-page comparison against prod) rather
+    than inventing a new one.
   - `mongoose-field-encryption` 3.1.0 → 7.0.1 — highest-stakes item: encrypts journal entry text
     at rest, and the package is unmaintained (last published mid-2023, predates Mongoose 9
     entirely). The AES-256-CBC `salt:ciphertext` format is unchanged across all four majors and
@@ -130,7 +161,7 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
     Drops the deprecated Instance ID service and legacy FCM types — confirm neither is used
     (they aren't, as of the current Nitro backend). Does **not** resolve the uuid CVE on its own
     (already fixed in Phase 0 via override).
-  - Verify: full `FEATURES.md` §11 checklist end to end, plus a dedicated journal
+  - Verify: full manual walkthrough of every core flow end to end, plus a dedicated journal
     encrypt/save/read/decrypt round-trip check in staging before this phase touches production
     data.
 
