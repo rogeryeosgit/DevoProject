@@ -42,7 +42,8 @@ const { error: fetchError } = await useAsyncData('journal-list-entries', async (
 if (isEmailNotVerifiedError(fetchError.value)) {
   await navigateTo('/auth/verify-email')
 } else if (fetchError.value) {
-  throw createError({ statusCode: 500, statusMessage: 'Failed to load journal entries' })
+  // data.ref: the failed API call's reference code, shown on error.vue.
+  throw createError({ statusCode: 500, statusMessage: 'Failed to load journal entries', data: { ref: latestErrorRef(fetchError.value) } })
 }
 
 let loadingMore = false

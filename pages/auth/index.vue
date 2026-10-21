@@ -120,9 +120,10 @@ async function passwordReset() {
     snack.value = true
     snackColor.value = 'success'
     snackText.value = 'Password Reset Email Sent!'
+    reportClientEvent('info', 'auth', 'password reset email requested', { email: email.value })
   } catch (e) {
     // When firebase returns an error looking up email in the database
-    console.error(e)
+    reportAuthFailure('password reset email', e, email.value)
     snack.value = true
     snackColor.value = 'error'
     snackText.value = 'Error, Email Not Found!'

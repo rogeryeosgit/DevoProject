@@ -1,6 +1,7 @@
 import { UserModel } from '../../models/User'
 import { PlanModel, DEFAULT_PLAN_NAME } from '../../models/Plan'
 import { getEmailFromToken } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 // Login happens client-side against the Firebase client SDK (email/password
 // and Google both), and calls this after every successful sign-in - plus
@@ -27,7 +28,7 @@ export default defineEventHandler(async (event) => {
     // for the one path that does set that flag.
     const defaultPlan = await PlanModel.findOne({ planName: DEFAULT_PLAN_NAME }).select('_id').lean()
     if (!defaultPlan) {
-      console.error(`users/verify: default plan not found, cannot provision ${email}`)
+      logger.error(`SERVER ROUTER: Default plan not found, cannot provision ${email}`)
       throw createError({ statusCode: 503, statusMessage: 'Account setup unavailable' })
     }
 
@@ -42,8 +43,10 @@ export default defineEventHandler(async (event) => {
       // doc exists now, which is the only thing we wanted.
       if (err?.code !== 11000) throw err
     }
+    logger.info(`SERVER ROUTER: User ${email} provisioned`)
   } else if (existing.pendingVerification) {
     await UserModel.updateOne({ email }, { $unset: { pendingVerification: 1 } })
+    logger.info(`SERVER ROUTER: User ${email} verified their email`)
   }
 
   return { ok: true }

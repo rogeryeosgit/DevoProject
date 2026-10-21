@@ -101,7 +101,7 @@ watch(show, async (isOpen) => {
     loadedPassages.value = plan.passages
     passagesFetched = true
   } catch (e) {
-    console.error(e)
+    reportClientError('plan card: loading the plan\'s passages failed', e)
   } finally {
     fetchingPassages.value = false
   }

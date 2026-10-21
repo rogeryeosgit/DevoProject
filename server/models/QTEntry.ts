@@ -1,6 +1,7 @@
 import mongoose, { type Model } from 'mongoose'
 // @ts-expect-error - no published types for mongoose-field-encryption
 import mongooseFieldEncryption from 'mongoose-field-encryption'
+import { queryTiming } from '../utils/queryTiming'
 
 const { Schema, model, models } = mongoose
 const { fieldEncryption } = mongooseFieldEncryption
@@ -36,5 +37,7 @@ QTEntrySchema.plugin(fieldEncryption, {
   fields: ['thoughts', 'applicationImplication'],
   secret: useRuntimeConfig().mongooseSecret
 })
+
+QTEntrySchema.plugin(queryTiming)
 
 export const QTEntryModel: Model<QTEntryDocument> = models.QTEntry || model<QTEntryDocument>('QTEntry', QTEntrySchema)

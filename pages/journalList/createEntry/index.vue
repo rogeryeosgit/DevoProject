@@ -54,7 +54,7 @@ onMounted(async () => {
     await planStore.getPlanChosen()
     await passageStore.refreshPassage()
   } catch (e) {
-    console.error(e)
+    reportClientError('new entry page: loading the chosen plan\'s passage failed', e)
   }
 })
 
@@ -106,7 +106,7 @@ async function submit() {
     showDiscardDraftButton.value = false
     snack.value = true
     snackColor.value = 'error'
-    snackText.value = "Couldn't save your entry — your draft is safe, please try again."
+    snackText.value = withErrorRef("Couldn't save your entry — your draft is safe, please try again.")
   }
 }
 

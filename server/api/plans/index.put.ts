@@ -1,5 +1,6 @@
 import { PlanModel } from '../../models/Plan'
 import { checkUser, requireOwner } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   await checkUser(event)
@@ -16,6 +17,7 @@ export default defineEventHandler(async (event) => {
   plan.description = body.description
   plan.passages = body.passages
   await plan.save()
+  logger.info(`SERVER ROUTER: Plan : ${plan.planName} updated (${plan._id})`)
 
   return plan
 })

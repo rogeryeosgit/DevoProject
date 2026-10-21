@@ -47,7 +47,7 @@ export const usePassageStore = defineStore('passage', {
         this.passageDay = data.day ?? null
         return true
       } catch (e) {
-        console.error('passage: failed to refresh today\'s passage', e)
+        reportClientError('passage: refreshing today\'s passage failed', e)
         return false
       }
     },

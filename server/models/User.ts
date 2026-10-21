@@ -1,4 +1,5 @@
 import mongoose, { type Model } from 'mongoose'
+import { queryTiming } from '../utils/queryTiming'
 
 const { Schema, model, models } = mongoose
 
@@ -31,5 +32,7 @@ const UserSchema = new Schema<UserDocument>({
 // which fails silently here since server/plugins/mongo.ts only listens for
 // connection-level errors, not index-build failures.
 UserSchema.index({ email: 1 }, { unique: true })
+
+UserSchema.plugin(queryTiming)
 
 export const UserModel: Model<UserDocument> = models.User || model<UserDocument>('User', UserSchema)

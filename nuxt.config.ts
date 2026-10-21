@@ -1,4 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
+
+// Stamped at build time into the startup log line and every browser error
+// report, so a log line can be matched to the deploy that produced it.
+const appVersion = (() => {
+  const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'))
+  try {
+    return `${version}+${execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()}`
+  } catch {
+    return version
+  }
+})()
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   ssr: true,
@@ -139,8 +153,19 @@ export default defineNuxtConfig({
     cacheTtl: '3600',
     firebaseServiceAccountPath: 'fb-service-account.json',
 
+    // QTApp.log (server/utils/logger.ts). Override with NUXT_LOG_DIR,
+    // NUXT_LOG_LEVEL, NUXT_LOG_RETENTION_DAYS, NUXT_LOG_MAX_FILE_MB,
+    // NUXT_LOG_MAX_TOTAL_MB. logDir is relative to the app's working directory
+    // (the repo root in dev, /QTNuxtProject under PM2) unless absolute.
+    logDir: 'logs',
+    logLevel: 'info',
+    logRetentionDays: '365',
+    logMaxFileMb: '200',
+    logMaxTotalMb: '5120',
+
     // Public (exposed to the client — safe, matches today's inline Firebase client config)
     public: {
+      appVersion,
       firebase: {
         apiKey: process.env.FIREBASE_API_KEY || 'AIzaSyAOYahacsrT-2O_T__716n1Kw6fX9X3Zzk',
         authDomain: process.env.FIREBASE_AUTH_DOMAIN || 'qtapp-3b06e.firebaseapp.com',
@@ -155,6 +180,11 @@ export default defineNuxtConfig({
   nitro: {
     // Same-origin API: pages call relative /api/... paths, no browserBaseURL/baseURL split
     // (see FEATURES.md §9 — the dual-base-URL config and dev TLS bypass both go away).
+    experimental: {
+      // Lets server/utils/logger.ts find the current request (and its error
+      // reference code) via useEvent() without every call site passing it in.
+      asyncContext: true
+    }
   },
 
   typescript: {

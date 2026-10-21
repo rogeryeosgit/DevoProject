@@ -85,8 +85,9 @@ async function resend() {
     snack.value = true
     snackColor.value = 'success'
     snackText.value = 'Verification email sent again.'
+    reportClientEvent('info', 'auth', 'verification email resent', { email: user.email })
   } catch (e) {
-    console.error(e)
+    reportAuthFailure('resending the verification email', e, user.email)
     snack.value = true
     snackColor.value = 'error'
     snackText.value = "Couldn't resend the email - please try again shortly."
@@ -103,14 +104,16 @@ async function continueToApp() {
       navigateTo('/')
       return
     }
+    reportClientEvent('info', 'auth', 'pressed "I\'ve verified" but the email is still unverified', { email: firebaseUser()?.email })
     snack.value = true
     snackColor.value = 'error'
     snackText.value = 'Still not verified - check your inbox (and spam folder), or resend the email.'
   } catch (e) {
-    console.error(e)
+    reportAuthFailure('finishing account setup after verification', e, firebaseUser()?.email)
+    rememberErrorRef(e)
     snack.value = true
     snackColor.value = 'error'
-    snackText.value = "Couldn't finish setting up your account - please try again shortly."
+    snackText.value = withErrorRef("Couldn't finish setting up your account - please try again shortly.")
   } finally {
     continuing.value = false
   }

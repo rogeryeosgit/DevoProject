@@ -1,5 +1,6 @@
 import { PlanModel } from '../../models/Plan'
 import { checkUser } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   const email = await checkUser(event)
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event) => {
     passages: body.passages
   })
 
+  logger.info(`SERVER ROUTER: Plan : ${plan.planName} created (${plan._id}) by ${email}`)
   setResponseStatus(event, 201)
   return plan
 })

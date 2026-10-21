@@ -109,7 +109,7 @@ export const useJournalStore = defineStore('journal', {
         this.entryDates.push(entry.date)
         return true
       } catch (e) {
-        console.error(e)
+        reportClientError('journal: save failed', e)
         return false
       }
     },
@@ -146,7 +146,7 @@ export const useJournalStore = defineStore('journal', {
         this.appendQTEntries(entries)
         this.hasMoreEntries = hasMore
       } catch (e) {
-        console.error(e)
+        reportClientError('journal: loading more entries failed', e)
       }
     },
 
@@ -172,7 +172,7 @@ export const useJournalStore = defineStore('journal', {
         // nothing happened - rethrow only that one, narrowly, rather than
         // making this non-fatal-on-failure behavior fatal in general.
         if (isEmailNotVerifiedError(e)) throw e
-        console.error(e)
+        reportClientError('journal: loading entry dates (streak) failed', e)
         return false
       }
     },
@@ -192,7 +192,7 @@ export const useJournalStore = defineStore('journal', {
         if (idx !== -1) this.qtEntries[idx] = updated
         return true
       } catch (e) {
-        console.error(e)
+        reportClientError('journal: update failed', e)
         return false
       }
     },
@@ -213,7 +213,7 @@ export const useJournalStore = defineStore('journal', {
           if (idx !== -1) this.entryDates.splice(idx, 1)
         }
       } catch (e) {
-        console.error(e)
+        reportClientError('journal: delete failed', e)
       }
     },
 

@@ -19,10 +19,8 @@
         />
         <v-list-item
           v-if="userStore.isAuthenticated"
-          to="/"
           prepend-icon="mdi-exit-to-app"
           title="Logout"
-          exact
           @click="logout"
         />
       </v-list>
@@ -54,7 +52,13 @@ const items = [
   { icon: 'mdi-clipboard-text', title: 'Plans', to: '/plansList' }
 ]
 
-function logout() {
-  userStore.logout()
+// Logout is an action, not a link: as a second item linking to "/" it
+// collided with Home in Vuetify's list, which keys items by their href
+// ("Multiple nodes with the same ID"), and showed as active on the home page.
+// Same order as the old link: log out first, then go home.
+async function logout() {
+  drawer.value = false
+  await userStore.logout()
+  await navigateTo('/')
 }
 </script>

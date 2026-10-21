@@ -1,5 +1,6 @@
 import { QTEntryModel } from '../../models/QTEntry'
 import { checkUser, requireOwner } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   // Fix (§10, IDOR): the Nuxt 2 route never checked that the requester owns this
@@ -19,6 +20,7 @@ export default defineEventHandler(async (event) => {
   entry.thoughts = body.thoughts
   entry.applicationImplication = body.applicationImplication
   await entry.save()
+  logger.info(`SERVER ROUTER: QT Journal entry ${entry._id} updated`)
 
   return entry
 })

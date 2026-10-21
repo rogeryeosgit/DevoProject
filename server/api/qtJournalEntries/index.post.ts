@@ -1,5 +1,6 @@
 import { QTEntryModel } from '../../models/QTEntry'
 import { checkUser } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   // Fix (§10): creatorEmail is always set from the verified token, never trusted
@@ -16,6 +17,7 @@ export default defineEventHandler(async (event) => {
     applicationImplication: body.applicationImplication
   })
 
+  logger.info(`SERVER ROUTER: qtEntry created (${entry._id}) by ${email}`)
   setResponseStatus(event, 201)
   return entry
 })
