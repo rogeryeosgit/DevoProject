@@ -269,6 +269,35 @@ export function resetLogStats(): void {
   for (const key of Object.keys(logStats) as (keyof typeof logStats)[]) logStats[key] = 0
 }
 
+// For conditions that repeat on every request until someone fixes the data
+// (e.g. a reading plan with no passage for today): logs the first occurrence
+// per key per Singapore day, not every hit.
+const warnedToday = new Set<string>()
+let warnedDay = ''
+export function warnOncePerDay(key: string, ...args: unknown[]): void {
+  const today = sgtDateKey(Date.now())
+  if (today !== warnedDay) {
+    warnedDay = today
+    warnedToday.clear()
+  }
+  if (warnedToday.has(key)) return
+  warnedToday.add(key)
+  logger.warn(...args)
+}
+
+// Request path for log lines: query strings can carry personal data, so only
+// the two that matter for diagnosis are kept.
+const LOGGED_QUERY_PARAMS = ['planID', 'passageReference']
+export function safePath(path: string): string {
+  const queryStart = path.indexOf('?')
+  if (queryStart === -1) return path
+  const pathname = path.slice(0, queryStart)
+  const query = path.slice(queryStart + 1)
+  const params = new URLSearchParams(query)
+  const kept = LOGGED_QUERY_PARAMS.filter(k => params.has(k)).map(k => `${k}=${params.get(k)}`)
+  return kept.length ? `${pathname}?${kept.join('&')}` : pathname
+}
+
 function parseLevel(value: unknown): LogLevel {
   return typeof value === 'string' && value in LEVEL_RANK ? (value as LogLevel) : 'info'
 }

@@ -6,6 +6,8 @@ const ESV_URL = 'https://api.esv.org/v3/passage/text/'
 // passed through to the client as-is). Spelled out as $fetch's type argument
 // because inferring it makes Nitro's typed $fetch compare the URL against
 // every internal API route, which overflows tsc (TS2321) since Nuxt 4.6.
+const SLOW_ESV_MS = 2000
+
 type EsvPassageResponse = Record<string, unknown> & { passages?: string[] }
 
 const runtimeConfig = useRuntimeConfig()
@@ -17,8 +19,9 @@ export const getPassage = defineCachedFunction(async (passage: string) => {
   // rate-limited, hence the lifetime counter the old BRService logged).
   logStats.esvCalls++
   logger.info(`BRService : ESVAPI Access Count : ${nextEsvAccessCount()} (${passage})`)
+  const started = Date.now()
   try {
-    return await $fetch<EsvPassageResponse>(ESV_URL, {
+    const result = await $fetch<EsvPassageResponse>(ESV_URL, {
       headers: { Authorization: `Token ${runtimeConfig.esvApiKey}` },
       params: {
         q: passage,
@@ -27,8 +30,16 @@ export const getPassage = defineCachedFunction(async (passage: string) => {
         'include-headings': false
       }
     })
-  } catch (err) {
-    logger.error(`BRService Error : ${passage} -`, err)
+    const ms = Date.now() - started
+    if (ms > SLOW_ESV_MS) logger.warn(`BRService : slow ESV API response ${ms}ms (${passage})`)
+    return result
+  } catch (err: any) {
+    const status = err?.statusCode ?? err?.response?.status
+    if (status === 429) {
+      logger.error(`BRService Error : ESV API rate limit reached (429) while fetching ${passage}`)
+    } else {
+      logger.error(`BRService Error : ${passage} - HTTP ${status ?? 'no response'} -`, err)
+    }
     throw err
   }
 }, {

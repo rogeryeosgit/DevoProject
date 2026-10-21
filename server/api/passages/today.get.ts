@@ -1,6 +1,6 @@
 import { PlanModel, DEFAULT_PLAN_NAME } from '../../models/Plan'
 import { getPassage } from '../../utils/bible-retrieval'
-import { logger } from '../../utils/logger'
+import { logger, warnOncePerDay } from '../../utils/logger'
 
 const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -68,7 +68,11 @@ export default defineEventHandler(async (event) => {
       ? await PlanModel.findOne({ _id: planID })
       : await PlanModel.findOne({ planName: DEFAULT_PLAN_NAME })
 
+    // Both fallbacks below used to be silent - a plan that has run out of
+    // passages showed "Proverbs <day>" to everyone with no trace anywhere.
     if (!plan) {
+      const which = planID ? `plan ${planID}` : `default plan "${DEFAULT_PLAN_NAME}"`
+      warnOncePerDay(`plan-missing:${planID ?? 'default'}`, `PASSAGE: ${which} not found, showing ${getDefaultPassage(dayIndex)} instead`)
       return await respondWith(getDefaultPassage(dayIndex), dayIndex)
     }
 
@@ -76,6 +80,7 @@ export default defineEventHandler(async (event) => {
     const reference = plan.passages.get(month)?.get(day.toString())
 
     if (!reference) {
+      warnOncePerDay(`no-passage:${plan._id}:${month}:${day}`, `PASSAGE: "${plan.planName}" (${plan._id}) has no passage for ${month} day ${day}, showing ${getDefaultPassage(dayIndex)} instead`)
       return await respondWith(getDefaultPassage(dayIndex), dayIndex)
     }
 
