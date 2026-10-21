@@ -53,6 +53,11 @@ jobs:
               fi
               sleep 2
               pm2 start ecosystem.config.cjs
+              # Save the process list PM2 restores after a server reboot. Without
+              # it, a reboot brings back whatever was last saved - with that
+              # save's env, so later ecosystem.config.cjs changes (e.g.
+              # NUXT_LOG_DIR) are silently dropped.
+              pm2 save
             }
 
             # No more -k/https here: Nitro serves plain HTTP on 3000, with nginx
