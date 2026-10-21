@@ -12,6 +12,16 @@ const DAY_MS = 24 * 60 * 60 * 1000
 // Dev-only asset/HMR traffic - not app requests, so not timed or counted.
 const isInternalPath = (path: string) => path.startsWith('/_nuxt/') || path.startsWith('/__nuxt') || path.startsWith('/@')
 
+// The framework's own "no such route" 404, as opposed to a handler's
+// deliberate one ("Plan not found"). Its message embeds the full requested
+// URL, query string included, so it must never be copied into a log line.
+const isUnknownRoute = (err: H3Error) =>
+  (err.statusCode ?? 500) === 404 && /^(Page not found|Cannot find any path matching)/.test(err.statusMessage || err.message || '')
+
+// Distinct probed paths kept between summaries (bounded - scanners send
+// thousands of variants).
+const MAX_PROBED_PATHS = 500
+
 // mongoose-field-encryption fails with OpenSSL's messages when a journal
 // field can't be decrypted (wrong or rotated NUXT_MONGOOSE_SECRET).
 const isDecryptionError = (message: string) => /bad decrypt|wrong final block length/i.test(message)
@@ -23,6 +33,11 @@ const isDecryptionError = (message: string) => /bad decrypt|wrong final block le
 export default defineNitroPlugin((nitroApp) => {
   const config = useRuntimeConfig()
   const startedAt = Date.now()
+  const probedPaths = new Map<string, number>()
+  const noteProbe = (method: string, path: string) => {
+    const key = `${method} ${path.split('?')[0]!.slice(0, 80)}`
+    if (probedPaths.has(key) || probedPaths.size < MAX_PROBED_PATHS) probedPaths.set(key, (probedPaths.get(key) ?? 0) + 1)
+  }
 
   logger.info(`Server started (qtapp ${config.public.appVersion}, node ${process.version}, pid ${process.pid}, log level ${logger.level})`)
 
@@ -95,10 +110,14 @@ export default defineNitroPlugin((nitroApp) => {
     if (event.context.ref) setResponseHeader(event, 'x-error-ref', event.context.ref)
     if (!event.context.trail?.parent) logStats.requests++
 
-    // Scanners probing /wp-admin, /.env etc. hit unknown *pages*; those only
-    // count toward the daily summary. Unknown /api routes are still logged.
-    if (status === 404 && !path.startsWith('/api/')) {
+    // Requests for routes that don't exist - pages or /api - are almost all
+    // vulnerability scanners (/.env, /wp-admin, ../ traversal, /api/graphql).
+    // Counted for the daily summary, not logged one line each. The app's own
+    // API calls only use real routes; a frontend bug calling a missing one
+    // still surfaces through the browser's CLIENT report.
+    if (isUnknownRoute(err)) {
       logStats.ignored404++
+      noteProbe(event.method, path)
       return
     }
     if (status >= 500) logStats.status5xx++
@@ -131,10 +150,15 @@ export default defineNitroPlugin((nitroApp) => {
     const uptimeHours = ((Date.now() - startedAt) / 3_600_000).toFixed(1)
     logger.info(
       `SUMMARY (since last summary or start): requests ${logStats.requests}, 4xx ${logStats.status4xx}, 5xx ${logStats.status5xx}, `
-      + `slow ${logStats.slowRequests}, ignored page 404s ${logStats.ignored404}, ESV calls ${logStats.esvCalls}, `
+      + `slow ${logStats.slowRequests}, unknown-route 404s (mostly bots) ${logStats.ignored404}, ESV calls ${logStats.esvCalls}, `
       + `ESV cache hits ${logStats.esvCacheHits}, client reports ${logStats.clientReports} | `
       + `uptime ${uptimeHours}h, memory rss ${Math.round(mem.rss / 1_048_576)} MB, heap ${Math.round(mem.heapUsed / 1_048_576)} MB`
     )
+    if (probedPaths.size) {
+      const top = [...probedPaths].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([key, n]) => `${key} (${n})`).join(', ')
+      logger.info(`SUMMARY: most-requested unknown routes: ${top}`)
+      probedPaths.clear()
+    }
     resetLogStats()
   }
   let interval: ReturnType<typeof setInterval> | undefined
