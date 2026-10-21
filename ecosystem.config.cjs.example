@@ -48,7 +48,12 @@ module.exports = {
         NUXT_ESV_API_KEY: 'REPLACE_ME',
         NUXT_MONGODB_ACCESS: 'REPLACE_ME',
         NUXT_MONGOOSE_SECRET: 'REPLACE_ME',
-        NUXT_CACHE_TTL: '86400'
+        NUXT_CACHE_TTL: '86400',
+        // QTApp.log location. Recommended: outside /QTNuxtProject, so a year of
+        // logs survives the checkout being replaced or cleaned (deploys
+        // themselves never delete logs/). Defaults to /QTNuxtProject/logs.
+        // NUXT_LOG_DIR: '/home/roger/qtapp-logs',
+        // NUXT_LOG_LEVEL: 'info'
       }
     }
   ]

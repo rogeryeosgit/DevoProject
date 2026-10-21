@@ -137,4 +137,8 @@ npm run build
 npm run start
 ```
 
+### Logs
+
+The server writes `logs/QTApp.log` (Singapore-time timestamps, one file per week, kept for a year). When a user reports an "Error ref: XXXXXX", find it with `grep XXXXXX logs/QTApp*.log`. Set `NUXT_LOG_LEVEL=debug` in `.env` for more detail locally. See the Logging section of `CLAUDE.md` for everything that's logged and the settings.
+
 Created using Nuxt, check out [Nuxt.js docs](https://nuxtjs.org).

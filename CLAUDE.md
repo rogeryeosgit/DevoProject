@@ -68,6 +68,19 @@ Client sign-in/register from `pages/auth/index.vue` → Firebase client SDK dire
 
 Required at runtime, all via `NUXT_`-prefixed env vars (Nitro's `runtimeConfig` convention — **bare names like `MONGODB_ACCESS` get silently baked in at build time and ignored at runtime**, a real bug found during migration): `NUXT_MONGODB_ACCESS`, `NUXT_ESV_API_KEY`, `NUXT_MONGOOSE_SECRET`, `NUXT_CACHE_TTL`. Also needs `fb-service-account.json` (Firebase Admin creds) at repo root — git-ignored. `.env` is loaded automatically by Nitro in dev, no `dotenv` package needed.
 
+## Logging (`QTApp.log`)
+
+The server writes **`logs/QTApp.log`** (`server/utils/logger.ts`, no logging dependency) — the successor of the Nuxt 2 app's log4js file, same line layout and old prefixes (`SERVER ROUTER:`, `AUTH:`, `BRService`, `DB Connector:`), plus `PASSAGE:` (today's passage silently fell back to Proverbs), `CLIENT:` (browser reports), `SLOW`, `PROCESS:` (crashes) and a daily `SUMMARY`. Lines also go to the console, so `npm run dev` and `pm2 logs qtapp` are unchanged.
+
+- **Timestamps are always Singapore time** (`+08:00`), whatever the server's TZ.
+- **One file per week** (Mon–Sun SGT): past weeks become `QTApp.<Monday>.log`, kept **365 days**, capped at 200 MB per file (then WARN+ only) and 5 GB in total (oldest deleted first).
+- Settings: `NUXT_LOG_DIR` (default `logs`, relative to the working dir — production should point it outside the checkout, see `ecosystem.config.cjs.example`), `NUXT_LOG_LEVEL` (`info`; `debug` adds cache hits and stacks — dev only), `NUXT_LOG_RETENTION_DAYS`, `NUXT_LOG_MAX_FILE_MB`, `NUXT_LOG_MAX_TOTAL_MB`.
+- **Error reference codes**: every request gets a 6-character code (`server/plugins/logging.ts`) that prefixes its log lines and comes back on failures as the `x-error-ref` header. Users see it as "Error ref: K7Q2XA" (`error.vue`, failure snackbars, via `errorRef`/`withErrorRef` in `composables/useAuthFetch.ts`); look it up with `grep K7Q2XA logs/QTApp*.log`.
+- **One error hook logs every failed request** (5xx ERROR, 4xx WARN) — don't add per-handler try/catch just to log. 404s on unknown *pages* (bot probes) are only counted in the daily summary.
+- Browser problems: use `reportClientError(context, err)` / `reportClientEvent(...)` / `reportAuthFailure(...)` (`utils/reportClientError.ts`) instead of a bare `console.error`. They reach the log through the rate-limited `POST /api/client-log`.
+- **Never log** tokens, request bodies, journal titles, `thoughts` or `applicationImplication` — identify entries by id. Logged paths keep only the `planID`/`passageReference` query params. User emails are fine (needed to diagnose auth).
+- Hooks h3 calls outside the request's async context (`error`, `afterResponse`) must use `logger.forRef(event.context.ref)` to keep the code on their lines.
+
 ## Deployment
 
 Self-hosted: PM2 process `qtapp` on the production server, nginx terminating TLS (existing Let's Encrypt cert) and reverse-proxying **plain HTTP** to `127.0.0.1:3000` — Nitro does not terminate its own TLS (the old Express app did; that's gone). PM2 config lives only on the server as `ecosystem.config.cjs` (never committed — holds secrets); `ecosystem.config.cjs.example` in this repo is the template.
