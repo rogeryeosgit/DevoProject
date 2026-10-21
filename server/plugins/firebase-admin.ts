@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { initializeApp, cert, getApps } from 'firebase-admin/app'
+import { logger } from '../utils/logger'
 
 export default defineNitroPlugin(() => {
   if (getApps().length > 0) return
@@ -10,5 +11,5 @@ export default defineNitroPlugin(() => {
   const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf-8'))
 
   initializeApp({ credential: cert(serviceAccount) })
-  console.log('firebase-admin: initialized')
+  logger.info('firebase-admin: initialized')
 })

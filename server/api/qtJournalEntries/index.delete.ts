@@ -1,5 +1,6 @@
 import { QTEntryModel } from '../../models/QTEntry'
 import { checkUser, requireOwner } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   // Fix (§10, IDOR): the Nuxt 2 route never checked that the requester owns this
@@ -15,5 +16,6 @@ export default defineEventHandler(async (event) => {
   await requireOwner(event, entry.creatorEmail)
 
   await QTEntryModel.deleteOne({ _id: journalID })
+  logger.info(`SERVER ROUTER: QT Journal Entry ID : ${journalID} has been deleted`)
   return { success: true }
 })

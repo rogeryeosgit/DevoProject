@@ -1,5 +1,6 @@
 import { PlanModel, DEFAULT_PLAN_NAME } from '../../models/Plan'
 import { getPassage } from '../../utils/bible-retrieval'
+import { logger } from '../../utils/logger'
 
 const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -80,7 +81,7 @@ export default defineEventHandler(async (event) => {
 
     return await respondWith(reference, dayIndex)
   } catch (err) {
-    console.error('passages/today: falling back to default passage', err)
+    logger.error('SERVER ROUTER: today\'s passage failed, falling back to the default passage -', err)
     return await respondWith(getDefaultPassage(dayIndex), dayIndex)
   }
 })

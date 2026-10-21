@@ -1,5 +1,6 @@
 import { PlanModel } from '../../models/Plan'
 import { checkUser, requireOwner } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 export default defineEventHandler(async (event) => {
   await checkUser(event)
@@ -14,5 +15,6 @@ export default defineEventHandler(async (event) => {
   await requireOwner(event, plan.creatorEmail)
 
   await PlanModel.deleteOne({ _id: planID })
+  logger.info(`SERVER ROUTER: Plan ID : ${planID} has been deleted`)
   return { success: true }
 })

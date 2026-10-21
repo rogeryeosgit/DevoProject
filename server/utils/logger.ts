@@ -1,4 +1,4 @@
-import { createWriteStream, existsSync, mkdirSync, openSync, readdirSync, renameSync, statSync, unlinkSync, type WriteStream } from 'node:fs'
+import { appendFileSync, createWriteStream, existsSync, mkdirSync, openSync, readdirSync, renameSync, statSync, unlinkSync, type WriteStream } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 // Brings back the QTApp.log file the Nuxt 2/Express app used to write via
@@ -93,6 +93,7 @@ export class FileLogger {
   private fileBytes = 0
   private capNoticeWritten = false
   private disabled = false
+  private closed = false
   private readonly now: () => number
 
   constructor(private readonly opts: FileLoggerOptions) {
@@ -120,9 +121,12 @@ export class FileLogger {
     this.writeLine(line, level, now)
   }
 
+  // Flushes the stream and switches to synchronous appends: shutdown hooks
+  // that run after this one (e.g. mongo's disconnect line) still reach the file.
   close(): Promise<void> {
     const stream = this.stream
     this.stream = null
+    this.closed = true
     if (!stream) return Promise.resolve()
     return new Promise(done => stream.end(done))
   }
@@ -133,6 +137,12 @@ export class FileLogger {
 
   private writeLine(line: string, level: LogLevel, now: number): void {
     if (this.disabled) return
+    if (this.closed) {
+      try {
+        appendFileSync(this.file(CURRENT_FILE), `${line}\n`)
+      } catch {}
+      return
+    }
     if (sgtWeekStart(now) !== this.currentWeek) this.rotate(now)
     if (!this.stream) return
 

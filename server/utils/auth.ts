@@ -1,16 +1,19 @@
 import { getAuth, type DecodedIdToken } from 'firebase-admin/auth'
 import { getHeader, createError, type H3Event } from 'h3'
 import { UserModel } from '../models/User'
+import { logger } from './logger'
 
 function getBearerToken(event: H3Event): string {
   const header = getHeader(event, 'authorization')
   if (!header) {
+    logger.warn('AUTH: Missing token')
     // A missing Authorization header must reject, not silently pass - fixes the
     // Nuxt 2 auth service's no-header-⇒-resolves bug (docs/migration-plan.md §10).
     throw createError({ statusCode: 401, statusMessage: 'Not Authorized' })
   }
   const token = header.split(' ')[1]
   if (!token) {
+    logger.warn('AUTH: Malformed Authorization header')
     throw createError({ statusCode: 401, statusMessage: 'Not Authorized' })
   }
   return token
@@ -37,8 +40,13 @@ async function verifyRequest(event: H3Event) {
   try {
     const decoded = await getAuth().verifyIdToken(token)
     tokenCache.set(token, { decoded, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS })
+    // Only on a real verification (cache miss), not every call within the TTL.
+    logger.info(`AUTH: User token verified for ${decoded.email ?? decoded.uid}`)
     return decoded
-  } catch (err) {
+  } catch (err: any) {
+    // Firebase's code says why (expired, revoked, malformed, wrong project) -
+    // the server-side record of failed sign-in attempts.
+    logger.warn(`AUTH: Token Error (${err?.code ?? err?.message ?? 'unknown'})`)
     throw createError({ statusCode: 401, statusMessage: 'Not Authorized' })
   }
 }
@@ -70,6 +78,7 @@ export async function checkUser(event: H3Event, userEmailID?: string): Promise<s
   // matches instead of 403ing the real owner of a mixed-case account.
   const email = rawEmail.toLowerCase()
   if (userEmailID && email !== userEmailID.toLowerCase()) {
+    logger.warn(`AUTH: User Email Mismatch (token ${email}, requested ${userEmailID})`)
     throw createError({ statusCode: 401, statusMessage: 'Not Authorized' })
   }
 
@@ -79,6 +88,7 @@ export async function checkUser(event: H3Event, userEmailID?: string): Promise<s
   if (!decoded.email_verified) {
     const existing = await UserModel.findOne({ email }).select('pendingVerification').lean()
     if (existing?.pendingVerification) {
+      logger.info(`AUTH: ${email} blocked - email not verified yet`)
       throw createError({ statusCode: 403, statusMessage: 'Email not verified' })
     }
   }

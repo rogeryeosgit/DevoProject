@@ -1,6 +1,7 @@
 import { UserModel } from '../../models/User'
 import { PlanModel, DEFAULT_PLAN_NAME } from '../../models/Plan'
 import { getEmailFromToken } from '../../utils/auth'
+import { logger } from '../../utils/logger'
 
 // Called exactly once, immediately after createUserWithEmailAndPassword
 // succeeds client-side (stores/user.ts's register path) - the one moment
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const defaultPlan = await PlanModel.findOne({ planName: DEFAULT_PLAN_NAME }).select('_id').lean()
   if (!defaultPlan) {
-    console.error(`users/register: default plan not found, cannot provision ${email}`)
+    logger.error(`SERVER ROUTER: Default plan not found, cannot provision ${email}`)
     throw createError({ statusCode: 503, statusMessage: 'Account setup unavailable' })
   }
 
@@ -35,6 +36,7 @@ export default defineEventHandler(async (event) => {
     // now, which is the only thing we wanted.
     if (err?.code !== 11000) throw err
   }
+  logger.info(`SERVER ROUTER: User ${email} registered (pending email verification)`)
 
   return { ok: true }
 })
