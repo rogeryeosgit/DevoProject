@@ -23,7 +23,7 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
   }
 
   try {
-    return (await $fetch(url, withToken(userStore.token))) as T
+    return (await $fetch<T>(url, withToken(userStore.token))) as T
   } catch (err: any) {
     if (import.meta.client && err?.response?.status === 401) {
       const auth = useNuxtApp().$firebaseAuth as Auth | undefined
@@ -32,7 +32,7 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
         try {
           const freshToken = await currentUser.getIdToken(true)
           userStore.token = freshToken
-          return (await $fetch(url, withToken(freshToken))) as T
+          return (await $fetch<T>(url, withToken(freshToken))) as T
         } catch (retryErr) {
           console.error(retryErr)
         }
