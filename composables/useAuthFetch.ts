@@ -40,7 +40,10 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
           return (await $fetch<T>(url, withToken(freshToken))) as T
         } catch (retryErr) {
           console.error(retryErr)
+          reportClientEvent('warn', 'auth', 'forced logout: the server still rejected the session after a token refresh', { detail: `${url}: ${describeClientError(retryErr)}` })
         }
+      } else {
+        reportClientEvent('warn', 'auth', 'forced logout: API returned 401 and there is no signed-in Firebase user', { detail: url })
       }
       await userStore.logout()
     }

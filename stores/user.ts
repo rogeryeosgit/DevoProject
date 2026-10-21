@@ -155,13 +155,13 @@ export const useUserStore = defineStore('user', {
           try {
             await sendEmailVerification(cred.user, { url: authContinueUrl('/auth/verify-email') })
           } catch (e) {
-            console.error(e)
+            reportAuthFailure('sending the verification email after registration', e, authData.id)
           }
         }
         return true
       } catch (e) {
         this.error = e
-        console.error(e)
+        reportAuthFailure(authData.isLogin ? 'login' : 'registration', e, authData.id)
         return false
       }
     },
@@ -210,7 +210,7 @@ export const useUserStore = defineStore('user', {
         this.exTime = null
         this.userID = null
         this.error = e
-        console.error(e)
+        reportAuthFailure('Google sign-in', e)
         return false
       }
     },

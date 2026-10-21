@@ -96,6 +96,25 @@ export async function checkUser(event: H3Event, userEmailID?: string): Promise<s
   return email
 }
 
+/**
+ * The verified (lowercased) email on a request that may or may not carry a
+ * token - undefined instead of a 401, and no failure logging. For endpoints
+ * anyone may call (server/api/client-log.post.ts).
+ */
+export async function tryGetEmail(event: H3Event): Promise<string | undefined> {
+  const token = getHeader(event, 'authorization')?.split(' ')[1]
+  if (!token) return undefined
+  const cached = tokenCache.get(token)
+  if (cached && cached.expiresAt > Date.now()) return cached.decoded.email?.toLowerCase()
+  try {
+    const decoded = await getAuth().verifyIdToken(token)
+    tokenCache.set(token, { decoded, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS })
+    return decoded.email?.toLowerCase()
+  } catch {
+    return undefined
+  }
+}
+
 export async function getEmailFromToken(event: H3Event): Promise<string> {
   return checkUser(event)
 }

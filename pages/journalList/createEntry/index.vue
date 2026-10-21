@@ -54,7 +54,7 @@ onMounted(async () => {
     await planStore.getPlanChosen()
     await passageStore.refreshPassage()
   } catch (e) {
-    console.error(e)
+    reportClientError('new entry page: loading the chosen plan\'s passage failed', e)
   }
 })
 

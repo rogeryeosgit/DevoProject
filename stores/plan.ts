@@ -18,7 +18,7 @@ export const usePlanStore = defineStore('plan', {
         const plan = await authFetch('/api/plans', { method: 'POST', body: planSubmitted })
         this.plans.push(plan)
       } catch (e) {
-        console.error(e)
+        reportClientError('plan: create failed', e)
       }
     },
 
@@ -38,7 +38,7 @@ export const usePlanStore = defineStore('plan', {
         const idx = this.plans.findIndex((p: any) => p._id === updated._id)
         if (idx !== -1) this.plans[idx] = updated
       } catch (e) {
-        console.error(e)
+        reportClientError('plan: update failed', e)
       }
     },
 
@@ -53,7 +53,7 @@ export const usePlanStore = defineStore('plan', {
         const passageStore = usePassageStore()
         await passageStore.refreshPassage()
       } catch (e) {
-        console.error(e)
+        reportClientError('plan: choosing a plan failed', e)
       }
     },
 
@@ -81,7 +81,7 @@ export const usePlanStore = defineStore('plan', {
         // (journalList/createEntry, plansList/createPlan) that have no
         // useAsyncData of their own to surface this through.
         if (isEmailNotVerifiedError(e)) throw e
-        console.error(e)
+        reportClientError('plan: loading the chosen plan failed', e)
       }
     },
 
@@ -92,7 +92,7 @@ export const usePlanStore = defineStore('plan', {
         await authFetch('/api/plans', { method: 'DELETE', params: { planID } })
         this.plans = this.plans.filter((p: any) => p._id !== planID)
       } catch (e) {
-        console.error(e)
+        reportClientError('plan: delete failed', e)
       }
     },
 

@@ -34,6 +34,7 @@ export default defineNuxtPlugin(() => {
     const lastActiveCookie = useCookie('lastActiveAt')
     const lastActive = lastActiveCookie.value
     if (lastActive && Date.now() - Number(lastActive) > IDLE_CAP_MS) {
+      reportClientEvent('info', 'auth', 'forced logout: no activity for over 3 days (idle cap)', { email: user.email })
       userStore.logout()
       return
     }
@@ -51,7 +52,7 @@ export default defineNuxtPlugin(() => {
         userID: user.email!
       })
     } catch (e) {
-      console.error(e)
+      reportClientError('auth: applying a refreshed token failed', e)
     }
   })
 
@@ -61,7 +62,7 @@ export default defineNuxtPlugin(() => {
   // resulting refresh is picked up by onIdTokenChanged above.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && auth.currentUser) {
-      auth.currentUser.getIdToken().catch((e) => console.error(e))
+      auth.currentUser.getIdToken().catch(e => reportClientError('auth: token refresh on returning to the tab failed', e))
     }
   })
 
