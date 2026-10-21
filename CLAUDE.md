@@ -89,7 +89,9 @@ Self-hosted: PM2 process `qtapp` on the production server, nginx terminating TLS
 - `interpreter` **must be an absolute path** to a Node 20+ binary (e.g. the nvm-installed one). A bare `'node'` string resolves against the PM2 daemon's own long-running environment, not whatever's on `PATH` when you run `pm2 start` — silently ran under the system's old Node and crashed.
 - `exec_mode: 'fork'` with `instances: 1` is the confirmed-working combination on the production box; `'cluster'`/`'max'` did not honor the absolute interpreter path correctly there. Revisit only after confirming cluster mode respects it.
 
-CI (`NavigatorsTech/DevoProject`'s `.github/workflows/deploy.yml`, triggered on push to `master`): builds under Node 20 (via `actions/setup-node` for validation, `nvm` on the server for the actual restart), deploys via `git reset --hard origin/master` + `npm ci` + `npm run build` + PM2 restart, health-checks plain `http://127.0.0.1:3000/`, and rolls back on failure (verifying the rollback itself succeeded, not just attempting it).
+**PM2 only reads `ecosystem.config.cjs` when an app is *started from that file*.** `pm2 restart qtapp`, `pm2 start qtapp` (by name) and a reboot's resurrect all reuse the environment from the last start/`pm2 save` - after editing the file, run `pm2 delete qtapp && pm2 start ecosystem.config.cjs && pm2 save`. PM2 is installed under nvm on the server: load it first with `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 24`, and never `sudo pm2` (root has a separate PM2).
+
+CI (`NavigatorsTech/DevoProject`'s `.github/workflows/deploy.yml`, triggered on push to `master`): builds under Node 20 (via `actions/setup-node` for validation, `nvm` on the server for the actual restart), deploys via `git reset --hard origin/master` + `npm ci` + `npm run build` + PM2 delete/start from `ecosystem.config.cjs` + `pm2 save`, health-checks plain `http://127.0.0.1:3000/`, and rolls back on failure (verifying the rollback itself succeeded, not just attempting it).
 
 ## Conventions & gotchas
 
