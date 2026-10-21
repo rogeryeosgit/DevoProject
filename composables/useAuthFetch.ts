@@ -22,6 +22,11 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
     return { ...opts, headers }
   }
 
+  // Taken before the first await: during SSR the Nuxt context is gone after
+  // one, and calling useState() in the catch below would throw its own error
+  // in place of the real API failure.
+  const lastErrorRef = useLastErrorRef()
+  lastErrorRef.value = null
   try {
     return (await $fetch<T>(url, withToken(userStore.token))) as T
   } catch (err: any) {
@@ -39,8 +44,49 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
       }
       await userStore.logout()
     }
+    lastErrorRef.value = errorRef(err) ?? null
     throw err
   }
+}
+
+/**
+ * The reference code the server put on a failed API response (x-error-ref
+ * header, set in server/plugins/logging.ts). The same code prefixes that
+ * request's lines in QTApp.log, so a user who quotes it can be looked up with
+ * `grep <ref> logs/QTApp*.log`. Accepts a raw ofetch FetchError, or the
+ * NuxtError useAsyncData wraps it in (original kept as `cause`).
+ */
+export function errorRef(err: any): string | undefined {
+  const fromHeader = (e: any) => e?.response?.headers?.get?.('x-error-ref') as string | null | undefined
+  return fromHeader(err) ?? fromHeader(err?.cause) ?? err?.data?.ref ?? undefined
+}
+
+function useLastErrorRef() {
+  return useState<string | null>('lastErrorRef', () => null)
+}
+
+/**
+ * Records a failure's reference code (or clears it) for withErrorRef(), for
+ * calls made outside authFetch. Call it before any await, or client-side only.
+ */
+export function rememberErrorRef(err: any): void {
+  useLastErrorRef().value = err ? (errorRef(err) ?? null) : null
+}
+
+/**
+ * The reference code for an error a page is about to show: from the error
+ * itself if it still carries the response, otherwise the one authFetch
+ * recorded when the call failed (useAsyncData may wrap the original error -
+ * in dev, in a diagnostic object without the response).
+ */
+export function latestErrorRef(err?: any): string | undefined {
+  return errorRef(err) ?? useLastErrorRef().value ?? undefined
+}
+
+/** Appends the latest API failure's reference code to a user-facing error message. */
+export function withErrorRef(text: string): string {
+  const ref = useLastErrorRef().value
+  return ref ? `${text} (Error ref: ${ref})` : text
 }
 
 /**

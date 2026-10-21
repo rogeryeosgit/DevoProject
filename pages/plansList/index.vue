@@ -38,7 +38,8 @@ const { error: fetchError } = await useAsyncData('plans-list', async () => {
 if (isEmailNotVerifiedError(fetchError.value)) {
   await navigateTo('/auth/verify-email')
 } else if (fetchError.value) {
-  throw createError({ statusCode: 500, statusMessage: 'Failed to load plans' })
+  // data.ref: the failed API call's reference code, shown on error.vue.
+  throw createError({ statusCode: 500, statusMessage: 'Failed to load plans', data: { ref: latestErrorRef(fetchError.value) } })
 }
 
 const plans = computed(() => planStore.plans)

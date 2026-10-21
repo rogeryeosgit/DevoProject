@@ -16,6 +16,9 @@
                 <v-list-item-subtitle v-else class="text-high-emphasis text-wrap" style="opacity: 1">
                   {{ otherError }}
                   <br />You will have to log in to view this page
+                  <template v-if="errorReference">
+                    <br />Error ref: <strong>{{ errorReference }}</strong> (please quote this if you report the problem)
+                  </template>
                 </v-list-item-subtitle>
               </v-list-item>
             </v-card>
@@ -40,6 +43,21 @@ import type { NuxtError } from '#app'
 const props = defineProps<{
   error: NuxtError
 }>()
+
+// The failed request's reference code, put there by the page that threw (see
+// errorRef in composables/useAuthFetch.ts). When this page is rendered on the
+// server, `data` arrives as a JSON string rather than an object.
+const errorReference = computed(() => {
+  let data: any = props.error?.data
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data)
+    } catch {
+      data = undefined
+    }
+  }
+  return typeof data?.ref === 'string' ? data.ref : undefined
+})
 
 const pageNotFound = '404 Not Found'
 const otherError = 'An error occurred'

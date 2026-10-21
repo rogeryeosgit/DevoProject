@@ -105,11 +105,11 @@ export class FileLogger {
     return this.opts.level
   }
 
-  log(level: LogLevel, args: unknown[]): void {
+  log(level: LogLevel, args: unknown[], ref?: string): void {
     if (LEVEL_RANK[level] < LEVEL_RANK[this.opts.level]) return
     const now = this.now()
     const withStack = level === 'fatal' || this.opts.level === 'debug'
-    const ref = this.opts.context?.()
+    ref ??= this.opts.context?.()
     const message = args.map(a => describe(a, withStack)).join(' ')
     const line = `[${formatSgt(now)}] [${level.toUpperCase()}] default - ${ref ? `[${ref}] ` : ''}${message}`
 
@@ -336,5 +336,17 @@ export const logger = {
   get level(): LogLevel {
     return getInstance().level
   },
+  /**
+   * Logs under an explicit request reference code - for hooks h3 calls
+   * outside the request's async context (the error and afterResponse hooks),
+   * where the automatic lookup can't see the request.
+   */
+  forRef: (ref: string | undefined) => ({
+    debug: (...args: unknown[]) => getInstance().log('debug', args, ref),
+    info: (...args: unknown[]) => getInstance().log('info', args, ref),
+    warn: (...args: unknown[]) => getInstance().log('warn', args, ref),
+    error: (...args: unknown[]) => getInstance().log('error', args, ref),
+    fatal: (...args: unknown[]) => getInstance().log('fatal', args, ref)
+  }),
   close: (): Promise<void> => instance?.close() ?? Promise.resolve()
 }

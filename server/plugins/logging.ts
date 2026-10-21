@@ -2,6 +2,11 @@ import type { H3Error, H3Event } from 'h3'
 import { logger, logStats, msUntilNextSgtMidnight, resetLogStats, safePath } from '../utils/logger'
 
 const SLOW_REQUEST_MS = 1000
+
+// Reference codes users can quote ("Error ref: K7Q2XA"): 6 characters from an
+// alphabet without look-alikes (0/O, 1/I/L), unique enough to grep a year of logs.
+const REF_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
+const newRef = () => Array.from({ length: 6 }, () => REF_ALPHABET[Math.floor(Math.random() * REF_ALPHABET.length)]).join('')
 const DAY_MS = 24 * 60 * 60 * 1000
 
 // Dev-only asset/HMR traffic - not app requests, so not timed or counted.
@@ -21,7 +26,11 @@ export default defineNitroPlugin((nitroApp) => {
 
   logger.info(`Server started (qtapp ${config.public.appVersion}, node ${process.version}, pid ${process.pid}, log level ${logger.level})`)
 
+  // Every request gets a reference code; the logger prefixes each line logged
+  // while handling it (server/utils/logger.ts), and failed responses carry it
+  // in the x-error-ref header for the client to show (useAuthFetch.ts).
   nitroApp.hooks.hook('request', (event: H3Event) => {
+    event.context.ref = newRef()
     event.context.startedAt = performance.now()
   })
 
@@ -40,7 +49,7 @@ export default defineNitroPlugin((nitroApp) => {
     const ms = elapsedMs(event)
     if (ms > SLOW_REQUEST_MS) {
       logStats.slowRequests++
-      logger.warn(`SLOW ${event.method} ${safePath(path)} ${ms}ms (status ${status})`)
+      logger.forRef(event.context.ref).warn(`SLOW ${event.method} ${safePath(path)} ${ms}ms (status ${status})`)
     }
   })
 
@@ -61,6 +70,9 @@ export default defineNitroPlugin((nitroApp) => {
     const status = err.statusCode ?? 500
     const path = safePath(event.path)
     event.context.loggedAsError = true
+    // A header, not error.data: Nuxt and Nitro strip `data` from responses for
+    // unexpected (unhandled) errors - exactly the ones worth a reference code.
+    if (event.context.ref) setResponseHeader(event, 'x-error-ref', event.context.ref)
     logStats.requests++
 
     // Scanners probing /wp-admin, /.env etc. hit unknown *pages*; those only
@@ -72,6 +84,7 @@ export default defineNitroPlugin((nitroApp) => {
     if (status >= 500) logStats.status5xx++
     else logStats.status4xx++
 
+    const log = logger.forRef(event.context.ref)
     const cause = err.cause instanceof Error ? err.cause : undefined
     const reason = cause ? `${cause.name}: ${cause.message}` : (err.statusMessage || err.message)
     const prefix = isDecryptionError(reason) ? 'DECRYPTION: ' : ''
@@ -79,15 +92,15 @@ export default defineNitroPlugin((nitroApp) => {
     const timing = ms > SLOW_REQUEST_MS ? ` (${ms}ms)` : ''
     const line = `${prefix}SERVER ROUTER: ${event.method} ${path} -> ${status} ${reason}${timing}`
     if (status >= 500) {
-      logger.error(line)
+      log.error(line)
       // The stack only at debug level - it's long and rarely needed.
-      if (logger.level === 'debug' && cause?.stack) logger.debug(cause.stack)
+      if (logger.level === 'debug' && cause?.stack) log.debug(cause.stack)
     } else {
       // Input validation (zod, once added) reports which fields failed - names
       // only, never the submitted values.
       const issues = (err.data as { issues?: { path?: (string | number)[] }[] } | undefined)?.issues
       const fields = issues?.map(i => i.path?.join('.')).filter(Boolean)
-      logger.warn(fields?.length ? `${line} (fields: ${fields.join(', ')})` : line)
+      log.warn(fields?.length ? `${line} (fields: ${fields.join(', ')})` : line)
     }
   })
 

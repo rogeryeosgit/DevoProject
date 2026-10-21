@@ -108,9 +108,10 @@ async function continueToApp() {
     snackText.value = 'Still not verified - check your inbox (and spam folder), or resend the email.'
   } catch (e) {
     console.error(e)
+    rememberErrorRef(e)
     snack.value = true
     snackColor.value = 'error'
-    snackText.value = "Couldn't finish setting up your account - please try again shortly."
+    snackText.value = withErrorRef("Couldn't finish setting up your account - please try again shortly.")
   } finally {
     continuing.value = false
   }

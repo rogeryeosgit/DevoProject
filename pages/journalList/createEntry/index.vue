@@ -106,7 +106,7 @@ async function submit() {
     showDiscardDraftButton.value = false
     snack.value = true
     snackColor.value = 'error'
-    snackText.value = "Couldn't save your entry — your draft is safe, please try again."
+    snackText.value = withErrorRef("Couldn't save your entry — your draft is safe, please try again.")
   }
 }
 

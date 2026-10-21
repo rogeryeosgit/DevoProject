@@ -83,7 +83,8 @@ const { data: passageData, error: fetchError } = await useAsyncData(`journal-ent
 if (isEmailNotVerifiedError(fetchError.value)) {
   await navigateTo('/auth/verify-email')
 } else if (fetchError.value) {
-  throw createError({ statusCode: 500, statusMessage: 'Failed to load journal entry' })
+  // data.ref: the failed API call's reference code, shown on error.vue.
+  throw createError({ statusCode: 500, statusMessage: 'Failed to load journal entry', data: { ref: latestErrorRef(fetchError.value) } })
 }
 
 const passageContents = computed(() => passageData.value)
@@ -160,7 +161,7 @@ async function updateEntry() {
     showDiscardDraftButton.value = false
     snack.value = true
     snackColor.value = 'error'
-    snackText.value = "Couldn't save your changes — your draft is safe, please try again."
+    snackText.value = withErrorRef("Couldn't save your changes — your draft is safe, please try again.")
   }
 }
 
