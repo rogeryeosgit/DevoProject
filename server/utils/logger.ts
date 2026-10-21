@@ -1,5 +1,6 @@
 import { appendFileSync, createWriteStream, existsSync, mkdirSync, openSync, readdirSync, renameSync, statSync, unlinkSync, type WriteStream } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { AsyncLocalStorage } from 'node:async_hooks'
 
 // Brings back the QTApp.log file the Nuxt 2/Express app used to write via
 // log4js (retired in the Nitro rewrite, 8fdaf81). Lines keep log4js's default
@@ -247,6 +248,83 @@ export class FileLogger {
     this.stream = null
     console.warn(`[logger] ${CURRENT_FILE} disabled, logging to console only: ${describe(err, false)}`)
   }
+}
+
+// Per-request timing breakdown for SLOW lines: which steps took the time
+// (internal API calls a page made while rendering, ESV fetches, MongoDB
+// queries, Firebase token checks). server/plugins/logging.ts gives every
+// request a trail; an internal API call's trail points at the page request
+// that made it, so the page's breakdown includes that call and its steps.
+export interface Timing {
+  label: string
+  start: number // performance.now() when the step began
+  ms: number
+  children?: Timing[]
+}
+export interface RequestTrail {
+  timings: Timing[]
+  parent?: RequestTrail
+}
+export const requestTrail = new AsyncLocalStorage<RequestTrail>()
+
+/** Records a step that just finished, against the request it ran for (no-op outside a request). */
+export function recordTiming(label: string, start: number, children?: Timing[]): void {
+  requestTrail.getStore()?.timings.push({ label, start, ms: performance.now() - start, children })
+}
+
+/** Runs and times an async step of the current request. */
+export async function timed<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const start = performance.now()
+  try {
+    return await fn()
+  } finally {
+    recordTiming(label, start)
+  }
+}
+
+// Same-label steps are merged ("MongoDB Plan.findOne 12ms (x3)"), slowest
+// first, so the line stays readable however many queries a request made.
+function summariseTimings(timings: Timing[], depth = 0): string {
+  const merged = new Map<string, { ms: number; count: number; children: Timing[] }>()
+  for (const t of timings) {
+    const m = merged.get(t.label) ?? { ms: 0, count: 0, children: [] }
+    m.ms += t.ms
+    m.count++
+    if (t.children) m.children.push(...t.children)
+    merged.set(t.label, m)
+  }
+  return [...merged]
+    .sort((a, b) => b[1].ms - a[1].ms)
+    .slice(0, 6)
+    .map(([label, m]) => `${label} ${Math.round(m.ms)}ms${m.count > 1 ? ` (x${m.count})` : ''}`
+      + (m.children.length && depth < 1 ? ` [${summariseTimings(m.children, depth + 1)}]` : ''))
+    .join(', ')
+}
+
+/**
+ * "where did the time go" for a SLOW line. Steps can overlap (a page fetches
+ * in parallel), so the untimed remainder is total minus the union of the
+ * steps' intervals, not their sum.
+ */
+export function describeTimings(totalMs: number, trail: RequestTrail | undefined, path: string): string {
+  // Pages spend untimed time server-rendering; API routes in their own code.
+  const untimedLabel = path.startsWith('/api/') ? 'app code' : 'page rendering/other'
+  const timings = trail?.timings ?? []
+  if (timings.length === 0) return `no timed steps (all ${untimedLabel})`
+  const intervals = timings.map(t => [t.start, t.start + t.ms]).sort((a, b) => a[0]! - b[0]!)
+  let covered = 0
+  let [curStart, curEnd] = intervals[0]!
+  for (const [s, e] of intervals.slice(1)) {
+    if (s! > curEnd!) {
+      covered += curEnd! - curStart!
+      ;[curStart, curEnd] = [s, e]
+    } else {
+      curEnd = Math.max(curEnd!, e!)
+    }
+  }
+  covered += curEnd! - curStart!
+  const untimed = Math.round(totalMs - covered)
+  return summariseTimings(timings) + (untimed > 50 ? `, untimed (${untimedLabel}) ${untimed}ms` : '')
 }
 
 // Counters for the daily summary line (server/plugins/logging.ts), reset after

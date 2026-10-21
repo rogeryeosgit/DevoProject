@@ -1,4 +1,5 @@
 import mongoose, { type Model } from 'mongoose'
+import { queryTiming } from '../utils/queryTiming'
 
 const { Schema, model, models } = mongoose
 
@@ -23,5 +24,7 @@ const PlanSchema = new Schema<PlanDocument>({
   description: { type: String, required: true, trim: true },
   passages: { type: Map, of: Map, required: true }
 })
+
+PlanSchema.plugin(queryTiming)
 
 export const PlanModel: Model<PlanDocument> = models.Plan || model<PlanDocument>('Plan', PlanSchema)

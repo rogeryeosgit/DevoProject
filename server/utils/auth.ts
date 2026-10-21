@@ -1,7 +1,7 @@
 import { getAuth, type DecodedIdToken } from 'firebase-admin/auth'
 import { getHeader, createError, type H3Event } from 'h3'
 import { UserModel } from '../models/User'
-import { logger } from './logger'
+import { logger, timed } from './logger'
 
 function getBearerToken(event: H3Event): string {
   const header = getHeader(event, 'authorization')
@@ -38,7 +38,7 @@ async function verifyRequest(event: H3Event) {
   }
 
   try {
-    const decoded = await getAuth().verifyIdToken(token)
+    const decoded = await timed('Firebase token check', () => getAuth().verifyIdToken(token))
     tokenCache.set(token, { decoded, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS })
     // Only on a real verification (cache miss), not every call within the TTL.
     logger.info(`AUTH: User token verified for ${decoded.email ?? decoded.uid}`)
@@ -107,7 +107,7 @@ export async function tryGetEmail(event: H3Event): Promise<string | undefined> {
   const cached = tokenCache.get(token)
   if (cached && cached.expiresAt > Date.now()) return cached.decoded.email?.toLowerCase()
   try {
-    const decoded = await getAuth().verifyIdToken(token)
+    const decoded = await timed('Firebase token check', () => getAuth().verifyIdToken(token))
     tokenCache.set(token, { decoded, expiresAt: Date.now() + TOKEN_CACHE_TTL_MS })
     return decoded.email?.toLowerCase()
   } catch {

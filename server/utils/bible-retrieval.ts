@@ -1,4 +1,4 @@
-import { logger, logStats, nextEsvAccessCount } from './logger'
+import { logger, logStats, nextEsvAccessCount, recordTiming } from './logger'
 
 const ESV_URL = 'https://api.esv.org/v3/passage/text/'
 
@@ -20,6 +20,7 @@ export const getPassage = defineCachedFunction(async (passage: string) => {
   logStats.esvCalls++
   logger.info(`BRService : ESVAPI Access Count : ${nextEsvAccessCount()} (${passage})`)
   const started = Date.now()
+  const timingStart = performance.now()
   try {
     const result = await $fetch<EsvPassageResponse>(ESV_URL, {
       headers: { Authorization: `Token ${runtimeConfig.esvApiKey}` },
@@ -41,6 +42,8 @@ export const getPassage = defineCachedFunction(async (passage: string) => {
       logger.error(`BRService Error : ${passage} - HTTP ${status ?? 'no response'} -`, err)
     }
     throw err
+  } finally {
+    recordTiming(`ESV API (${passage})`, timingStart)
   }
 }, {
   maxAge: Number(runtimeConfig.cacheTtl) || 3600,

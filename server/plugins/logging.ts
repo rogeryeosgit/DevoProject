@@ -1,5 +1,5 @@
 import type { H3Error, H3Event } from 'h3'
-import { logger, logStats, msUntilNextSgtMidnight, resetLogStats, safePath } from '../utils/logger'
+import { describeTimings, logger, logStats, msUntilNextSgtMidnight, requestTrail, resetLogStats, safePath, type RequestTrail } from '../utils/logger'
 
 const SLOW_REQUEST_MS = 1000
 
@@ -26,6 +26,24 @@ export default defineNitroPlugin((nitroApp) => {
 
   logger.info(`Server started (qtapp ${config.public.appVersion}, node ${process.version}, pid ${process.pid}, log level ${logger.level})`)
 
+  // Every request runs in its own timing trail (see requestTrail in
+  // server/utils/logger.ts) so SLOW lines can say where the time went. API
+  // calls a page makes while server-rendering go through this same handler
+  // as internal requests; each one is added to the page's trail as a single
+  // step, carrying its own steps with it.
+  const handle = nitroApp.h3App.handler
+  nitroApp.h3App.handler = async (event: H3Event) => {
+    const parent = requestTrail.getStore()
+    const trail: RequestTrail = { timings: [], parent }
+    event.context.trail = trail
+    const start = performance.now()
+    try {
+      return await requestTrail.run(trail, () => handle(event))
+    } finally {
+      parent?.timings.push({ label: `api ${event.method} ${safePath(event.path)}`, start, ms: performance.now() - start, children: trail.timings })
+    }
+  }
+
   // Every request gets a reference code; the logger prefixes each line logged
   // while handling it (server/utils/logger.ts), and failed responses carry it
   // in the x-error-ref header for the client to show (useAuthFetch.ts).
@@ -40,7 +58,9 @@ export default defineNitroPlugin((nitroApp) => {
   // which are counted (and timed) in the error hook below instead.
   nitroApp.hooks.hook('afterResponse', (event: H3Event) => {
     const path = event.path
-    if (isInternalPath(path) || event.context.loggedAsError) return
+    // Internal calls made while rendering a page are part of that page's
+    // request: already in its SLOW breakdown, and not separate traffic.
+    if (isInternalPath(path) || event.context.loggedAsError || event.context.trail?.parent) return
     logStats.requests++
     const status = getResponseStatus(event)
     if (status >= 500) logStats.status5xx++
@@ -49,7 +69,7 @@ export default defineNitroPlugin((nitroApp) => {
     const ms = elapsedMs(event)
     if (ms > SLOW_REQUEST_MS) {
       logStats.slowRequests++
-      logger.forRef(event.context.ref).warn(`SLOW ${event.method} ${safePath(path)} ${ms}ms (status ${status})`)
+      logger.forRef(event.context.ref).warn(`SLOW ${event.method} ${safePath(path)} ${ms}ms (status ${status}) - ${describeTimings(ms, event.context.trail, path)}`)
     }
   })
 
@@ -73,7 +93,7 @@ export default defineNitroPlugin((nitroApp) => {
     // A header, not error.data: Nuxt and Nitro strip `data` from responses for
     // unexpected (unhandled) errors - exactly the ones worth a reference code.
     if (event.context.ref) setResponseHeader(event, 'x-error-ref', event.context.ref)
-    logStats.requests++
+    if (!event.context.trail?.parent) logStats.requests++
 
     // Scanners probing /wp-admin, /.env etc. hit unknown *pages*; those only
     // count toward the daily summary. Unknown /api routes are still logged.
@@ -89,7 +109,7 @@ export default defineNitroPlugin((nitroApp) => {
     const reason = cause ? `${cause.name}: ${cause.message}` : (err.statusMessage || err.message)
     const prefix = isDecryptionError(reason) ? 'DECRYPTION: ' : ''
     const ms = elapsedMs(event)
-    const timing = ms > SLOW_REQUEST_MS ? ` (${ms}ms)` : ''
+    const timing = ms > SLOW_REQUEST_MS ? ` (${ms}ms - ${describeTimings(ms, event.context.trail, path)})` : ''
     const line = `${prefix}SERVER ROUTER: ${event.method} ${path} -> ${status} ${reason}${timing}`
     if (status >= 500) {
       log.error(line)
