@@ -18,6 +18,10 @@ cutover on 2026-07-23 took 76 commits in July. Since then it's been maintenance 
   Logout menu duplicate-ID fix, the npm audit update (31 → 15 advisories), Mongo bound to localhost, the local seed
   plan refresh (Jun 2020 – Oct 2026), `pm2 save` in `deploy.yml`, and production `NUXT_LOG_DIR`.
 - **On `rogeryeosgit` master, not deployed yet:** the scanner-404 noise fix (`2a69d66`).
+- **Committed locally only (not pushed) as of 22 Oct:** Phase 1 Rounds A and B, and **`fe52fe1`, a fix for a bug
+  that is live in production:** since the 21 Oct deploy, opening or refreshing a journal entry's page
+  (`/journalList/<id>`) directly shows "An error occurred". Opening it from the journal list still works. Deploy
+  soon.
 - **Most urgent:** production's default reading plan **ends 31 Oct 2026** (see Phase 0.1).
 
 **Overall theme:** the board's 5 "In progress" cards, all untouched since Feb 2025, describe a **redesign**: a
@@ -93,12 +97,12 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 - **Plans named like the default (found 22 Oct).** Any user can create a plan called `--- Default Nav Plan ---`, and
   the app finds the default plan *by name*, so a duplicate could be picked instead. Long-term fix: an `isDefault`
   flag on the Plan model (already suggested in `docs/migration-plan.md`).
-- **No success/failure feedback on plan pages.** `stores/plan.ts` create/update/delete swallow errors with
-  `console.error`, and `journal.ts` deleteEntry does the same.
-  - Have them return success/failure.
-  - Callers `await` them before navigating away (`createPlan/index.vue:24-30`, `[pid]/index.vue:58-66`, the
-    `[jid]` delete).
-  - Add one shared `composables/useSnackbar.ts` to replace the 5 copied snackbar blocks.
+- ✅ **Success/failure feedback** (Round B, 22 Oct):
+  - B1 `fc0ae8c`: plan create/update/delete report failure, and the pages stay put with "Couldn't … (Error ref: …)".
+  - B2 `1868fc8`: a journal entry's delete waits, and only leaves the page on success.
+  - B3 `335bcd6`: one shared `useSnackbar()` replaces the copied snackbar code in 8 files.
+  - Found while testing: `fe52fe1` fixes direct loads of `/journalList/<id>`, broken since 21 Oct.
+    `authFetch`'s `useState()` call threw during server rendering after an `await`.
 - **Verse continuity in plan creation.** PassagePicker should require the second verse to come after the first.
   Also fix: Cancel should revert the passage, a day's passage should be clearable, and PlanEditor month keys depend
   on timezone (`PlanEditor.vue:183,220,235`).
