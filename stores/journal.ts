@@ -197,7 +197,8 @@ export const useJournalStore = defineStore('journal', {
       }
     },
 
-    async deleteEntry(journalID: string) {
+    // Returns whether it succeeded, so the page only leaves when it did.
+    async deleteEntry(journalID: string): Promise<boolean> {
       try {
         // Capture the date before removing - the entry is always currently
         // loaded/rendered here, so this is the exact value to drop from
@@ -212,8 +213,10 @@ export const useJournalStore = defineStore('journal', {
           const idx = this.entryDates.findIndex((d) => toDayIndex(d) === toDayIndex(entry.date))
           if (idx !== -1) this.entryDates.splice(idx, 1)
         }
+        return true
       } catch (e) {
         reportClientError('journal: delete failed', e)
+        return false
       }
     },
 

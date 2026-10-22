@@ -37,7 +37,7 @@
           <v-card-text>Are you sure you would like to delete this entry?</v-card-text>
           <v-card-actions class="flex-wrap justify-end">
             <v-btn color="warning" variant="text" @click="deleteDialog = false">Cancel</v-btn>
-            <v-btn color="success" variant="text" to="/journalList" @click="deleteEntry()">Yes</v-btn>
+            <v-btn color="success" variant="text" @click="deleteEntry()">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -165,7 +165,18 @@ async function updateEntry() {
   }
 }
 
-function deleteEntry() {
-  journalStore.deleteEntry(id)
+// Not a link to /journalList any more: that navigated away before the
+// delete finished, so a failed delete looked exactly like a successful one.
+async function deleteEntry() {
+  deleteDialog.value = false
+  const ok = await journalStore.deleteEntry(id)
+  if (ok) {
+    router.push('/journalList')
+  } else {
+    showDiscardDraftButton.value = false
+    snack.value = true
+    snackColor.value = 'error'
+    snackText.value = withErrorRef("Couldn't delete this entry - please try again.")
+  }
 }
 </script>
