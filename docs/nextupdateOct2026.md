@@ -116,6 +116,11 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
   `X-Frame-Options` or `X-Content-Type-Options`.
 - **Bound `tokenCache`** in `server/utils/auth.ts`; `await` and catch `mongoose.connect`; make an ESV outage fail
   gracefully.
+- **Friendly "service temporarily unavailable" when the database is down** (Roger, 22 Oct; on the board). Today
+  actions hang ~10s (Mongoose buffers commands) and then hit the generic, misleading "An error occurred / You will
+  have to log in" page. The fix: fail fast with a 503 when Mongoose isn't connected; a dedicated 503 message in
+  `error.vue` with the Error ref; keep today's passage readable (it comes from ESV, not the database); optionally, a
+  banner driven by `/api/health`.
 - **Firebase:**
   - Restrict the web API key to the qt.navigators.tech referrer in Google Cloud console.
   - Trim Authorized Domains.
