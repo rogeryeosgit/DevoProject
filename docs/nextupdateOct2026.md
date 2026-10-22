@@ -10,27 +10,34 @@ cutover on 2026-07-23 took 76 commits in July. Since then it's been maintenance 
 - **Repo docs:** `CLAUDE.md`, `README.md`, `docs/migration-plan.md`, `docs/dependency-upgrade-plan.md`, `docs/Notes.md`.
 - **Notion:** the QT App wishlist (on the "Projects" page), Mrs Yeun's ideas (on the "NavTech" page), QT-sharing goals
   (on "Servant Team"), and the task **"Update QT passages", due 2026-10-31**.
-- **Code review** and **GitHub:** 0 open issues; 9 Dependabot PRs (#47, #49–#56); 2 unpushed local commits
-  (`d114caa` Mongo bound to localhost, `4ed8505` npm audit fix: 31 → 15 advisories).
+- **Code review** and **GitHub** (at the time: 0 open issues, 9 Dependabot PRs, 2 unpushed commits).
+
+**Status (22 Oct 2026):**
+- **Done and deployed 21 Oct** (PRs #57 and #58 into NavigatorsTech): `QTApp.log` logging (weekly files, SGT
+  timestamps, error reference codes, browser/sign-in reports, SLOW-request breakdowns), the typecheck fix, the
+  Logout menu duplicate-ID fix, the npm audit update (31 → 15 advisories), Mongo bound to localhost, the local seed
+  plan refresh (Jun 2020 – Oct 2026), `pm2 save` in `deploy.yml`, and production `NUXT_LOG_DIR`.
+- **On `rogeryeosgit` master, not deployed yet:** the scanner-404 noise fix (`2a69d66`).
+- **Most urgent:** production's default reading plan **ends 31 Oct 2026** (see Phase 0.1).
 
 **Overall theme:** the board's 5 "In progress" cards, all untouched since Feb 2025, describe a **redesign**: a
 personalised home page, a profile page, and better plan and journal views. Most Notion ideas fit inside that
 redesign. So the plan is: clear the urgent items (Phase 0), fix correctness and security (Phase 1), then do the
 redesign as the main release (Phase 2), with a backlog after that.
 
-Workflow (unchanged): develop on `rogeryeosgit/DevoProject` on this box, then PR into `NavigatorsTech/DevoProject`.
-A merge there deploys to production.
+Workflow: commit straight to `master` on `rogeryeosgit/DevoProject` (no feature branches unless Roger asks), then
+open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging that PR deploys to production.
 
 ---
 
 ## Phase 0: This week
 
-1. **Extend the reading plan's passages** (Notion task due 31 Oct)
-   - `docker/mongo-init.js` seeds `"--- Default Nav Plan ---"` only through **Jul 2026**. If production stops there
-     too, every visitor has had the `Proverbs <day>` fallback since August (`server/api/passages/today.get.ts`).
-   - Step 1: a read-only check of which months production's default plan covers. Roger runs it, since it needs the
-     production database credentials.
-   - Step 2: add **`scripts/import-plan.mjs`**:
+1. **Extend the reading plan's passages: deadline 31 Oct** (Notion task "Update QT passages")
+   - ✅ Checked 21 Oct: production's `"--- Default Nav Plan ---"` covers **Jun 2020 – Oct 2026**. From **1 Nov** every
+     visitor gets the `Proverbs <day>` fallback (`server/api/passages/today.get.ts`). `QTApp.log` will show a
+     `PASSAGE: … has no passage …` WARN line from that day.
+   - Still needed: the passage list for **Nov 2026 onwards** (see question 1).
+   - Load it through the plan editor UI, or add **`scripts/import-plan.mjs`**:
      - Reads a CSV of `date,reference`.
      - Validates each reference against `data/bible-books.json`, the same data `PassagePicker.vue` uses.
      - `$set`s `passages.<MMM YYYY>.<D>` (e.g. `passages.Jul 2026.15`, the format `server/models/Plan.ts` uses)
@@ -38,24 +45,36 @@ A merge there deploys to production.
      - Has `--dry-run`, and reads `NUXT_MONGODB_ACCESS` from `.env` or `ecosystem.config.cjs`.
 
      This also covers the board card **"input plans using csv"**, as a command-line tool for now.
-   - Step 3: update `docker/mongo-init.js` to match.
+   - Then regenerate `docker/mongo-init.js` from production with the same export/import steps as 21 Oct (✅ done
+     once, for Jun 2020 – Oct 2026), so a fresh local database matches.
 2. **Fix the open bug: "Verification emails / Firebase emails always go to spam"** (board, Bugs column)
    - This is configuration, not code. In the Firebase console (Authentication → Templates), set up a
      **custom sender domain**, e.g. `noreply@navigators.tech`. Add the SPF/DKIM DNS records Firebase gives you to
      navigators.tech, and customise the template text. Optionally, send through your own SMTP provider instead.
    - Check with mail-tester.com, plus a Gmail and an Outlook inbox.
 3. **Ship and tidy up**
-   - Push `d114caa` and `4ed8505`.
-   - Close the Dependabot PRs that `4ed8505` already covers (vite 8.3.4, undici, devalue, svgo, shell-quote,
-     busboy, brace-expansion, source-map-js, postcss-selector-parser); merge any it doesn't.
-   - Record the 4th CVE wave and the 15 remaining advisories in `docs/dependency-upgrade-plan.md`.
-   - **Board housekeeping** (Roger, or me once the token has the `project` write scope):
+   - ✅ Pushed and deployed. ✅ All Dependabot PRs are closed: #47 (svgo) was obsolete, and the rest closed themselves
+     once `4ed8505` was on master.
+   - Remaining security alerts (4), none fixable today:
+     - `@grpc/grpc-js` (high + low): Firebase's Firestore package pins `~1.9.0`, and the fix is 1.13.6. **Decision
+       (21 Oct): wait for Firebase's own update**, no `overrides` entry. The app never loads Firestore, so the
+       vulnerable code never runs.
+     - `braces`, `node-forge` (high): no fixed release yet. Both are Nuxt build/dev tooling.
+   - Still to do: record the 4th CVE wave and these alerts in `docs/dependency-upgrade-plan.md`.
+   - **Board housekeeping** (Roger, or me once the token has `project` write scope; it currently has read-only
+     `read:project`):
      - Merge the 3 duplicate "On User deletion" cards.
      - Close cards that only applied to Nuxt 2: "connections not closed" (Nitro uses a single pooled connection in
        `server/plugins/mongo.ts`) and "minimize package size for vendor app" (webpack-era).
      - Add the Notion ideas as cards.
-4. **Cutover leftovers** (`docs/migration-plan.md` L764–816; on the production server, with Roger)
-   - Retire the `qtapp-v4test` PM2 process, the `qt-v4test` nginx site and `~/QTNuxtProject-v4-test`.
+4. **Production server housekeeping** (`docs/migration-plan.md` L764–816 cutover leftovers, plus 21 Oct findings)
+   - ✅ `NUXT_LOG_DIR=/home/roger/qtapp-logs` set, and `deploy.yml` now runs `pm2 save` after every restart.
+   - Move the leftover `/QTNuxtProject/logs/QTApp.log` (written before the setting took effect) into
+     `/home/roger/qtapp-logs/`.
+   - `chmod 600 ~/.pm2/dump.pm2`: it holds every env value in plain text, including the database connection string
+     and the encryption secret.
+   - The deploy user's PM2 now runs only `qtapp` (seen in the 21 Oct deploy log), so the `qtapp-v4test` process looks
+     gone. Still retire the `qt-v4test` nginx site and `~/QTNuxtProject-v4-test`.
    - Close ufw port 8443, and drop `devoProjDB_v4test` in the Atlas dashboard.
    - Rotate the **ESV API key**.
    - The Mongoose secret that was shown belonged to the **test** config. First confirm it's different from
@@ -79,6 +98,12 @@ A merge there deploys to production.
 - **Verse continuity in plan creation.** PassagePicker should require the second verse to come after the first.
   Also fix: Cancel should revert the passage, a day's passage should be clearable, and PlanEditor month keys depend
   on timezone (`PlanEditor.vue:183,220,235`).
+- **`/plansList/<id>` fetches the plan twice** during SSR: two `GET /api/plans/<id>` calls per page load (found
+  21 Oct while testing error references).
+- **Logged-in flash for stale sessions (low priority).** If a browser still has the login cookies but no Firebase
+  session, the page server-renders logged in, then the client logs out during hydration. The result is Vue hydration
+  mismatch warnings and a brief logged-in view (seen 21 Oct with cookie-only sessions). Possible fix: render the
+  auth-dependent parts client-only, or clear the cookies before mount when Firebase reports no user.
 - **Android keyboard regression check.** `auto-grow` is back on `QTJournalEditor.vue:28`, which a Done card had
   removed because the keyboard covered the textarea. Test on a real Android phone, and fix it (cap rows, or
   `scrollIntoView` on focus) if the problem is back.
@@ -93,31 +118,38 @@ A merge there deploys to production.
   should set it, using the client's timezone offset. This fixes entries made after midnight landing on the wrong day,
   and stops streaks being gamed with backdated entries.
 - **Rate limiting** on the public `/api/passages/today` (nginx `limit_req`). **Security headers/CSP**, via
-  `routeRules` or `nuxt-security`, after checking what nginx already sends.
+  `routeRules` or `nuxt-security`. Confirmed 21 Oct: live responses (through Cloudflare) carry **no** HSTS, CSP,
+  `X-Frame-Options` or `X-Content-Type-Options`.
 - **Bound `tokenCache`** in `server/utils/auth.ts`; `await` and catch `mongoose.connect`; make an ESV outage fail
   gracefully.
 - **Firebase:**
   - Restrict the web API key to the qt.navigators.tech referrer in Google Cloud console.
   - Trim Authorized Domains.
   - Optionally add App Check.
-- ✅ **Done (Oct 2026, branch `feat/qtapp-logging`): "Log failed login attempts" (board) and structured logs.**
+- ✅ **Done (21 Oct, PRs #57/#58, plus `2a69d66` on master): "Log failed login attempts" (board) and structured logs.**
   `logs/QTApp.log` is back, with weekly files kept a year and Singapore timestamps. It logs failed sign-ins
   (through the rate-limited `/api/client-log`), browser errors, error reference codes users can quote, silent
   passage fallbacks, ESV/Mongo problems, slow requests and crashes. See the "Logging" section in `CLAUDE.md`.
   - Still to check in production: the MongoDB `disconnected`/`reconnected` lines (couldn't stop Docker here
     without sudo) and the 3-day idle-cap forced-logout report (needs a real 3-day-idle session).
-  - Found while testing: `/plansList/<id>` fetches the plan **twice** during SSR (two API calls per page load).
+  - Scanner probes (`/.env`, `../` traversal, `/api/graphql`…) are only counted in the daily summary. 21 Oct check:
+    they can't read `.env`, `fb-service-account.json` or `ecosystem.config.cjs`; the live site and the app both
+    return 404/400.
 - Still open: add a **`/api/health`** endpoint that pings Mongo, and point `deploy.yml`'s health check at it,
   since `/` returns 200 even when the database is down.
 
 **Developer hygiene** (worth doing before the redesign, so UI work has a safety net):
-- Add a PR CI workflow `.github/workflows/ci.yml` running `npm ci`, `build`, `typecheck` and
-  `audit --audit-level=critical`.
-- Turn `typeCheck` on (`nuxt.config.ts:162`) and type the `any` store state.
-- Add `.github/dependabot.yml`.
+- Add a CI workflow `.github/workflows/ci.yml` on push to `master` (work goes straight to master now) running
+  `npm ci`, `build`, `typecheck` and `audit --audit-level=critical`. `npm run typecheck` is clean again since
+  `7cfdac8`, so it can go in from day one. Today only the deploy workflow builds, and it doesn't typecheck.
+- Turn `typeCheck` on (`nuxt.config.ts`) and type the `any` store state.
+- Dependabot: keep **alerts** on, but don't merge its PRs. Apply updates by hand instead (Roger, 21 Oct: keeps the
+  contributor list clean). Optionally turn off "Dependabot security updates" in the repo settings. No
+  `dependabot.yml`.
 - Fix the stale docs:
-  - README local setup is still Express/HTTPS with bare env names.
-  - CLAUDE.md still says Node 20, doesn't mention email verification, and is missing endpoints.
+  - README local setup is still Express/HTTPS with bare env names (only its new "Logs" section is current).
+  - CLAUDE.md still says Node 20 in the Deployment/CI text, doesn't mention email verification, and is missing
+    endpoints (`/api/client-log` is now one more).
   - `scripts/validate-data.mjs` still uses `.js` and the non-`NUXT_` names.
 - Small fixes: `vite.optimizeDeps.include`, `prefixComposables` (for the `useLayout` warning), and Docker
   `mongo:6` → `mongo:8`.
@@ -127,7 +159,8 @@ A merge there deploys to production.
 **Start with the Vuetify 3 → 4 upgrade** (dependency-upgrade-plan Phase 3). It means a visual-regression hunt
 across every page anyway, so doing it at the start of a redesign avoids doing the visual work twice.
 Then start with a short **design pass**: mockups of the home, profile, journal list and plan pages for Roger to
-approve before building.
+approve before building. New UI code should report failures with `reportClientError` / `withErrorRef` (see
+"Logging" in CLAUDE.md), so problems reach `QTApp.log` with a reference code users can quote.
 
 | Area | Board card(s) | Contents (Notion ideas folded in) |
 |---|---|---|
@@ -161,8 +194,11 @@ approve before building.
 ## Verification
 - **Local, on this box:** Docker Mongo plus `npm run dev`, viewed through `ssh -L 3000:localhost:3000`. Always use a
   **throwaway account in the `navtech-dev-apps` Firebase project** (CLAUDE.md), never Roger's real account.
-- **Every change:** `npm ci && npm run build`, and `typecheck` once Phase 1 turns it on. After Phase 1, CI runs these
-  on every PR.
+- **Every change:** `npm ci && npm run build && npm run typecheck`. Once Phase 1 adds CI, it runs these on every push
+  to `master`.
+- **Diagnostics:** `logs/QTApp.log` (SLOW breakdowns, error reference codes, CLIENT reports). For logged-in flows, a
+  throwaway `navtech-dev-apps` user signed in through a firebase-admin custom token, driven with headless Chrome
+  (`/usr/bin/google-chrome` on this box), worked well on 21 Oct. Delete the user afterwards.
 - **Phase 0:** review the `import-plan.mjs --dry-run` output with Roger. Afterwards, `/api/passages/today` returns
   the planned passage, not Proverbs. Check spam placement for verification and reset emails with mail-tester.
 - **Phase 1:**
@@ -176,12 +212,15 @@ approve before building.
   - The export downloads every entry decrypted.
   - Account deletion removes Mongo data and the Firebase user.
   - `navigator.share` on a real phone.
-- **Release:** PR into NavigatorsTech; `deploy.yml` validates, deploys and health-checks; smoke test on
-  qt.navigators.tech.
+- **Release:** PR from `rogeryeosgit:master` into NavigatorsTech. `deploy.yml` validates, deploys, health-checks and
+  `pm2 save`s. Then smoke-test qt.navigators.tech and check `/home/roger/qtapp-logs/QTApp.log` for the new
+  `Server started (qtapp …+<commit>)` line.
 
 ## Questions for Roger
-1. Where does the 2026–27 passage list come from, and does production really stop at Jul 2026?
+1. Where does the passage list for **Nov 2026 onwards** come from? (Production's plan ends Oct 2026, confirmed
+   21 Oct.)
 2. Redesign direction: keep it dark-only, or add a light theme? Should I prepare mockups first?
 3. Account deletion: what happens to plans the user created that others use? Transfer them to the default
    owner, keep them as anonymous, or delete them?
-4. Can the GitHub token get the `project` (write) scope, so I can update the board as work lands?
+4. Can the GitHub token get `project` (write) scope, so I can update the board as work lands? (It has read-only
+   `read:project` now.)
