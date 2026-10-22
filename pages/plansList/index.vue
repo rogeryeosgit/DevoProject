@@ -16,6 +16,12 @@
     <div class="d-flex justify-center mt-4">
       <v-btn to="/plansList/createPlan" exact color="primary" variant="elevated">Create Plan</v-btn>
     </div>
+    <v-snackbar v-model="snack" :timeout="4000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -25,6 +31,9 @@ definePageMeta({ middleware: ['check-auth', 'login-check'] })
 const userStore = useUserStore()
 const planStore = usePlanStore()
 const router = useRouter()
+const snack = ref(false)
+const snackColor = ref('')
+const snackText = ref('')
 
 const { error: fetchError } = await useAsyncData('plans-list', async () => {
   const [, data] = await Promise.all([
@@ -44,8 +53,14 @@ if (isEmailNotVerifiedError(fetchError.value)) {
 
 const plans = computed(() => planStore.plans)
 
-function submitPlanDeletion(id: string) {
-  planStore.deletePlan(id)
+async function submitPlanDeletion(id: string) {
+  const ok = await planStore.deletePlan(id)
+  if (!ok) {
+    // The plan stays in the list (the store only removes it on success).
+    snack.value = true
+    snackColor.value = 'error'
+    snackText.value = withErrorRef("Couldn't delete the plan - please try again.")
+  }
 }
 
 function updateSelectedPlan(id: string) {

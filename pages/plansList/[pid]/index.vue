@@ -23,6 +23,12 @@
         </v-card>
       </v-dialog>
     </div>
+    <v-snackbar v-model="snack" :timeout="4000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -37,6 +43,9 @@ const passageStore = usePassageStore()
 const id = route.params.pid as string
 const updateDialog = ref(false)
 const PlanEditorComponent = ref()
+const snack = ref(false)
+const snackColor = ref('')
+const snackText = ref('')
 
 // Fetches this one plan directly (with its full passages) rather than relying
 // on the plans-list store, which only ever carries the trimmed list-view
@@ -56,13 +65,20 @@ async function updatePlan() {
   if (!valid) return
 
   const p = PlanEditorComponent.value.getPlan()
-  await planStore.updatePlan({
+  const ok = await planStore.updatePlan({
     _id: id,
     creatorEmail: p.creatorEmail,
     planName: p.planName,
     description: p.description,
     passages: p.passages
   })
+  if (!ok) {
+    // Stay on the page so the edits aren't lost.
+    snack.value = true
+    snackColor.value = 'error'
+    snackText.value = withErrorRef("Couldn't save your changes to this plan - please try again.")
+    return
+  }
   await passageStore.refreshPassage()
   router.push('/plansList')
 }

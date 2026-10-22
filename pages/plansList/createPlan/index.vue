@@ -5,6 +5,12 @@
       <v-btn color="warning" variant="elevated" @click="cancelPlan">Cancel</v-btn>
       <v-btn color="success" variant="elevated" @click="submitPlan">Create Plan</v-btn>
     </div>
+    <v-snackbar v-model="snack" :timeout="4000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -15,19 +21,29 @@ const planStore = usePlanStore()
 const router = useRouter()
 
 const PlanEditorComponent = ref()
+const snack = ref(false)
+const snackColor = ref('')
+const snackText = ref('')
 
 async function submitPlan() {
   const valid = await PlanEditorComponent.value.checkValidation()
   if (!valid) return
 
   const p = PlanEditorComponent.value.getPlan()
-  await planStore.createPlan({
+  const ok = await planStore.createPlan({
     creatorEmail: p.creatorEmail,
     planName: p.planName,
     description: p.description,
     passages: p.passages
   })
-  router.push('/plansList')
+  if (ok) {
+    router.push('/plansList')
+  } else {
+    // Stay on the page so nothing typed into the editor is lost.
+    snack.value = true
+    snackColor.value = 'error'
+    snackText.value = withErrorRef("Couldn't create your plan - please try again.")
+  }
 }
 
 function cancelPlan() {
