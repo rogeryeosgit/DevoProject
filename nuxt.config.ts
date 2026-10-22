@@ -19,6 +19,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   telemetry: false,
 
+  // The dev server reloads the browser when files in the project change. Its
+  // own log (logs/QTApp.log) changes on every logged request - left watched,
+  // an error page wrote a line, triggered a reload, failed again, and looped.
+  ignore: ['logs/**'],
+
   app: {
     head: {
       title: 'Your QT App',
