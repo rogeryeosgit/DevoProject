@@ -116,8 +116,11 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
   `X-Frame-Options` or `X-Content-Type-Options`.
 - **Bound `tokenCache`** in `server/utils/auth.ts`; `await` and catch `mongoose.connect`; make an ESV outage fail
   gracefully.
-- **Friendly "service temporarily unavailable" when the database is down** (Roger, 22 Oct; on the board). Today
-  actions hang ~10s (Mongoose buffers commands) and then hit the generic, misleading "An error occurred / You will
+- ✅ **Database calls fail after 5s instead of 30s, and the first connection is retried** (`mongo.ts`, 22 Oct).
+  Measured: requests during an outage failed after 5.0s (was 30.0s), and the app connects even if the database
+  comes up late at startup.
+- **Friendly "service temporarily unavailable" when the database is down** (Roger, 22 Oct; on the board). Until
+  then, actions wait ~5s during an outage and then hit the generic, misleading "An error occurred / You will
   have to log in" page. The fix: fail fast with a 503 when Mongoose isn't connected; a dedicated 503 message in
   `error.vue` with the Error ref; keep today's passage readable (it comes from ESV, not the database); optionally, a
   banner driven by `/api/health`.
