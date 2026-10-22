@@ -63,8 +63,26 @@ jobs:
             # No more -k/https here: Nitro serves plain HTTP on 3000, with nginx
             # terminating TLS in front of it (see docs/migration-plan.md Phase 6) -
             # the old app terminated HTTPS itself in-process, this one doesn't.
+            #
+            # /api/health answers 200 only when the app can reach MongoDB (plain
+            # `/` still says 200 with the database down). Retried for up to ~30s,
+            # since the database connection can take a few seconds after a start.
+            # A version from before /api/health existed (e.g. a rollback target)
+            # answers 404 - then fall back to the old check of the home page.
             health_check() {
-              curl -fsS http://127.0.0.1:3000/ > /dev/null
+              code=none
+              for attempt in 1 2 3 4 5 6 7 8 9 10; do
+                code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/health || true)
+                if [ "$code" = "200" ]; then
+                  return 0
+                fi
+                if [ "$code" = "404" ]; then
+                  curl -fsS http://127.0.0.1:3000/ > /dev/null && return 0
+                fi
+                sleep 3
+              done
+              echo "Health check failed: /api/health last answered HTTP $code"
+              return 1
             }
 
             PREV=$(git rev-parse HEAD)
