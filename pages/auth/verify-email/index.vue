@@ -42,9 +42,7 @@ const userStore = useUserStore()
 const email = ref('')
 const resending = ref(false)
 const continuing = ref(false)
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 
 function firebaseUser() {
   return useNuxtApp().$firebaseAuth.currentUser
@@ -82,15 +80,11 @@ async function resend() {
   resending.value = true
   try {
     await sendEmailVerification(user, { url: authContinueUrl('/auth/verify-email') })
-    snack.value = true
-    snackColor.value = 'success'
-    snackText.value = 'Verification email sent again.'
+    showSnack('Verification email sent again.', 'success')
     reportClientEvent('info', 'auth', 'verification email resent', { email: user.email })
   } catch (e) {
     reportAuthFailure('resending the verification email', e, user.email)
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = "Couldn't resend the email - please try again shortly."
+    showSnack("Couldn't resend the email - please try again shortly.", 'error')
   } finally {
     resending.value = false
   }
@@ -105,15 +99,11 @@ async function continueToApp() {
       return
     }
     reportClientEvent('info', 'auth', 'pressed "I\'ve verified" but the email is still unverified', { email: firebaseUser()?.email })
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = 'Still not verified - check your inbox (and spam folder), or resend the email.'
+    showSnack('Still not verified - check your inbox (and spam folder), or resend the email.', 'error')
   } catch (e) {
     reportAuthFailure('finishing account setup after verification', e, firebaseUser()?.email)
     rememberErrorRef(e)
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't finish setting up your account - please try again shortly.")
+    showSnack(withErrorRef("Couldn't finish setting up your account - please try again shortly."), 'error')
   } finally {
     continuing.value = false
   }

@@ -43,9 +43,7 @@ const passageStore = usePassageStore()
 const id = route.params.pid as string
 const updateDialog = ref(false)
 const PlanEditorComponent = ref()
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 
 // Fetches this one plan directly (with its full passages) rather than relying
 // on the plans-list store, which only ever carries the trimmed list-view
@@ -74,9 +72,7 @@ async function updatePlan() {
   })
   if (!ok) {
     // Stay on the page so the edits aren't lost.
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't save your changes to this plan - please try again.")
+    showSnack(withErrorRef("Couldn't save your changes to this plan - please try again."), 'error')
     return
   }
   await passageStore.refreshPassage()

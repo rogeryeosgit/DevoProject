@@ -138,9 +138,7 @@ const tempStore = ref<Record<string, DayPassage[]>>(initTempStore())
 const submitStore: Record<string, Record<string, string>> = {}
 let sortedSubmitStore: Record<string, Record<string, string>> = {}
 
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 
 const dialogOpen = ref<Record<number, boolean>>({})
 const pickerReady = ref<Record<number, boolean>>({})
@@ -152,17 +150,13 @@ function setPickerRef(day: number, el: any) {
 }
 
 function cancelEdit(day: number) {
-  snack.value = true
-  snackColor.value = 'error'
-  snackText.value = 'Canceled'
+  showSnack('Canceled', 'error')
   dialogOpen.value[day] = false
   pickerRefs[day]?.reset()
 }
 
 function saveEdit(day: number) {
-  snack.value = true
-  snackColor.value = 'success'
-  snackText.value = 'Data saved'
+  showSnack('Data saved', 'success')
   dialogOpen.value[day] = false
   pickerRefs[day]?.reset()
 }

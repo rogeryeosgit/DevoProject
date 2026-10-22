@@ -65,9 +65,7 @@ const id = route.params.jid as string
 const QTJournalEditorComponent = ref()
 const updateDialog = ref(false)
 const deleteDialog = ref(false)
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 const showDiscardDraftButton = ref(false)
 
 const { data: passageData, error: fetchError } = await useAsyncData(`journal-entry-${id}`, async () => {
@@ -116,9 +114,7 @@ onBeforeRouteLeave(() => {
 })
 
 function onDraftRestored() {
-  snack.value = true
-  snackColor.value = 'info'
-  snackText.value = 'Restored your unsaved draft'
+  showSnack('Restored your unsaved draft', 'info')
   showDiscardDraftButton.value = true
 }
 
@@ -133,9 +129,7 @@ function copyContents() {
   const copyText = `${entry.passageReference}\n\nTitle: ${entry.title}\n\n${entry.thoughts}\n\nApplication: ${entry.applicationImplication}`
   navigator.clipboard.writeText(copyText).then(() => {
     showDiscardDraftButton.value = false
-    snack.value = true
-    snackColor.value = 'success'
-    snackText.value = 'Copied to Clipboard'
+    showSnack('Copied to Clipboard', 'success')
   })
 }
 
@@ -159,9 +153,7 @@ async function updateEntry() {
     router.push('/journalList')
   } else {
     showDiscardDraftButton.value = false
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't save your changes — your draft is safe, please try again.")
+    showSnack(withErrorRef("Couldn't save your changes — your draft is safe, please try again."), 'error')
   }
 }
 
@@ -174,9 +166,7 @@ async function deleteEntry() {
     router.push('/journalList')
   } else {
     showDiscardDraftButton.value = false
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't delete this entry - please try again.")
+    showSnack(withErrorRef("Couldn't delete this entry - please try again."), 'error')
   }
 }
 </script>

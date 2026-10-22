@@ -21,9 +21,7 @@ const planStore = usePlanStore()
 const router = useRouter()
 
 const PlanEditorComponent = ref()
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 
 async function submitPlan() {
   const valid = await PlanEditorComponent.value.checkValidation()
@@ -40,9 +38,7 @@ async function submitPlan() {
     router.push('/plansList')
   } else {
     // Stay on the page so nothing typed into the editor is lost.
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't create your plan - please try again.")
+    showSnack(withErrorRef("Couldn't create your plan - please try again."), 'error')
   }
 }
 

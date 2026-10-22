@@ -59,9 +59,7 @@ const lazyForm = ref()
 const showPassword = ref(false)
 const email = ref('')
 const password = ref('')
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 const emailRules = [
   (v: string) => !!v || 'Please enter an email address', // !! converts to boolean
   (v: string) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
@@ -117,16 +115,12 @@ async function passwordReset() {
   try {
     const auth = useNuxtApp().$firebaseAuth as Auth
     await sendPasswordResetEmail(auth, email.value, { url: authContinueUrl() })
-    snack.value = true
-    snackColor.value = 'success'
-    snackText.value = 'Password Reset Email Sent!'
+    showSnack('Password Reset Email Sent!', 'success')
     reportClientEvent('info', 'auth', 'password reset email requested', { email: email.value })
   } catch (e) {
     // When firebase returns an error looking up email in the database
     reportAuthFailure('password reset email', e, email.value)
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = 'Error, Email Not Found!'
+    showSnack('Error, Email Not Found!', 'error')
   }
 }
 
@@ -141,9 +135,7 @@ watch(
   () => userStore.errorOccured,
   (errorOccured) => {
     if (errorOccured) {
-      snack.value = true
-      snackColor.value = 'error'
-      snackText.value = userStore.getErrorMessage
+      showSnack(userStore.getErrorMessage, 'error')
       userStore.clearError()
     }
   }

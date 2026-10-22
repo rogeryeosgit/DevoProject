@@ -31,9 +31,7 @@ definePageMeta({ middleware: ['check-auth', 'login-check'] })
 const userStore = useUserStore()
 const planStore = usePlanStore()
 const router = useRouter()
-const snack = ref(false)
-const snackColor = ref('')
-const snackText = ref('')
+const { snack, snackColor, snackText, showSnack } = useSnackbar()
 
 const { error: fetchError } = await useAsyncData('plans-list', async () => {
   const [, data] = await Promise.all([
@@ -57,9 +55,7 @@ async function submitPlanDeletion(id: string) {
   const ok = await planStore.deletePlan(id)
   if (!ok) {
     // The plan stays in the list (the store only removes it on success).
-    snack.value = true
-    snackColor.value = 'error'
-    snackText.value = withErrorRef("Couldn't delete the plan - please try again.")
+    showSnack(withErrorRef("Couldn't delete the plan - please try again."), 'error')
   }
 }
 
