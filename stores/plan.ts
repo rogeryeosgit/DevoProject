@@ -91,6 +91,9 @@ export const usePlanStore = defineStore('plan', {
       try {
         await authFetch('/api/plans', { method: 'DELETE', params: { planID } })
         this.plans = this.plans.filter((p: any) => p._id !== planID)
+        // The server moved this user to the default plan if they had chosen
+        // the deleted one - pick that up rather than keep a stale choice.
+        if (this.chosenPlan === planID) await this.getPlanChosen()
       } catch (e) {
         reportClientError('plan: delete failed', e)
       }
