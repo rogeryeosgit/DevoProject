@@ -87,8 +87,12 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 ## Phase 1: Correctness, security and developer hygiene
 
 **Board "To do" items that are really bugs or integrity issues:**
-- **Deleting a plan leaves its users dangling.** In `server/api/plans/index.delete.ts`, before deleting, reset every
-  `User` with `planChosen == planID` back to the default plan. This is the likely cause of the production data issue.
+- ✅ **Deleting a plan leaves its users dangling** (Round A1, `321ab1d`, 22 Oct). `DELETE /api/plans` now moves
+  users who had chosen the plan to the default plan, and refuses to delete the default plan itself. The one existing
+  dangling `planChosen` in production still needs the one-off reset in Phase 0.4.
+- **Plans named like the default (found 22 Oct).** Any user can create a plan called `--- Default Nav Plan ---`, and
+  the app finds the default plan *by name*, so a duplicate could be picked instead. Long-term fix: an `isDefault`
+  flag on the Plan model (already suggested in `docs/migration-plan.md`).
 - **No success/failure feedback on plan pages.** `stores/plan.ts` create/update/delete swallow errors with
   `console.error`, and `journal.ts` deleteEntry does the same.
   - Have them return success/failure.
@@ -98,8 +102,10 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 - **Verse continuity in plan creation.** PassagePicker should require the second verse to come after the first.
   Also fix: Cancel should revert the passage, a day's passage should be clearable, and PlanEditor month keys depend
   on timezone (`PlanEditor.vue:183,220,235`).
-- **`/plansList/<id>` fetches the plan twice** during SSR: two `GET /api/plans/<id>` calls per page load (found
-  21 Oct while testing error references).
+- ~~`/plansList/<id>` fetches the plan twice~~ **Not a bug (checked 22 Oct, Round A2 dropped).** Normal loads
+  fetch it once. The second request only appears after a **500**: `ofetch` (under `$fetch`) automatically retries a
+  failed GET once for 408/409/425/429/500/502/503/504 (`node_modules/ofetch`, `retryStatusCodes`). The 500s seen were
+  malformed IDs, which D1 turns into 404s, and those aren't retried.
 - **Logged-in flash for stale sessions (low priority).** If a browser still has the login cookies but no Firebase
   session, the page server-renders logged in, then the client logs out during hydration. The result is Vue hydration
   mismatch warnings and a brief logged-in view (seen 21 Oct with cookie-only sessions). Possible fix: render the
@@ -135,8 +141,9 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
   - Scanner probes (`/.env`, `../` traversal, `/api/graphql`…) are only counted in the daily summary. 21 Oct check:
     they can't read `.env`, `fb-service-account.json` or `ecosystem.config.cjs`; the live site and the app both
     return 404/400.
-- Still open: add a **`/api/health`** endpoint that pings Mongo, and point `deploy.yml`'s health check at it,
-  since `/` returns 200 even when the database is down.
+- ✅ **`/api/health`** (Round A3, `b8a0339`): 200 when MongoDB answers a ping, 503 plus a `HEALTH:` log line when it
+  doesn't. ✅ `deploy.yml` health-checks it (Round A4, `5a8443c`): retried for about 30s, with a fallback to `/` for
+  older versions during a rollback.
 
 **Developer hygiene** (worth doing before the redesign, so UI work has a safety net):
 - Add a CI workflow `.github/workflows/ci.yml` on push to `master` (work goes straight to master now) running
