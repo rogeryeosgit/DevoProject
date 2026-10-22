@@ -57,8 +57,8 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
    - ✅ **Board housekeeping** (Roger, 22 Oct): duplicate "On User deletion" cards merged, Nuxt 2-era cards closed.
      "Connections not closed" was checked on 22 Oct: two bursts of 250 requests left MongoDB at 15–16 open
      connections, with only ~10 new ones opened. That's one shared pool, reused, and closed on shutdown, so no leak.
-   - Notion ideas → board cards: Roger to review the Notion pages first. They may be out of date, and not all
-     should become cards.
+   - ✅ Notion ideas added to the board as **To do** (22 Oct, after Roger reviewed them): 12 cards, each linking its
+     Notion source. Plus Roger's "Let plan creators make a plan public (by choice)" card.
 4. ✅ **Production server housekeeping**, done by Roger 22 Oct: old log moved into `/home/roger/qtapp-logs`,
    `~/.pm2/dump.pm2` set to `chmod 600`, the v4test nginx site/folder/port 8443 and `devoProjDB_v4test` retired, ESV key
    rotated, test-vs-production encryption secret checked, dangling `planChosen` reset, Atlas indexes confirmed.
@@ -75,8 +75,9 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 - **Plans list only shows your own plans plus the default** (`server/api/plans/index.get.ts`). Plans created by
   any other account, including another login of your own, never appear (noticed 22 Oct: a production plan Roger
   can't see). That fits "own plans only", but it contradicts the endpoint's own comment ("browsing plans before
-  choosing one is intentional") and the Notion note "Plans are visible to all, but allowed to pick one". Needs a
-  decision; it ties in with the Phase 2 plan-picker work.
+  choosing one is intentional") and the Notion note "Plans are visible to all, but allowed to pick one".
+  **Decision (Roger, 22 Oct):** plans should be makeable public *by choice*. It's on the board as "Let plan creators
+  make a plan public (by choice)", for the future.
 - **Plans named like the default (found 22 Oct).** Any user can create a plan called `--- Default Nav Plan ---`, and
   the app finds the default plan *by name*, so a duplicate could be picked instead. Long-term fix: an `isDefault`
   flag on the Plan model (already suggested in `docs/migration-plan.md`).
