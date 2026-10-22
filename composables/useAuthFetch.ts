@@ -22,11 +22,9 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
     return { ...opts, headers }
   }
 
-  // Taken before the first await: during SSR the Nuxt context is gone after
-  // one, and calling useState() in the catch below would throw its own error
-  // in place of the real API failure.
+  // Taken before this function's first await; may be null - see useLastErrorRef.
   const lastErrorRef = useLastErrorRef()
-  lastErrorRef.value = null
+  if (lastErrorRef) lastErrorRef.value = null
   try {
     return (await $fetch<T>(url, withToken(userStore.token))) as T
   } catch (err: any) {
@@ -47,7 +45,7 @@ export async function authFetch<T = any>(url: string, opts: Record<string, any> 
       }
       await userStore.logout()
     }
-    lastErrorRef.value = errorRef(err) ?? null
+    if (lastErrorRef) lastErrorRef.value = errorRef(err) ?? null
     throw err
   }
 }
@@ -64,8 +62,15 @@ export function errorRef(err: any): string | undefined {
   return fromHeader(err) ?? fromHeader(err?.cause) ?? err?.data?.ref ?? undefined
 }
 
-function useLastErrorRef() {
-  return useState<string | null>('lastErrorRef', () => null)
+// useState() needs the Nuxt context, which server-side rendering loses after
+// an await - and authFetch is often called after one (pages/journalList/[jid]
+// makes its second request that way). Calling useState() there threw, failing
+// the whole page. Without a context nothing is remembered; errorRef() can
+// still read the code off the error itself.
+function useLastErrorRef(): Ref<string | null> | null {
+  // tryUseNuxtApp() finds the app exactly the way useState() does, so when it
+  // returns one, useState() is safe to call.
+  return tryUseNuxtApp() ? useState<string | null>('lastErrorRef', () => null) : null
 }
 
 /**
@@ -73,7 +78,8 @@ function useLastErrorRef() {
  * calls made outside authFetch. Call it before any await, or client-side only.
  */
 export function rememberErrorRef(err: any): void {
-  useLastErrorRef().value = err ? (errorRef(err) ?? null) : null
+  const lastErrorRef = useLastErrorRef()
+  if (lastErrorRef) lastErrorRef.value = err ? (errorRef(err) ?? null) : null
 }
 
 /**
@@ -83,12 +89,12 @@ export function rememberErrorRef(err: any): void {
  * in dev, in a diagnostic object without the response).
  */
 export function latestErrorRef(err?: any): string | undefined {
-  return errorRef(err) ?? useLastErrorRef().value ?? undefined
+  return errorRef(err) ?? useLastErrorRef()?.value ?? undefined
 }
 
 /** Appends the latest API failure's reference code to a user-facing error message. */
 export function withErrorRef(text: string): string {
-  const ref = useLastErrorRef().value
+  const ref = useLastErrorRef()?.value
   return ref ? `${text} (Error ref: ${ref})` : text
 }
 
