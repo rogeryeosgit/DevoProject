@@ -95,6 +95,8 @@ sw.*
 localhost.pem
 localhost-key.pem
 fb-service-account.json
+# PM2 config on the server - holds real secrets; only ecosystem.config.cjs.example is committed
+ecosystem.config.cjs
 
 #Editor Configs
 .vscode

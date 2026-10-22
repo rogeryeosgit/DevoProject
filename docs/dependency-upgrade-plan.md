@@ -30,8 +30,10 @@ today's passage) still passes manual QA against the upgraded build.
 **Maintenance note:** a clean `npm audit` is a point-in-time result, not a finish line — the
 `brace-expansion` wave (see Phase 0) hit an already-"done" tree just days after Phase 0 landed. Expect
 to re-run `npm audit` and re-check the `overrides` block periodically, not just once. Also: Dependabot
-alerts are only enabled on the `rogeryeosgit/DevoProject` remote (0 open as of 2026-07-29) — alerts are
-disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never surface them itself.
+alerts are only enabled on the `rogeryeosgit/DevoProject` remote (4 open as of 2026-10-22, see the
+2026-10-21 update below) — alerts are disabled entirely on `NavigatorsTech/DevoProject`, so the org repo
+will never surface them itself. Policy since 2026-10-21: keep Dependabot **alerts**, but don't merge its
+PRs — apply updates by hand (`npm audit fix` / version bumps) and close its PRs.
 
 ---
 
@@ -108,6 +110,26 @@ disabled entirely on `NavigatorsTech/DevoProject`, so the org repo will never su
     `rm -rf node_modules package-lock.json && npm install` rather than
     `--force`/`--legacy-peer-deps`. Verified `npm audit` (0 vulnerabilities), `npm run typecheck`
     (0 errors), and `npm run build` (clean `.output/`) all succeed afterward.
+  - **Update 2026-10-21:** a fourth wave — `npm audit` reported **31 vulnerabilities: 3 critical,
+    27 high, 1 moderate** (shell-quote, simple-git, @fastify/busboy, undici, devalue, vite/launch-editor,
+    svgo, source-map-js, @vue/server-renderer and others). Plain `npm audit fix` (lockfile only,
+    `package.json` unchanged, `4ed8505`) cleared 16 of them: `nuxt` 4.5.2 -> 4.6.2, `vue` 3.5.41 ->
+    3.5.44, `firebase` 12.17.1 -> 12.19.0, `vite` 8.2.1 -> 8.3.4, `nitropack` 2.13.4 -> 2.13.5, plus
+    transitive bumps; svgo dropped out of the tree. `npm ci` and `npm run build` verified clean.
+    **15 high remain**, and `npm audit`'s only "fix" for them is downgrading `nuxt` to 4.1.3 or
+    `firebase` to 9.14.0 — rejected, same as before. GitHub counts them as 4 alerts (npm lists every
+    package in each vulnerable chain):
+    - `@grpc/grpc-js` (GHSA-m9gg-hp2v-232j high, GHSA-f596-whhp-79r4 low): `firebase` ->
+      `@firebase/firestore` pins `~1.9.0`; the fix is 1.13.6. The `firebase-admin` copy is already
+      1.14.6. **Not reachable** — the app only uses Firebase Auth and never loads Firestore.
+      **Decision (2026-10-21): wait for Firebase's own update** rather than add an `overrides` entry.
+    - `braces` (GHSA-vfj7-8cjw-p6xm, high) via `nuxt` -> `nitropack`, and `node-forge`
+      (GHSA-86w9-cpqp-85rv, high) via `nuxt` -> `listhen`: **no patched release exists yet**; both
+      are build/dev-server tooling, not request-handling code.
+    Side effect: the `nuxt` 4.6 bump broke `npm run typecheck` (TS2321, excessive stack depth inferring
+    `$fetch`'s return type against every internal route) — fixed in `7cfdac8` by passing `$fetch` its
+    response type explicitly (`server/utils/bible-retrieval.ts`, `composables/useAuthFetch.ts`). The
+    open Dependabot PRs (#47, #49-#56) were all closed — superseded by `4ed8505`, or obsolete (svgo).
 
 - [x] **Phase 1** — Low-risk dependency bumps (batch together) — **done 2026-07-24**
   - `nuxt` 4.4.8 → 4.5.0 (minor) ✓

@@ -60,7 +60,7 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
        (21 Oct): wait for Firebase's own update**, no `overrides` entry. The app never loads Firestore, so the
        vulnerable code never runs.
      - `braces`, `node-forge` (high): no fixed release yet. Both are Nuxt build/dev tooling.
-   - Still to do: record the 4th CVE wave and these alerts in `docs/dependency-upgrade-plan.md`.
+   - ✅ The 4th CVE wave and these alerts are recorded in `docs/dependency-upgrade-plan.md` (Phase 0, "Update 2026-10-21").
    - **Board housekeeping** (Roger, or me once the token has `project` write scope; it currently has read-only
      `read:project`):
      - Merge the 3 duplicate "On User deletion" cards.
@@ -81,7 +81,7 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
      production's. If it is, rotating it is harmless. If it's the same, it needs a re-encrypt migration (Phase 4).
    - Reset the one dangling `planChosen` to the default plan.
    - Confirm the hand-built Atlas indexes exist.
-   - Add `ecosystem.config.cjs` to `.gitignore`.
+   - ✅ `ecosystem.config.cjs` is in `.gitignore`.
    - Turn on Dependabot alerts on `NavigatorsTech/DevoProject`.
 
 ## Phase 1: Correctness, security and developer hygiene
