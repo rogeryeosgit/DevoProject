@@ -36,26 +36,15 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 
 ## Phase 0: This week
 
-1. **Extend the reading plan's passages: deadline 31 Oct** (Notion task "Update QT passages")
-   - ✅ Checked 21 Oct: production's `"--- Default Nav Plan ---"` covers **Jun 2020 – Oct 2026**. From **1 Nov** every
-     visitor gets the `Proverbs <day>` fallback (`server/api/passages/today.get.ts`). `QTApp.log` will show a
-     `PASSAGE: … has no passage …` WARN line from that day.
-   - Still needed: the passage list for **Nov 2026 onwards** (see question 1).
-   - Load it through the plan editor UI, or add **`scripts/import-plan.mjs`**:
-     - Reads a CSV of `date,reference`.
-     - Validates each reference against `data/bible-books.json`, the same data `PassagePicker.vue` uses.
-     - `$set`s `passages.<MMM YYYY>.<D>` (e.g. `passages.Jul 2026.15`, the format `server/models/Plan.ts` uses)
-       on the chosen plan.
-     - Has `--dry-run`, and reads `NUXT_MONGODB_ACCESS` from `.env` or `ecosystem.config.cjs`.
-
-     This also covers the board card **"input plans using csv"**, as a command-line tool for now.
-   - Then regenerate `docker/mongo-init.js` from production with the same export/import steps as 21 Oct (✅ done
-     once, for Jun 2020 – Oct 2026), so a fresh local database matches.
-2. **Fix the open bug: "Verification emails / Firebase emails always go to spam"** (board, Bugs column)
-   - This is configuration, not code. In the Firebase console (Authentication → Templates), set up a
-     **custom sender domain**, e.g. `noreply@navigators.tech`. Add the SPF/DKIM DNS records Firebase gives you to
-     navigators.tech, and customise the template text. Optionally, send through your own SMTP provider instead.
-   - Check with mail-tester.com, plus a Gmail and an Outlook inbox.
+1. ~~**Extend the reading plan's passages: deadline 31 Oct**~~ **Struck out (Roger, 22 Oct).** Next month's
+   passages arrive on the last day of each month, as a JPG, so Roger loads them himself for now; he'll automate it
+   later. Production's default plan covers Jun 2020 – Oct 2026 as of 21 Oct. If a month is ever missing, `QTApp.log`
+   shows `PASSAGE: … has no passage …` WARN lines. Idea for that automation: read the JPG (OCR), turn it into
+   `date,reference` rows, validate them against `data/bible-books.json`, and dry-run before writing `passages.<MMM YYYY>.<D>`.
+2. ✅ **"Verification emails / Firebase emails always go to spam"** was already set up by Roger. Checked in public DNS
+   on 22 Oct: `firebase=qtapp-3b06e` domain verification, SPF `include:_spf.firebasemail.com`, DKIM
+   `firebase1`/`firebase2._domainkey` → firebasemail.com, and DMARC `p=none` with dmarcian reports. The board card
+   just needs moving to Done.
 3. **Ship and tidy up**
    - ✅ Pushed and deployed. ✅ All Dependabot PRs are closed: #47 (svgo) was obsolete, and the rest closed themselves
      once `4ed8505` was on master.
@@ -65,28 +54,17 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
        vulnerable code never runs.
      - `braces`, `node-forge` (high): no fixed release yet. Both are Nuxt build/dev tooling.
    - ✅ The 4th CVE wave and these alerts are recorded in `docs/dependency-upgrade-plan.md` (Phase 0, "Update 2026-10-21").
-   - **Board housekeeping** (Roger, or me once the token has `project` write scope; it currently has read-only
-     `read:project`):
-     - Merge the 3 duplicate "On User deletion" cards.
-     - Close cards that only applied to Nuxt 2: "connections not closed" (Nitro uses a single pooled connection in
-       `server/plugins/mongo.ts`) and "minimize package size for vendor app" (webpack-era).
-     - Add the Notion ideas as cards.
-4. **Production server housekeeping** (`docs/migration-plan.md` L764–816 cutover leftovers, plus 21 Oct findings)
-   - ✅ `NUXT_LOG_DIR=/home/roger/qtapp-logs` set, and `deploy.yml` now runs `pm2 save` after every restart.
-   - Move the leftover `/QTNuxtProject/logs/QTApp.log` (written before the setting took effect) into
-     `/home/roger/qtapp-logs/`.
-   - `chmod 600 ~/.pm2/dump.pm2`: it holds every env value in plain text, including the database connection string
-     and the encryption secret.
-   - The deploy user's PM2 now runs only `qtapp` (seen in the 21 Oct deploy log), so the `qtapp-v4test` process looks
-     gone. Still retire the `qt-v4test` nginx site and `~/QTNuxtProject-v4-test`.
-   - Close ufw port 8443, and drop `devoProjDB_v4test` in the Atlas dashboard.
-   - Rotate the **ESV API key**.
-   - The Mongoose secret that was shown belonged to the **test** config. First confirm it's different from
-     production's. If it is, rotating it is harmless. If it's the same, it needs a re-encrypt migration (Phase 4).
-   - Reset the one dangling `planChosen` to the default plan.
-   - Confirm the hand-built Atlas indexes exist.
-   - ✅ `ecosystem.config.cjs` is in `.gitignore`.
-   - Turn on Dependabot alerts on `NavigatorsTech/DevoProject`.
+   - ✅ **Board housekeeping** (Roger, 22 Oct): duplicate "On User deletion" cards merged, Nuxt 2-era cards closed.
+     "Connections not closed" was checked on 22 Oct: two bursts of 250 requests left MongoDB at 15–16 open
+     connections, with only ~10 new ones opened. That's one shared pool, reused, and closed on shutdown, so no leak.
+   - Notion ideas → board cards: Roger to review the Notion pages first. They may be out of date, and not all
+     should become cards.
+4. ✅ **Production server housekeeping**, done by Roger 22 Oct: old log moved into `/home/roger/qtapp-logs`,
+   `~/.pm2/dump.pm2` set to `chmod 600`, the v4test nginx site/folder/port 8443 and `devoProjDB_v4test` retired, ESV key
+   rotated, test-vs-production encryption secret checked, dangling `planChosen` reset, Atlas indexes confirmed.
+   `ecosystem.config.cjs` is in `.gitignore`.
+   - **Decision (22 Oct): Dependabot alerts stay OFF on `NavigatorsTech/DevoProject`** and ON on
+     `rogeryeosgit/DevoProject`, which carries the same code.
 
 ## Phase 1: Correctness, security and developer hygiene
 
@@ -94,6 +72,11 @@ open a PR from `rogeryeosgit:master` into `NavigatorsTech/DevoProject`. Merging 
 - ✅ **Deleting a plan leaves its users dangling** (Round A1, `321ab1d`, 22 Oct). `DELETE /api/plans` now moves
   users who had chosen the plan to the default plan, and refuses to delete the default plan itself. The one existing
   dangling `planChosen` in production still needs the one-off reset in Phase 0.4.
+- **Plans list only shows your own plans plus the default** (`server/api/plans/index.get.ts`). Plans created by
+  any other account, including another login of your own, never appear (noticed 22 Oct: a production plan Roger
+  can't see). That fits "own plans only", but it contradicts the endpoint's own comment ("browsing plans before
+  choosing one is intentional") and the Notion note "Plans are visible to all, but allowed to pick one". Needs a
+  decision; it ties in with the Phase 2 plan-picker work.
 - **Plans named like the default (found 22 Oct).** Any user can create a plan called `--- Default Nav Plan ---`, and
   the app finds the default plan *by name*, so a duplicate could be picked instead. Long-term fix: an `isDefault`
   flag on the Plan model (already suggested in `docs/migration-plan.md`).
